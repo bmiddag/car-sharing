@@ -1,0 +1,128 @@
+\documentclass[11pt,a4paper,oneside]{article}
+\usepackage[dutch]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{dsfont}
+\usepackage{parskip}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{color}
+\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{cite}
+\usepackage[nottoc]{tocbibind}
+\usepackage[T1]{fontenc}
+\usepackage[light,math]{iwona}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{subfig}
+\usepackage{textcomp}
+\usetikzlibrary{arrows,automata}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{titling,enumitem}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{rotating}
+\usepackage{listings}
+\usepackage[top=1.1in, bottom=1.2in, left=1.1in, right=1.1in]{geometry}
+\usepackage{array}
+\usepackage{titling}
+\usepackage{blindtext}
+\usepackage{chngpage}
+\usepackage{calc}
+\definecolor{lightgray}{gray}{0.8}
+\newcolumntype{L}{>{\raggedleft}p{0.50\textwidth}}
+\newcolumntype{R}{p{0.8\textwidth}}
+\newcommand\VRule{\color{lightgray}\vrule width 0.5pt}
+\usepackage{color, colortbl}
+\definecolor{Gray}{gray}{0.9}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{ugentblue}{rgb}{0.05,0.18,0.37}
+\usepackage{import}
+\usepackage[T1]{fontenc}
+\begin{document}
+
+\newgeometry{top=0.8cm, right=1.70cm, left=1.7cm}
+\begin{titlepage}
+
+\thispagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{}
+\begin{figure}[!ht]
+  \begin{adjustwidth}{-\oddsidemargin-1in}{-\rightmargin}
+    \centering
+    \includegraphics[width=\paperwidth]{img/banner}
+  \end{adjustwidth}
+\end{figure}
+
+\vspace{-0.2em}
+\begin{center}
+\vspace{5cm}
+\Huge \textbf{Vakoverschrijdend Project: team Edran\\ Testhandleiding}\\
+\vspace{6.0cm}
+\large
+\begin{tabular}{L! {} R}
+& {\LARGE\bf Team Edran} \\
+& \\
+& {\bf Steven De Blieck} \\
+& {\bf Laurens De Graeve} \\
+& {\bf Bart Middag} \\
+& {\bf Wouter Pinnoo} \\
+& {\bf Robin Praet} \\
+& {\bf Stijn Seghers} \\
+& {\bf Wouter Termont} \\
+& {\bf Gilles Vandewiele} \\
+\end{tabular}
+\end{center}
+\end{titlepage}
+\restoregeometry
+\newpage
+
+\fancyheadoffset[RO,LE]{0in}
+\fancypagestyle{plain}{
+\fancyhead[L]{Testhandleiding}
+\fancyhead[R]{Team Edran}
+\fancyfoot[L]{}
+\fancyfoot[R]{\thepage}}
+
+\fancyhead[L]{Testhandleiding}
+\fancyhead[R]{Team Edran}
+\fancyfoot[L]{}
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
+\tableofcontents
+
+\section{Inleiding}
+Voor onze testen maakten we gebruik van een Jenkins-platform. Deze is terug te vinden op \url{http://edran.ugent.be/jenkins/}. We maakten een GitHub webhook op github.ugent.be die bij elke commit naar de \verb|master| of \verb|development| branch een trigger stuurde naar Jenkins.
+Jenkins doet na het ontvangen van een trigger het volgende:
+\begin{itemize}
+\item het commando \verb|clean compile| uitvoeren in \verb|sbt|: zo worden compileerfouten in de web-applicatie zelf ontdekt.
+\item tests van onze eigen modules uitvoeren. Deze wordt gedefinieerd in shell scripts en vindt u terug op \url{http://edran.ugent.be/jenkins/job/autodelen/configure} bij 'bouwstappen' (meer hierover in Sectie \ref{sec:modules}).
+\item alle JUnit tests uitvoeren (meer hierover in Sectie \ref{sec:junit}).
+\end{itemize}
+Als het uitvoeren van \'e\'en van bovenstaande operaties niet succesvol was, gebeurt het volgende:
+\begin{itemize}
+\item de mislukte bouwpoging wordt in rekening gehouden met de statistieken die het Jenkins-platform zelf bijhoudt
+\item op het \verb|README.md|-bestand op de repository toont het logo van Jenkins aan dat de bouwpoging mislukt was
+\item het auteur van de commit die voor een mislukte bouwpoging zorgde, wordt via e-mail op de hoogte gebracht.
+\end{itemize} 
+
+
+\section{Eigen tests voor modules}\label{sec:modules}
+We maakten onze modules (bv. DAO's) volledig onafhankelijk van de webapplicatie. Zo is deze herbruikbaar in andere projecten. We compileren de modules als \verb|.jar|-bestanden en gebruiken ze als library in de webapplicatie.\par
+Om het gebruikte \verb|.jar|-bestand up-to-date te houden, en om compileerfouten uit de modules snel te herkennen, worden de modules door Jenkins gecompileerd, verpakt in \verb|.jar|'s en gepushed naar de repository door Jenkins.
+
+\section{Tests uitvoeren}\label{sec:junit}
+Om tests uit te voeren ga je naar de directory \emph{autodelen}. Hierin voer je het script \emph{test.sh} uit. (\textbf{./test.sh}) \\
+\textbf{BELANGRIJK: aan de volgende vereisten moeten voldaan zijn:} 
+\begin{itemize}
+\item	firefox moet op de computer staan
+\item	de directory \emph{server} en \emph{autodelen} moeten in eenzelfde map aanwezig zijn
+\end{itemize} 
+Indien het script ./test.sh niet werkt, dan kan je handmatig de databank resetten, het commando \emph{play run} in een aparte terminal uitvoeren en daarna play test.
+\end{document}

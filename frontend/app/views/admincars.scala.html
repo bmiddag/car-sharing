@@ -1,0 +1,236 @@
+@import java.text.DecimalFormat;
+
+<div class="well">
+
+    <div class="row" id="carTable">
+        <div class="col-md-8">
+        @if(! models.CarManagementModel.getPendingCars().isEmpty){
+            <h2> <a id="showCarsTable" style="color: black;"><i id ="carIcon" class="glyphicon small glyphicon-plus-sign"></i> Auto's in behandeling </a> </h2>
+            <div class="row" id="PendingCars">
+                <form name="cars" action="@routes.Admin.updateCar()" method="post">
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th>Naam</th>
+                            <th>Eigenaar</th>
+                            <th>Beschrijving</th>
+                        </tr>
+                        @if(models.CarManagementModel.getPendingCars().size() != 0 ){
+                            @for( car <- models.CarManagementModel.getPendingCars() ){
+                                @if(car.getApproved() == false){
+                                    <tr name="carRow" id="car@{car.getId.toString}" class="danger" onclick=" $('#modal@{car.getId.toString}').modal();">
+                                        <td>@car.getName()</td>
+                                        <td>@car.getOwner().getName()</td>
+                                        <td>@car.getDescription()</td>
+                                        <input type="hidden" name="carField@{car.getId.toString}" id="carField@{car.getId.toString}" value=""/>
+                                    </tr>
+                                } else {
+                                    <tr name="carRow" id="car@{car.getId.toString}" onclick=" $('#modal@{car.getId.toString}').modal();">
+                                        <td>@car.getName()</td>
+                                        <td>@car.getOwner().getName()</td>
+                                        <td>@car.getDescription()</td>
+                                        <input type="hidden" name="carField@{car.getId.toString}" id="carField@{car.getId.toString}" value=""/>
+                                    </tr>
+                                }
+                            }
+                        } else {
+                            <tr>
+                                <td colspan="3">Er zijn geen auto's die moeten goed- of afgekeurd worden.</td>
+                            </tr>
+                        }
+                    </table>
+                    <button id="saveChanges" type="submit"  class="pull-right btn btn-default" > Sla veranderingen op</button>
+                </form>
+            </div>
+        } else {
+            <h2> <i class="glyphicon text-success glyphicon-check"></i> Geen auto's in behandeling.</h2>
+        }
+        </div>
+    </div>
+</div>
+
+     @for( car <- models.CarManagementModel.getPendingCars() ){
+        <div id="modal@{car.getId.toString}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal@{car.getId.toString}label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span>Details Auto</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div><p>Hier kan je deze auto goed of afkeuren:</p></div>
+                         <div class="row">
+                            <div class="col-xs-4">
+                                @if(car != null){
+                                    <h4>Naam</h4>
+                                    <p>@car.getName()</p>
+
+                                    <h4>Model</h4>
+                                    @if(car.getModel() != null){
+                                        <p>@car.getModel()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Type</h4>
+                                    @if(car.getType() != null){
+                                        <p>@car.getType()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Bouwjaar</h4>
+                                    @if(car.getYear() != null){
+                                        <p>@car.getYear()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Geschatte waarde</h4>
+                                    @if(car.getValue() != null){
+                                        <p>@car.getValue()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Adres</h4>
+                                    @if(car.getAddress() != null){
+                                        <p>@car.getAddress()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Zone</h4>
+                                    @if(car.getZone() != null){
+                                        <p>@car.getZone().getName()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Eigenaar</h4>
+                                    @if(car.getOwner() != null){
+                                        <p>@car.getOwner().getName()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Nummerplaat</h4>
+                                    @if(car.getPlate() != null){
+                                        <p>@car.getPlate()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Gereden kilometers</h4>
+                                    @if(car.getMileage() != null){
+                                        <p>@car.getMileage()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Chassisnummer</h4>
+                                    @if(car.getChassis() != null){
+                                        <p>@car.getChassis()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Capaciteit</h4>
+                                    @if(car.getCapacity() != null){
+                                        <p>@car.getCapacity()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Consumptie</h4>
+                                    @if(car.getConsumption() != null){
+                                        <p>@car.getConsumption()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Aantal deuren</h4>
+                                    @if(car.getDoors() != null){
+                                        <p>@car.getDoors()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Brandstoftype</h4>
+                                    @if(car.getFuel() != null){
+                                        <p>@car.getFuel()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Inschrijvingsbewijs</h4>
+                                    @if(car.getInscription() != null){
+
+                                    <a class="thumbnail" href="@{routes.FileRenderer.getFile(car.getInscription())}" >
+                                        <img class="img-responsive" src="@{routes.FileRenderer.getFile(car.getInscription())}">
+                                    </a>
+
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Brandstoftype</h4>
+                                    @if(car.getFuel() != null){
+                                        <p>@car.getFuel()</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Gem. aantal kilometers per jaar</h4>
+                                    @if(car.getKmpy() != null){
+                                        <p>@car.getKmpy</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Beschrijving</h4>
+                                    @if(car.getDescription() != null){
+                                        <p>@car.getDescription</p>
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>GPS?</h4>
+                                    @if(car.getGps() != null){
+                                        @if(car.getGps()){ <p>Ja</p> } else{ <p>Nee</p>}
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+
+                                    <h4>Trekhaak?</h4>
+                                    @if(car.getTow() != null){
+                                        @if(car.getTow()){ <p>Ja</p> } else{ <p>Nee</p>}
+                                    } else {
+                                        <p>Onbekend</p>
+                                    }
+                                }
+
+                                <div class="btn-group-vertical">
+                                    <button id="acceptCar" value="accept" onclick="$('#modal@{car.getId.toString}').modal('hide'); $('#car@{car.getId.toString}').removeClass('danger succes').addClass('success'); $('#carField@{car.getId.toString}').val('true');" class="btn btn-success">Goedkeuren</button>
+                                    <button value="reject" onclick="$('#modal@{car.getId.toString}').modal('hide'); $('#car@{car.getId.toString}').removeClass('danger succes').addClass('danger');  $('#carField@{car.getId.toString}').val('false');" class="btn btn-danger">Afkeuren</button>
+                                </div>
+                                </div>
+
+
+                                <h3>Foto's:</h3>
+                                @if(car != null){
+                                    @for((carPhoto) <- CarModel.getPhotosByCar(car.getId())){
+
+                                        <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                                            <a class="thumbnail" href="@{routes.FileRenderer.getFile(carPhoto.getFile())}" target="_blank">
+                                                <img class="img-responsive" src="@{routes.FileRenderer.getFile(carPhoto.getFile())}">
+                                            </a>
+                                        </div>
+
+                                    }
+                                }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }

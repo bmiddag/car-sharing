@@ -1,0 +1,133 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET         /                                      controllers.Application.index(tab = "home")
+GET         /about/:tab                            controllers.Application.index(tab: String)
+POST        /                                      controllers.Registration.completeRegister()
+
+# Login
+GET         /login                                 controllers.Login.login()
+POST        /login                                 controllers.Login.authenticate()
+
+# Logout from any page
+GET         /logout                                controllers.Login.logout()
+
+#Registration
+GET         /register                              controllers.Registration.index()
+GET         /registercar                           controllers.Registration.indexCar()
+GET         /verifymail/:token                     controllers.Registration.verifymail(token: String)
+POST        /register                              controllers.Registration.register()
+POST        /registercar                           controllers.Registration.registerCar()
+
+#Contact page
+GET         /contact                               controllers.Application.contact()
+
+# Admin page
+GET         /admin                                 controllers.Admin.admin(tab = "mailpreferences",offset:Int?=0, limit:Int?=99)
+GET         /admin/getbackup                       controllers.Admin.getBackup()
+GET         /admin/createbackup                    controllers.Admin.createBackup()
+GET         /admin/:tab                            controllers.Admin.admin(tab: String,offset:Int?=0, limit:Int?=99)
+
+GET         /getUserPermissions                    controllers.Admin.getUserPermissions(id: Integer)
+POST        /admin/updateproof                     controllers.Admin.updateProof()
+POST        /admin/updaterefueling                 controllers.Admin.updateRefueling()
+POST        /admin/users                           controllers.Admin.postUsers()
+POST        /admin/createTemplate                  controllers.Admin.createTemplate()
+POST        /admin/deleteTemplate                  controllers.Admin.deleteTemplate()
+POST        /admin/saveTemplate                    controllers.Admin.saveTemplate()
+POST        /admin/previewTemplate                 controllers.Admin.previewTemplate()
+POST        /admin/getFacturations                 controllers.Admin.calculateFacturations()
+POST        /admin/createPriceRange                controllers.Admin.newPriceRange()
+POST        /admin/updateMinimum                   controllers.Admin.updatePriceRange()
+POST        /admin/removePriceRange                controllers.Admin.removePriceRange()
+POST        /admin/updateCar                       controllers.Admin.updateCar()
+POST        /admin/filterUsers                     controllers.Admin.filterUsers()
+POST        /admin/updateRegistration              controllers.Admin.updateRegistration()
+
+# InfoSessions page
+GET         /infosessions                          controllers.InfoSessions.index()
+POST        /infosessions                          controllers.InfoSessions.postIndex(id)
+
+# Billing
+POST        /billing/:id                           controllers.Admin.renderPDF(id: Int)
+POST        /billingExcel/:id                      controllers.Admin.renderExcel(id: Int)
+
+# MyInfo page
+GET         /myinfo                                controllers.MyInfo.index()
+POST        /myinfo/changePassword                 controllers.MyInfo.changePassword()
+POST        /myinfo/changeEmail                    controllers.MyInfo.changeEmail()
+POST        /myinfo/changePhone                    controllers.MyInfo.changePhone()
+POST        /myinfo/changeAddress                  controllers.MyInfo.changeAddress()
+POST        /myinfo/changeDomicile                 controllers.MyInfo.changeDomicile()
+POST        /myinfo/changeProfilePicture           controllers.MyInfo.changeProfilePicture()
+
+# Reserve page & ride page & reservations page
+GET         /reserve                               controllers.Reserve.index(tab = "reserve")
+GET         /reserve/filter                        controllers.Reserve.filter()
+POST        /reserve                               controllers.Reserve.reserve()
+GET         /reserve/trips/damages/:id             controllers.Reserve.damage(id: Integer)
+POST        /reserve/comment                       controllers.Reserve.newComment()
+POST        /refueling/updateRefueling             controllers.Refueling.updateRefueling()
+POST        /refueling/newRefueling                controllers.Refueling.newRefueling()
+POST        /refueling/deleteRefueling             controllers.Refueling.deleteRefueling()
+POST        /refueling/extraRefuelingFile          controllers.Refueling.extraRefuelingFile()
+POST        /ride/updateRide                       controllers.Ride.updateRide()
+POST        /ride/addRide                          controllers.Ride.addRide()
+POST        /ride/addRideFromReservation           controllers.Ride.addRideFromReservation()
+POST        /damage/updateDamage                   controllers.Damage.updateDamage()
+POST        /damage/newDamage                      controllers.Damage.newDamage()
+POST        /damage/deleteDamage                   controllers.Damage.deleteDamage()
+POST        /damage/extraDamageFile                controllers.Damage.extraDamageFile()
+POST        /damage/search                         controllers.Damage.search()
+POST        /file/deleteFile                       controllers.File.deleteFile()
+GET         /reserve/:tab                          controllers.Reserve.index(tab: String)
+GET         /reservations                          controllers.Reserve.getReservations(start: Long, end: Long)
+GET         /available_cars                        controllers.Reserve.getAvailableCars(from: Long, to: Long, carFilter: String)
+POST        /car/search                            controllers.Car.search()
+
+# Car Management Page
+GET         /carmanagement                         controllers.CarManagement.carManagement(tab = "reservations")
+GET         /carmanagement/:tab                    controllers.CarManagement.carManagement(tab: String)
+GET         /carmanagement/damages/:id             controllers.CarManagement.carManagementDamage(id: Integer)
+POST        /carmanagement/comment                 controllers.CarManagement.newComment()
+POST        /carmanagement/postReservations        controllers.CarManagement.postReservations()
+POST        /carmanagement/postRides               controllers.CarManagement.postRides()
+POST        /carmanagement/postCost                controllers.CarManagement.postCost(id)
+POST        /carmanagement/postHour                controllers.CarManagement.postHour(day)
+POST        /carmanagement/changeHour              controllers.CarManagement.changeHour(day, id)
+POST        /carmanagement/deleteHour              controllers.CarManagement.deleteHour(id: Integer)
+
+# Notification page
+GET         /notifications                         controllers.Notifications.notifications()
+POST        /notifications/read/:id                controllers.Notifications.read(id: Integer)
+
+# Password resetting
+GET         /resendVerification                    controllers.Registration.resendveri()
+POST        /resendVerification                    controllers.Registration.resendVerification()
+GET         /lostPassword                          controllers.ForgotPassword.forgot()
+POST        /lostPassword                          controllers.ForgotPassword.sendResetToken()
+GET         /resetPassword                         controllers.ForgotPassword.reset(token = "")
+GET         /resetPassword/:token                  controllers.ForgotPassword.reset(token: String)
+POST        /resetPassword                         controllers.ForgotPassword.resetPassword()
+
+# Report
+POST        /getReportUser                         controllers.Report.getReportUser(id: Int)
+POST        /getReportCar                          controllers.Report.getReportCar(id: Int)
+POST        /getReportInfosession                  controllers.Report.getReportInfosession(id: Int)
+
+# User page
+GET         /getUserPage                           controllers.UserController.getUser(id: Int)
+
+# General website
+GET         /map                                   controllers.Application.map()
+
+# Database File rendering
+GET         /files/:id                             controllers.FileRenderer.getFile(id: Integer)
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file                          controllers.Assets.at(path="/public", file)
+
+# Javascript routes
+GET         /javascriptRoutes                      controllers.Application.javascriptRoutes

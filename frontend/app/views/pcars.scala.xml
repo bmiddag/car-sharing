@@ -1,0 +1,12 @@
+@*****************************************
+ * XML representation of a list of cars. *
+ *                                       *
+ * @param cars The cars to list          *
+ *****************************************@
+@(pCarsObj: Collection[interfaces.CarDAO.PossibleReservation])<?xml version="1.0" encoding="utf-8"?>
+
+<cars>
+    @for(pCarObj <- pCarsObj) {
+        @pcar(pCarObj)
+    }
+</cars>

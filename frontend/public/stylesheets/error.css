@@ -1,0 +1,16 @@
+html { 
+   min-height: 100%;
+}
+body {
+	background-color: #7ab94f;
+	background: -webkit-linear-gradient(#7ab94f, #356d2f); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#7ab94f, #356d2f); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#7ab94f, #356d2f); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(#7ab94f, #356d2f); /* Standard syntax */
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	text-align: center;
+	color: #eef0e2;
+}

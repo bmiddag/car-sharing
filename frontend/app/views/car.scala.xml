@@ -1,0 +1,16 @@
+@(carObj: objects.Car)
+<car id="@carObj.getId()">
+    <name>@carObj.getName()</name>
+    <owner>@user(carObj.getOwner())</owner>
+    <zone>@if(carObj.getZone != null){@carObj.getZone().getName()}</zone>
+    <address>@if(carObj.getAddress() != null){@carObj.getAddress().getFormattedAddress()}</address>
+    <model>@carObj.getModel()</model>
+    <type>@carObj.getType()</type>
+    <description>@carObj.getDescription()</description>
+    <fuel>@carObj.getFuel()</fuel>
+    <doors>@carObj.getDoors()</doors>
+    <capacity>@carObj.getCapacity()</capacity>
+    <tow>@carObj.getTow()</tow>
+    <gps>@carObj.getGps()</gps>
+    <year>@carObj.getYear()</year>
+</car>

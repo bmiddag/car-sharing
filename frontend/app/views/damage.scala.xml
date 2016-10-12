@@ -1,0 +1,13 @@
+@(damageObj: objects.Damage)
+
+<damage id="@damageObj.getId()">
+    @user(UserModel.getUserById(damageObj.getUser()))
+    @car(CarModel.getCarById(damageObj.getCar()))
+    <time>@damageObj.getTime()</time>
+    <status>@damageObj.getStatus()</status>
+    <files>
+        @for(fileObj <- DamageDocModel.getDamageDocsForDamage(damageObj)) {
+        <file>@routes.FileRenderer.getFile(fileObj.getFile())</file>
+        }
+    </files>
+</damage>

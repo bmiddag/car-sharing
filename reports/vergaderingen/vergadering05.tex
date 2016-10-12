@@ -1,0 +1,177 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tkz-graph}
+\usepackage[light,math]{iwona}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+	\floatname{algorithm}{Algoritme}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+%\usepackage{gensymb} % throws errors: 'not defining \perthousand' and 'noet defining \micro'
+\usepackage{array}
+	\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+\lstset{
+language=JAVA,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+\title{Vergadering 5}
+\author{Team Edran}
+\date{18 maart 2014}
+
+\begin{document}
+
+	\begin{itemize}
+		
+		\item Vooruitgang werk:
+        \begin{itemize}
+        	\item Steven
+              \begin{itemize}
+                  \item rapport samen met gilles
+                  \item DeadBolt: beginselen (het zal wel lukken)
+                  \item documentatie
+              \end{itemize}
+           	\item Bart
+              \begin{itemize}
+                  \item documentatie
+              \end{itemize}
+            \item Stijn
+              \begin{itemize}
+                  \item documentatie
+              \end{itemize}
+            \item Wouter P
+              \begin{itemize}
+                  \item Selenium op de server fixen
+                  \item documentatie
+                  \item test geschreven
+                  \item view+model+controller gemaakt voor ritgegevens aan te passen
+              \end{itemize}
+            \item Wouter T
+              \begin{itemize}
+                  \item documentatie
+                  \item refactoring: nulls teruggeven in plaats van errors
+              \end{itemize}
+            \item Gilles
+              \begin{itemize}
+                  \item documentatie
+                  \item rapport
+                  \item view+controller+model om ritgegevens goed/af te keuren
+              \end{itemize}
+            \item Laurens
+              \begin{itemize}
+                  \item documentatie
+              \end{itemize}
+            \item Robin
+              \begin{itemize}
+                  \item form validation
+                  \item documentatie
+              \end{itemize}
+        \end{itemize}
+        \textbf{Noot: er is wel veel voortuitgang in het practicum 01 van itech!}    
+		
+		\item BELANGRIJK: Als er nieuwe methodes aan de DAO's toegevoegd worden, moeten hier ook tests voor geschreven worden (liefst zelf, desnoods zeggen tegen Laurens/Wouter T)
+		
+		\item Normalisatie van de DB: EER-diagram was reeds genormaliseerd. \textbf{Rides} moet wel nog genormaliseerd worden.	
+        
+        \item JOIN-statements in de DAO's om de databank efficienter te gebruiken: Wouter Termont kijkt ervoor. 
+        
+        \item Login-systeem tegen volgende week maandag ge\"{i}mplementeerd.
+        
+        \item 	\begin{itemize}
+        
+        				\item Wouter P: ritgegevens toevoegen moet nog gebeuren
+                    
+                    \item Stijn: zie vorige vergadering
+                    
+                    \item Wouter T: SQL stmts moeten nog gebeuren, EER normalisatie (vooral voor Rides)
+                    
+                    \item Laurens: inlogsysteem (tegen nu maandag zeker af)
+                    
+                    \item Steven: zie vorige vergadering
+                    
+                    \item Robin: autogebonden gegevens ingeven
+                    
+                    \item Bart: e-mailtemplates afwerken, Facturisatie model
+                    
+                    \item Gilles: e-mailtemplates afwerken, testen schrijven (ook voor nieuw toegevoegde methodes aan DAO's)
+        		\end{itemize}
+        		
+       \item Selenium tests: gebruik nooit \emph{driver.findElement(By...)} maar wel \emph{WebDriverWait wait = new WebDriverWait(driver, 5); wait.until(ExpectedConditions.visibilityOfElementLocated(By...)}
+       
+       \item \textbf{WOENSDAG OM 12.00 IS IEDEREEN KLAAR MET ZIJN WERK}
+       
+       \item Gilles stuurt mail naar alle drie de profs.
+       
+       \item Volgende vergadering: woensdagochtend om 10u, S2 bib
+		
+	\end{itemize}
+
+\end{document}

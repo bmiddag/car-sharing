@@ -1,0 +1,198 @@
+@(rides: List[objects.Ride])
+
+<style>
+    .table-responsive{
+        overflow-x: auto;
+    }
+</style>
+
+@defining(rides.filter(r => r.getPending)){pendingRs =>
+<div class="well">
+    <div class="row" id="pendingRidesHeader">
+        <div class="col-md-8">
+            <h2> <a href="javascript:;" id="showPendingRidesTable" style="color: black;"><i id ="penRideIcon" class="glyphicon small glyphicon-minus-sign"></i> Doorgegeven ritgegevens</a> </h2>
+        </div>
+    </div>
+
+    <div class="row" id="pendingRidesTable">
+        @if(pendingRs != null && !pendingRs.isEmpty){
+        <form action="@routes.CarManagement.postRides()" method="post" name="pendingRides">
+            <div class="col-md-8">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th> Begin </th>
+                            <th> Eind </th>
+                            <th> Bestuurder </th>
+                            <th> Beginstand </th>
+                            <th> Eindstand </th>
+                            <th></th>
+                        </tr>
+                        @defining(Calendar.getInstance()) { cal =>
+                            @for((ride) <- pendingRs){
+                                @if(ride.getPending()){
+                                    <tr id="ride@ride.getId()">
+                                        @{cal.setTimeInMillis(ride.getBegin());}
+                                        <td> @{String.format("%02d/%02d %02d:%02d",
+                                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                        @{cal.setTimeInMillis(ride.getEnd());}
+                                        <td> @{String.format("%02d/%02d %02d:%02d",
+                                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                        <td> <a href="@routes.UserController.getUser(ride.getUser().getId())">@{ride.getUser().getName()}</a> </td>
+                                        <td> @{ride.getStartKM()} km </td>
+                                        <td> @{ride.getStopKM()} km </td>
+                                        <td> <input type="checkbox" name="selectedRides" value="@{ride.getId()}"> </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <input type="submit" class="btn btn-default" name="submit" value="Goedkeuren">
+                </div>
+                <div class="row">
+                    <input type="text" class="form-control" name="reason" placeholder="Waarom weiger je deze reservatie?">
+                    <input type="submit" class="btn btn-default" name="submit"  value="Afwijzen">
+                </div>
+            </div>
+        </form>
+        } else {
+            <div class="col-md-8">
+                <h4><i class="text-success glyphicon glyphicon-check"></i> Geen te verwerken ritgegevens</h4>
+            </div>
+        }
+    </div>
+</div>
+}
+@defining(rides.filter(r => !r.getPending && r.getApproved)){acceptedRs =>
+<div class="well">
+    <div class="row" id="acceptedRidesHeader">
+        <div class="col-md-8">
+            <h2> <a href="javascript:;" id="showAcceptedRidesTable" style="color: black;"><i id ="accRideIcon" class="glyphicon small glyphicon-plus-sign"></i> Goedgekeurde ritgegevens</a> </h2>
+        </div>
+    </div>
+
+    <div class="row" id="acceptedRidesTable" style="display:none;">
+    @if(acceptedRs != null && !acceptedRs.isEmpty){
+        <form action="@routes.CarManagement.postRides()" method="post" name="acceptedRides">
+            <div class="col-md-8">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th> Begin </th>
+                            <th> Eind </th>
+                            <th> Bestuurder </th>
+                            <th> Beginstand </th>
+                            <th> Eindstand </th>
+                            <th></th>
+                        </tr>
+                        @defining(Calendar.getInstance()) { cal =>
+                            @for((ride) <- acceptedRs){
+                                <tr id="ride@ride.getId()">
+                                    @{cal.setTimeInMillis(ride.getBegin());}
+                                    <td> @{String.format("%02d/%02d %02d:%02d",
+                                        cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                        cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                        cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                        cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                    @{cal.setTimeInMillis(ride.getEnd());}
+                                    <td> @{String.format("%02d/%02d %02d:%02d",
+                                        cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                        cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                        cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                        cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                    <td> <a href="@routes.UserController.getUser(ride.getUser().getId())">@{ride.getUser().getName()}</a> </td>
+                                    <td> @{ride.getStartKM()} km </td>
+                                    <td> @{ride.getStopKM()} km </td>
+                                    <td> <input type="checkbox" name="selectedRides" value="@{ride.getId()}"> </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <input type="text" class="form-control" name="reason" placeholder="Waarom weiger je deze reservatie?">
+                    <input type="submit" class="btn btn-default" name="submit"  value="Afwijzen">
+                </div>
+            </div>
+        </form>
+        } else {
+        <div class="col-md-8">
+            <h4><i class="text-success glyphicon glyphicon-check"></i> Geen goedgekeurde ritgegevens</h4>
+        </div>
+        }
+    </div>
+</div>
+}
+@defining(rides.filter(r => !r.getPending && !r.getApproved)){rejectedRs =>
+    <div class="well">
+    <div class="row" id="rejectedRidesHeader">
+        <div class="col-md-8">
+            <h2> <a href="javascript:;" id="showRejectedRidesTable" style="color: black;"><i id ="rejRideIcon" class="glyphicon small glyphicon-plus-sign"></i> Afgewezen ritgegevens</a> </h2>
+        </div>
+    </div>
+
+    <div class="row" id="rejectedRidesTable" style="display:none;">
+    @if(rejectedRs != null && !rejectedRs.isEmpty){
+        <form action="@routes.CarManagement.postRides()" method="post" name="rejectedRides">
+            <div class="col-md-8">
+                <table class="table table-striped">
+                    <tr>
+                        <th> Begin </th>
+                        <th> Eind </th>
+                        <th> Bestuurder </th>
+                        <th> Beginstand </th>
+                        <th> Eindstand </th>
+                        <th></th>
+                    </tr>
+                    @defining(Calendar.getInstance()) { cal =>
+                        @for((ride) <- rejectedRs){
+                            @if(!ride.getPending() && !ride.getApproved()){
+                                <tr id="ride@ride.getId()">
+                                    @{cal.setTimeInMillis(ride.getBegin());}
+                                    <td> @{String.format("%02d/%02d %02d:%02d",
+                                        cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                        cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                        cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                        cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                    @{cal.setTimeInMillis(ride.getEnd());}
+                                    <td> @{String.format("%02d/%02d %02d:%02d",
+                                        cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                        cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                        cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                        cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                    <td> <a href="@routes.UserController.getUser(ride.getUser().getId())">@{ride.getUser().getName()}</a> </td>
+                                    <td> @{ride.getStartKM()} km</td>
+                                    <td> @{ride.getStopKM()} km</td>
+                                    <td> <input type="checkbox" name="selectedRides" value="@{ride.getId()}"> </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </table>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <input type="submit" class="btn btn-default" name="submit" value="Goedkeuren">
+                </div>
+            </div>
+        </form>
+        } else {
+        <div class="col-md-8">
+            <h4><i class="text-success glyphicon glyphicon-check"></i> Geen geweigerde ritgegevens</h4>
+        </div>
+        }
+    </div>
+</div>
+}

@@ -1,0 +1,72 @@
+@(notifications: List[objects.Notification])
+
+@import utils.TimeUtils
+
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/notifications.js")"></script>
+}
+
+
+@main("Notificaties", null, javascripts, null, NotificationModel.getNumberOfUnreadNotifications()){
+
+    <style>
+    .table-responsive{
+    overflow-x: auto;
+    }
+    </style>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+                @if(notifications != null && notifications.size != 0) {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" id="notificationsTable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Tijd</th>
+                                    <th>Onderwerp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(notification <- notifications){
+                                    <tr data-id="@{notification.getId}">
+                                        <td><img src="@routes.Assets.at(
+                                                  if (notification.isSeen) "images/message_read.png"
+                                                  else "images/message_unread.png")" /></td>
+                                        <td>@{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", notification.getTime())}</td>
+                                        <td>@{notification.getSubject()}</td>
+                                        <td style="display: none">@Html(notification.getContent())</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                } else {
+                    Je hebt geen notificaties.
+                }
+            </div>
+        </div>
+    </div>
+    <form id="showNotificationContainer" style="display:none;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="height:40px;">
+                        <div id="notificationSubject" style="float:left;"></div>
+                        <div id="notificationTime" style="float:right;"></div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="notificationContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+    @footer()
+    </div>
+}

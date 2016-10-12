@@ -1,0 +1,14 @@
+@*************************************************
+ * XML representation of a list of reservations. *
+ *                                               *
+ * @param reservations The reservations to list  *
+ *************************************************@
+@(reservations: Collection[objects.Reservation])<?xml version="1.0" encoding="utf-8"?>
+
+<reservations>
+  @for(reservation <- reservations) {
+    <reservation title="@reservation.getCar"
+            start="@(reservation.getBegin / 1000)"
+            end="@(reservation.getEnd / 1000)" />
+  }
+</reservations>

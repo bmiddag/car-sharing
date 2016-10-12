@@ -1,0 +1,167 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tkz-graph}
+\usepackage[light,math]{iwona}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+	\floatname{algorithm}{Algoritme}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+%\usepackage{gensymb} % throws errors: 'not defining \perthousand' and 'noet defining \micro'
+\usepackage{array}
+	\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+\lstset{
+language=JAVA,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+\title{Vergadering 3}
+\author{Team Edran}
+\date{4 maart 2014}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Plaats \& tijd:}
+Campus Sterre, S9, Zeus-kelder; 14u20-14u55.
+
+\textbf{Aanwezig:}
+Iedereen
+
+\textbf{Agendapunten:}
+
+\begin{itemize}
+    \item \textbf{Gedaan werk:}
+        \begin{itemize}
+            \item Laurens heeft verder gewerkt aan de database.
+            \item Bart heeft de infosessies-view volledig afgewerkt.
+            \item Gilles is voor het autobehoor begonnen met het linken van de
+                view en de controller.
+            \item Steven heeft de use cases en mock-ups afgewerkt.
+            \item Wouter Termont heeft foutjes in de database verbeterd en
+                teamleden geholpen met vragen rond de database.
+            \item Stijn is begonnen met de integratie tussen de
+                reservatiecontroller en de database. Het testen was nog niet
+                gelukt door een gebrek aan een lokale database. Het idee wordt
+                geopperd om zo snel mogelijk een lokale database draaiende te
+                krijgen bij iedereen.
+            \item Wouter Pinnoo heeft de Apache-server nog verder
+                geconfigureerd, onder andere om twee versies van het Play!
+                Framework naast elkaar draaiende te krijgen. Daarnaast heeft
+                hij ook gewerkt aan de reservatieview.
+        \end{itemize}
+
+    \item \textbf{Formaat handleidingen:}
+        De vraag werd gesteld of de handleidingen in Markdown in de
+        GitHub-wiki, dan wel in Latex zouden moeten worden gemaakt.
+
+        In de wiki kunnen snel aanpassingen gemaakt worden. De vraag wordt
+        gesteld of dit makkelijk om te zetten is naar pdf. Aangezien hier wel
+        degelijk tools voor bestaan, is iedereen er mee akkoord om Markdown te
+        gebruiken.
+
+    \item \textbf{Patroon voor DataAccessProvider en andere modellen:}
+        Wat is het meest aangewezen patroon voor de DataAccessProvider en
+        andere dergelijke modellen, een singleton of statische methoden?
+
+        De algemene consensus neigt naar het gebruik van singletons.
+
+    \item \textbf{Afspraak i.v.m.\ branching in Git:}
+        In het huidige model zijn er slechts twee branches: \emph{master} en
+        \emph{development}. Iedereen pusht op de development-branch en voor het
+        effectief deployen wordt er gepusht naar de master-branch.
+
+        Om vaak optrendende \emph{merge conflicts} te vermijden wordt het
+        volgende model voorgesteld. Iedereen gebruikt een eigen
+        development-branch en op een volgende vergadering worden alle aparte
+        development-branchen gemerget in de algemene development-branch. De
+        functies van de master- en development-branch blijven behouden.
+
+        Iedereen is akkoord met dit nieuwe model.
+
+    \item \textbf{Werkverdeling hackaton:}
+        \begin{itemize}
+            \item Laurens zal het script dat de database met testdata vult afwerken.
+            \item Wouter Termont zal de toegang tot de database abstraheren
+                a.d.h.v.\ een propertiesbestand, de primaire sleutel voor
+                reservaties aanpasen en een functie toevoegen om alle auto's op
+                te vragen.
+            \item Bart en Robin zullen verder werken aan het infosessiebeheer.
+            \item Voor het reserveren van ritten zal Gilles verder werken aan
+                het goed- en afkeuren ervan, Wouter Pinnoo aan de
+                ritgegevensview en Stijn aan het kalendergedeelte.
+            \item Steven zal aan het email-beheer verder werken.
+        \end{itemize}
+
+\end{itemize}
+
+\end{document}

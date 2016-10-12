@@ -1,0 +1,118 @@
+Infosessie_ingeschreven;
+<html>
+    <h3>Inschrijving infosessie gelukt!</h3>
+    <p>Beste {{name}},</p>
+    <p>Je bent succesvol ingeschreven voor een infosessie bij Edran!</p>
+    <p>Dit zijn de details van de infosessie:</p>
+    <table>
+        <tr>
+            <td class="infosession_description">Locatie:</td>
+            <td class="infosession_content">{{infosession.address}}</td>
+        </tr>
+        <tr>
+            <td class="infosession_description">Datum:</td>
+            <td class="infosession_content">{{infosession.date}}</td>
+        </tr>
+    </table>
+    <p>Tot dan!</p>
+    <p>Met vriendelijke groeten\,</p>
+    <p>Het <b>Edran</b>-team.</p>
+</html>
+$$
+Infosessie_verandering;
+<html>
+    <h3>Wijziging van de infosessie</h3>
+    <p>Beste {{name}}</p>
+    <p>Onlangs schreef je je in voor een infosessie bij Edran. De tijd en/of locatie van deze infosessie zijn gewijzigd.</p>
+    <p>Dit zijn de nieuwe gegevens van de infosessie:</p>
+    <table>
+        <tr>
+            <td class="infosession_description">Locatie:</td>
+            <td class="infosession_content">{{infosession.address}}</td>
+        </tr>
+        <tr>
+            <td class="infosession_description">Datum:</td>
+            <td class="infosession_content">{{infosession.date}}</td>
+        </tr>
+    </table>
+    <p>Tot dan!</p>
+    <p>Met vriendelijke groeten\,</p>
+    <p>Het <b>Edran</b>-team.</p>
+</html>
+$$
+Infosessie_herinnering;
+<html>
+<h3>Infosessie aanstaande!</h3>
+    <p>Beste {{name}}\,</p>
+    <p>We sturen jou nog eens een mailtje met de melding dat er binnenkort een infosessie plaatsvindt waar jij voor bent ingeschreven!</p>
+    <p>Dit zijn nog eens de details van de infosessie:</p>
+    <table>
+        <tr>
+            <td class="infosession_description">Locatie:</td>
+            <td class="infosession_content">{{infosession.address}}</td>
+        </tr>
+        <tr>
+            <td class="infosession_description">Datum:</td>
+            <td class="infosession_content">{{infosession.date}}</td>
+        </tr>
+    </table>
+    <p>Tot dan!</p>
+    <p>Met vriendelijke groeten\,</p>
+<p>Het <b>Edran</b>-team.</p>
+</html>
+$$
+Registratie;
+<html>
+    <h3>Welkom bij Edran\, {{name}}!</h3>
+    <p>Je account is succesvol aangemaakt\, je kan nu je emailadres verifiëren <a href="https://edran.ugent.be/dev/verifymail/{{token}}">door hier te klikken</a>\, hierna kan je je ook inschrijven voor een infosessie of een auto registreren.</p>
+    <p>Tot snel!</p>
+    <small><p>Deze link blijft een week geldig na jouw registratie.</p></small>
+    <hr>
+    <small><cite title="Dégage">Het Dégage-team</cite></small>
+    <p><small>Als bovenstaande link niet werkt gelieve dan deze link in jouw adresbalk te kopiëren.</small></p>
+    <p>https://edran.ugent.be/dev/verifymail/{{token}}</p>
+</html>
+$$
+KwartaalRekening;
+<html>
+    <h3>Beste {{name}}</h3>
+    <p>Er is alweer een kwartaal voorbij. Bijgevolg sturen we jou een mailtje met de melding dat de afrekening op onze website beschikbaar is.<p>
+    <p>Tot snel</p>
+    <small><cite title="Dégage">Het Dégage-team</cite></small>
+</html>
+$$
+Openstaande_notificaties;
+<html>
+    <h3>{{name}}\, je hebt {{message.size}} ongelezen berichten!</h3>
+    <p>Beste {{name}}\,</p>
+    <p>Een aantal berichten wachten op jouw aandacht. Log je in op <a href="http://edran.ugent.be/">je dashboard</a> om je ongelezen berichten te bekijken.</p>
+    <p>Hier alvast een overzicht:
+        {{notifications}}
+    </p>
+    <p></p><p>Met vriendelijke groeten\,</p>
+    <p>Het <b>Edran</b>-team.</p>
+</html>
+$$
+Wachtwoord_reset;
+<html>
+    <h3>Aanvraag om het wachtwoord te resetten.</h3>
+    <p>Beste {{name}}\,</p>
+    <p>Iemand heeft aangevraagd om het wachtwoord geassocieerd met dit emailadres te wijzigen.</p>
+    <p>Dit kan <a href="https://edran.ugent.be/dev/resetPassword/{{token}}"> hier </a> </p>
+   <p><small>Was jij dit niet\, gelieve deze mail dan te negeren.</small> </p>
+    <p></p><p>Met vriendelijke groeten\,</p>
+    <p>Het <b>Edran</b>-team.</p>
+    <p><small>Als bovenstaande link niet werkt gelieve dan deze link in uw adresbalk te kopiëren.</small></p>
+    <p>https://edran.ugent.be/dev/resetPassword/{{token}}</p>
+</html>
+$$
+Bevestig_ritten;
+<html>
+<h3>Ritten bevestigen</h3>
+<p>Beste {{name}}\,</p>
+<p>We sturen je een mailtje daar er binnenkort een afrekening komt en bijgevolg het belangrijk is dat alle ritten bevestigd worden.
+</p>
+<p>Tot dan!</p>
+<p>Met vriendelijke groeten\,</p>
+<p>Het <b>Edran</b>-team.</p>
+</html>

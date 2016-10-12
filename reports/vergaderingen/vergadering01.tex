@@ -1,0 +1,119 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tkz-graph}
+\usepackage[light,math]{iwona}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+	\floatname{algorithm}{Algoritme}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+%\usepackage{gensymb} % throws errors: 'not defining \perthousand' and 'noet defining \micro'
+\usepackage{array}
+	\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+\lstset{
+language=JAVA,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+\title{Vergadering 1}
+\author{Team Edran}
+\date{14 februari 2014}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Plaats \& tijd:}
+Campus Sterre, S2, Bibliotheek; 13u15-14u15. \todo{eindtijd correct?}
+
+\textbf{Onderwerp:}
+Situering, algemene beslissingen, rolverdeling milestone 1.
+
+\textbf{Aanwezig:}
+Iedereen behalve Bart wegens familiale omstandigheden.
+
+Vergadering begonnen met brainstormen over mogelijke rolverdeling van de doelstellingen voor milestone 1. Uitgekomen op onderstaande indeling, er wel van bewust dat aanpassingen zeker zullen volgen eens de werklast van elk deel duidelijker wordt.
+
+\begin{itemize}
+\item Steven en Gilles stellen de Use Cases op gebaseerd op de opdrachttekst.
+\item Laurens en Wouter T. leggen de basis van de databank (schema's, module \dots).
+\item Wouter P. begint aan de e-mailmodule.
+\item Stijn en Robin werken alvast aan basis van het kalendersysteem.
+\item Bart kan invallen bij onderdelen die onderschat blijken.
+\end{itemize}
+
+De teamleden kwamen vervolgens wat meer op dezelfde golflengte door enkele onduidelijkheden omtrent het Play framework uit te leggen. Verder werden nog wat ideeën en gedachten uitgewisseld i.v.m. dit framework, Bootstrap, Selenium \dots
+
+Belangrijke beslissingen zijn de keuze voor MySQL als databanksysteem en het vertakken van de master git-branch naar development en verder per feature; op de master zal niet rechtstreeks worden gewerkt. Ook werd een algemene, gedeelde kalender (Google Calendar) aangemaakt voor het bijhouden van o.a. vergaderingen en deadlines. 
+
+\textbf{Volgend vergadermoment:} vrijdag 21 februari om 13u15, campus Sterre, S2 bib.
+
+\end{document}

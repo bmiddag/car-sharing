@@ -1,0 +1,521 @@
+@(tab: String, templates: List[objects.Template], priceranges: List[objects.PriceRange], users: List[objects.User], rolelist: List[objects.Role],permissionlist: List[objects.Permission], offset:Integer, limit:Integer)
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
+@import be.objectify.deadbolt.core.PatternType
+@stylesheets = {
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+    <link href="@routes.Assets.at("vendor/bootstrap-wysiwyg/external/google-code-prettify/prettify.css")" rel="stylesheet">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("vendor/bootstrap-wysiwyg/index.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("vendor/bootstrap-wysiwyg/css/font-awesome.css")">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("vendor/bootstrap3-editable/css/bootstrap-editable.css")" />
+    <link href="//rawgithub.com/ashleydw/lightbox/master/dist/ekko-lightbox.css" rel="stylesheet">
+}
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Assets.at("vendor/bootstrap-wysiwyg/external/jquery.hotkeys.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("vendor/bootstrap-wysiwyg/js/bootstrap-wysiwyg.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("vendor/bootstrap-wysiwyg/external/google-code-prettify/prettify.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("vendor/bootstrap3-editable/js/bootstrap-editable.min.js")"></script>
+    <script type="text/javascript">
+        previewTemplateUrl = " @routes.Admin.previewTemplate() ";
+        updatePriceRangeUrl = " @routes.Admin.updatePriceRange() ";
+    </script>
+    <script type="text/javascript" src="@routes.Application.javascriptRoutes()"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/admin.js")"></script>
+    <script src="//rawgithub.com/ashleydw/lightbox/master/dist/ekko-lightbox.js"></script>
+
+}
+
+@tabs = {
+    <ul class="nav nav-tabs">
+        @pattern("users.*",PatternType.REGEX){
+            <li name="tabUsers" class="@if(tab == "users") {
+                active
+            }"><a href="@routes.Admin.admin("users")" name="users">Gebruikers</a></li>
+        }@pattern("messages.*",PatternType.REGEX){
+        <li name="tabCars" class="@if(tab == "cars") {
+            active
+        }"><a href="@routes.Admin.admin("cars")" name="cars">Beheer auto's</a></li>
+    }@pattern("emails.*",PatternType.REGEX){
+        <li name="tabMailPrefs" class="@if(tab == "mailpreferences") {
+            active
+        }"><a href="@routes.Admin.admin("mailpreferences")" name="mailprefs">E-mail voorkeuren</a></li>
+    }@pattern("proof.*",PatternType.REGEX){
+        <li name="tabProof" class="@if(tab == "proof") {
+            active
+        }"><a href="@routes.Admin.admin("proof")" name="proof">Bewijsmateriaal</a></li>
+    }@pattern("accounts.*",PatternType.REGEX){
+        <li name="tabAccounts" class="@if(tab == "accounts") {
+            active
+        }"><a href="@routes.Admin.admin("accounts")" name="accounts">Prijsintervallen</a></li>
+    }@pattern("notifications.*",PatternType.REGEX){
+        <li name="tabBackup" class="@if(tab == "backup") {
+            active
+        }"><a href="@routes.Admin.admin("backup")" name="backup">Back-up databank</a></li>
+    }
+    </ul>
+}
+@main("Beheer", stylesheets, javascripts, tabs, NotificationModel.getNumberOfUnreadNotifications()) {
+        @restrict(la(as("admin"))) {
+        @if(tab == "users") {
+            <div class="well">
+                <div class="row">
+                    <div class="row" id="usersHeader">
+                        <div class="col-md-8" >
+                            <h2>Gebruikers </h2>
+                        </div>
+                    </div>
+                    @pattern("users.edit",PatternType.REGEX){
+                        <form action="@routes.Admin.filterUsers()" method="post" name="users">
+                            <div class="well">
+                                <div class="row"><h4>Filter gebruikers</h4></div>
+                            <div class="row"><div class="col-md-6">
+                        <div class="row">
+                        <select name ="selectedrole" class="form-control">
+                            <option value="1000">Alle rollen</option>
+                        @for(role <- rolelist){
+                            <option value="@{role.getId}">
+                            @if(role.getName().equals("admin")){Beheerder}else{
+                                @if(role.getName().equals("DBA")){Databankbeheerder}else{
+                                    @if(role.getName().equals("user")){Autolener}else{
+                                        @if(role.getName().equals("owner")){Auto-eigenaar}else{
+                                            @if(role.getName().equals("new_user")){Potenti&euml;le autolener}else{
+                                                @if(role.getName().equals("new_owner")){Potenti&euml;le auto-eigenaar}else{
+                                                    @if(role.getName().equals("almost_owner")){Bijna auto-eigenaar}else{
+                                                        @if(role.getName().equals("almost_user")){Bijna autolener}else{
+                                                            Geen
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            </option>
+                        }
+
+                        </select></div>
+                            <div class="row">Voornaam en/of achternaam: <input type="text" name="name"></div>
+                            </div></div>
+                                <div class="row"><div class="col-md-6">
+                                    <input type="submit" class="btn btn-default" name="submit" value="Filter">
+                                </div></div>
+                            </div>
+
+                            </form>
+                    <div class="row" id="usersTable" style=" overflow: auto">
+
+                        <form action="@routes.Admin.postUsers()" method="post" name="users">
+                            <div class="col-md-8">
+                                <div class="table-responsive" style="max-height:500px; overflow-y: scroll;"><table class="table table-striped table-hover">
+                                    <tr>
+                                        <th> Gebruiker </th>
+                                        <th>Rol </th>
+                                        <th> </th>
+                                    </tr>
+                                    @for((key, index) <- users.zipWithIndex) {
+                                            @if(key.getName()!="admin"){
+                                            <tr>
+                                                <td ><a href="@routes.UserController.getUser(key.getId())">@key.getName @key.getSurname</a></td>
+                                                <td >
+                                                @if(key.getRole.getName.equals("admin")){Beheerder}else{
+                                                    @if(key.getRole.getName.equals("DBA")){Databankbeheerder}else{
+                                                        @if(key.getRole.getName.equals("user")){Autolener}else{
+                                                            @if(key.getRole.getName.equals("owner")){Auto-eigenaar}else{
+                                                                @if(key.getRole.getName.equals("new_user")){Potenti&euml;le autolener}else{
+                                                                    @if(key.getRole.getName.equals("new_owner")){Potenti&euml;le auto-eigenaar}else{
+                                                                        @if(key.getRole.getName.equals("almost_owner")){Bijna auto-eigenaar}else{
+                                                                            @if(key.getRole.getName.equals("almost_user")){Bijna autolener}else{
+                                                                                Geen
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }</td>
+                                                <td> <input type="checkbox" name="user" value="@{
+                                                    key.getId
+                                                }"> </td>
+                                            </tr>
+                                    }}
+                                </table></div>
+                            </div>
+                            <div class="col-md-4 well">
+                                <div class="row"><h4>Geselecteerde gebruikers</h4></div>
+                                <div class="row">
+                                    <select name ="selectedrole" class="form-control">
+                                        @for(role <- rolelist){
+                                            <option value="@{role.getId}">
+                                                @if(role.getName().equals("admin")){Beheerder}else{
+                                                    @if(role.getName().equals("DBA")){Databankbeheerder}else{
+                                                        @if(role.getName().equals("user")){Autolener}else{
+                                                            @if(role.getName().equals("owner")){Auto-eigenaar}else{
+                                                                @if(role.getName().equals("new_user")){Potenti&euml;le autolener}else{
+                                                                    @if(role.getName().equals("new_owner")){Potenti&euml;le auto-eigenaar}else{
+                                                                        @if(role.getName().equals("almost_owner")){Bijna auto-eigenaar}else{
+                                                                            @if(role.getName().equals("almost_user")){Bijna autolener}else{
+                                                                                Geen
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                                    <input type="submit" class="btn btn-default" name="submit" value="Rol wijzigen">
+                                <div class="row">
+                                </div>
+                                <div class="row">
+                                    <input type="submit" class="btn btn-default" name="submit" value="Verwijderen">
+                                </div>
+                                <div class="row">
+                                </div>
+
+                        </form>
+                        <input class="btn btn-default" name="submit" value="Permissies wijzigen" id="changePermissions">
+                    </div>}<br></div>
+                    @if(limit!=0){
+                    @if(offset!=0) {<a href="@routes.Admin.admin("users",offset-100,limit-100)"><button type="button" class="btn btn-default">Vorige pagina</button></a>}
+                    <a href="@routes.Admin.admin("users",offset+100,limit+100)"><button type="button" class="btn btn-default">Volgende pagina</button></a>
+                    }
+                </div>
+            </div>
+                <div class="modal fade" id="permissionsmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel">Permissies van geselecteerde gebruiker</h4>
+                            </div>
+                <form action="@routes.Admin.postUsers()" method="post" name="users">
+                    <div class="modal-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <th> Permissie </th>
+                                <th>Gebruiker heeft permissie?</th>
+                            </tr>
+                        @for(permission <- permissionlist){
+                            <tr>
+                                <th>@permission.getName</th>
+                                <th><input type="checkbox" name="selected" id="@{permission.getName}" value="@{
+                                permission.getId
+                            }"></th>
+                            </tr>
+                        }
+                            </table>
+                        <div id="permissionsmodalbody">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" name="submit" value="Permissies wijzigen">
+                    </div>
+                </form>
+            </div></div></div>
+
+            <div class="well">
+                <div class="row" id="registrationsTable">
+                    <div class="col-md-8">
+                    <h2> Registraties in behandeling </h2>
+                    @if(UserModel.getAlmostUsers() != null && UserModel.getAlmostUsers().size() != 0){
+                        <div class="row" id="PendingUsers">
+                            <form name="users" action="@routes.Admin.updateRegistration()" method="post">
+                                <table class="table table-striped table-hover">
+                                    <tr>
+                                        <th>Naam</th>
+                                        <th>Autoeigenaar?</th>
+                                    </tr>
+                                    @if(UserModel.getAlmostUsers().size() != 0 ){
+                                        @for( user <- UserModel.getAlmostUsers() ){
+                                            @if(user.getRole().getName().equals("almost_user")){
+                                                @if(user.getApproved()){
+                                                    <tr id="user@{user.getId().toString}" onclick=" $('#modal@{user.getId.toString}').modal();">
+                                                        <td>@user.getName()</td>
+                                                        <input type="hidden" name="userField@{user.getId.toString}" id="userField@{user.getId.toString}" value=""/>
+                                                        <td>Nee</td>
+                                                    </tr>
+                                                } else {
+                                                    <tr class="danger" id="user@{user.getId().toString}" onclick=" $('#modal@{user.getId.toString}').modal();">
+                                                        <td>@user.getName()</td>
+                                                        <input type="hidden" name="userField@{user.getId.toString}" id="userField@{user.getId.toString}" value=""/>
+                                                        <td>Nee</td>
+                                                    </tr>
+                                                }
+                                            } else {
+                                                @if(user.getApproved()){
+                                                    <tr id="owner@{user.getId().toString}" onclick=" $('#modalOwner@{user.getId.toString}').modal();">
+                                                        <td>@user.getName()</td>
+                                                        <input type="hidden" name="ownerField@{user.getId.toString}" id="ownerField@{user.getId.toString}" value=""/>
+                                                        <td>Ja</td>
+                                                    </tr>
+                                                } else {
+                                                    <tr class="danger" id="owner@{user.getId().toString}" onclick=" $('#modalOwner@{user.getId.toString}').modal();">
+                                                        <td>@user.getName()</td>
+                                                        <input type="hidden" name="ownerField@{user.getId.toString}" id="ownerField@{user.getId.toString}" value=""/>
+                                                        <td>Ja</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        <tr>
+                                            <td colspan="3">Er zijn geen registraties die moeten goed- of afgekeurd worden.</td>
+                                        </tr>
+                                    }
+                                </table>
+                                <button type="submit"  class="pull-right btn btn-default" > Sla veranderingen op</button>
+                            </form>
+                        </div>
+                    } else {
+                        <h2> <i class="glyphicon text-success glyphicon-check"></i> Geen registraties in behandeling.</h2>
+                    }
+                    </div>
+                </div>
+            </div>
+
+            @for( user <- models.UserModel.getAlmostUsers() ){
+
+                @* Modal for users *@
+                <div id="modal@{user.getId.toString}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal@{user.getId.toString}label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span>Details Registratie <strong>autolener</strong></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div><p>Hier kan je de registratie van deze autolener goed of afkeuren:</p></div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        @if(user != null){
+                                            <h4>Naam:</h4>
+                                            <p>@user.getName()</p>
+
+                                            <h4>Familienaam:</h4>
+                                            <p>@user.getName()</p>
+
+                                            <h4>Telefoonnummer:</h4>
+                                            @if(user.getPhone() != null || user.getPhone().equals("")){
+                                                <p>@user.getPhone()</p>
+                                            } else {
+                                                <p>Onbekend</p>
+                                            }
+
+                                            <h4>Verblijfsadres:</h4>
+                                            @if(user.getAddress() != null){
+                                                <p>@user.getAddress().getStreet() @user.getAddress().getNumber() @user.getAddress().getBus() <br />
+                                                    @user.getAddress().getPlace().getName() @user.getAddress().getPlace().getZip()</p>
+                                            } else {
+                                                <p>Onbekend</p>
+                                            }
+
+                                            <h4>Domicilieadres:</h4>
+                                            @if(user.getDomicile() != null){
+                                                <p>@user.getDomicile().getStreet() @user.getDomicile().getNumber() @user.getDomicile().getBus() <br />
+                                                    @user.getDomicile().getPlace().getName() @user.getDomicile().getPlace().getZip()</p>
+                                            } else {
+                                                <p>Onbekend</p>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="col-xs-6">
+                                        @if(user != null){
+                                            @if(user.getIdCard() != null){
+                                                <h4>Identiteitskaart:</h4>
+                                                <h5>Kaartnummer:</h5>
+                                                    @if(user.getIdCard().getNumber() != null || user.getIdCard().getNumber().equals("")){
+                                                        <p>@user.getIdCard().getNumber()</p>
+                                                    } else {
+                                                        <p>Onbekend</p>
+                                                    }
+                                                <h5>Rijksregisternummer:</h5>
+                                                    @if(user.getIdCard().getRegister() != null || user.getIdCard().getRegister().equals("")){
+                                                        <p>@user.getIdCard().getRegister()</p>
+                                                    } else {
+                                                        <p>Onbekend</p>
+                                                    }
+                                                <h5>Foto:</h5>
+                                                    @if(user.getIdCard().getFile() != null){
+                                                        <a class="thumbnail" href="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getIdCard().getFile())}" target="_blank">
+                                                            <img src="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getIdCard().getFile())}" />
+                                                        </a>
+                                                    }  else {
+                                                        <p>Onbekend</p>
+                                                    }
+                                            }
+
+                                            @if(user.getLicense() != null){
+                                                <h4>Rijbewijs:</h4>
+                                                <h5>Nummer:</h5>
+                                                    @if(user.getLicense().getNumber()){
+                                                        <p>@user.getLicense().getNumber()</p>
+                                                    } else {
+                                                        <p>Onbekend</p>
+                                                    }
+                                                <h5>Foto:</h5>
+                                                    @if(user.getLicense().getFile() != null){
+                                                        <a class="thumbnail" href="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getLicense().getFile())}" target="_blank">
+                                                            <img src="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getLicense().getFile())}" />
+                                                        </a>
+                                                    } else {
+                                                        <p>Onbekend</p>
+                                                    }
+                                            }
+
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <input type="checkbox" class="registrationCheckbox" id="contractCheckbox" value="Contract"> Deze gebruiker heeft het contract getekend. <br />
+                                    <input type="checkbox" class="registrationCheckbox" id="waarborgCheckbox" value="Waarborg"> Deze gebruiker heeft zijn waarborg betaald. <br />
+                                    <div class="btn-group-vertical">
+                                        <button value="accept" id="submitUser" onclick="$('#modal@{user.getId.toString}').modal('hide'); $('#user@{user.getId.toString}').removeClass('danger succes').addClass('success'); $('#userField@{user.getId.toString}').val('true');" class="btn btn-success" disabled>Goedkeuren</button>
+                                        <button value="reject" onclick="$('#modal@{user.getId.toString}').modal('hide'); $('#user@{user.getId.toString}').removeClass('danger succes').addClass('danger');  $('#userField@{user.getId.toString}').val('false');" class="btn btn-danger">Afkeuren</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @* Modal for owners *@
+                <div id="modalOwner@{user.getId.toString}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalOwner@{user.getId.toString}label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span>Details Registratie <strong>autoeigenaar</strong></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div><p>Hier kan je de registratie van deze autoeigenaar goed of afkeuren:</p></div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                    @if(user != null){
+                                        <h4>Naam:</h4>
+                                        <p>@user.getName()</p>
+
+                                        <h4>Familienaam:</h4>
+                                        <p>@user.getName()</p>
+
+                                        <h4>Telefoonnummer:</h4>
+                                        @if(user.getPhone() != null || user.getPhone().equals("")){
+                                            <p>@user.getPhone()</p>
+                                        } else {
+                                            <p>Onbekend</p>
+                                        }
+
+                                        <h4>Verblijfsadres:</h4>
+                                        @if(user.getAddress() != null){
+                                            <p>@user.getAddress().getStreet() @user.getAddress().getNumber() @user.getAddress().getBus() <br />
+                                                @user.getAddress().getPlace().getName() @user.getAddress().getPlace().getZip()</p>
+                                        } else {
+                                            <p>Onbekend</p>
+                                        }
+
+                                        <h4>Domicilieadres:</h4>
+                                        @if(user.getDomicile() != null){
+                                            <p>@user.getDomicile().getStreet() @user.getDomicile().getNumber() @user.getDomicile().getBus() <br />
+                                                @user.getDomicile().getPlace().getName() @user.getDomicile().getPlace().getZip()</p>
+                                        } else {
+                                            <p>Onbekend</p>
+                                        }
+                                    }
+                                    </div>
+                                    <div class="col-xs-6">
+                                    @if(user != null){
+                                        @if(user.getIdCard() != null){
+                                            <h4>Identiteitskaart:</h4>
+                                            <h5>Kaartnummer:</h5>
+                                            @if(user.getIdCard().getNumber() != null || user.getIdCard().getNumber().equals("")){
+                                                <p>@user.getIdCard().getNumber()</p>
+                                            } else {
+                                                <p>Onbekend</p>
+                                            }
+                                            <h5>Rijksregisternummer:</h5>
+                                            @if(user.getIdCard().getRegister() != null || user.getIdCard().getRegister().equals("")){
+                                                <p>@user.getIdCard().getRegister()</p>
+                                            } else {
+                                                <p>Onbekend</p>
+                                            }
+                                            <h5>Foto:</h5>
+                                            @if(user.getIdCard().getFile() != null){
+                                                <a class="thumbnail" href="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getIdCard().getFile())}" target="_blank">
+                                                    <img src="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getIdCard().getFile())}" />
+                                                </a>
+                                            }  else {
+                                                <p>Onbekend</p>
+                                            }
+                                        }
+
+                                        @if(user.getLicense() != null){
+                                            <h4>Rijbewijs:</h4>
+                                            <h5>Nummer:</h5>
+                                            @if(user.getLicense().getNumber()){
+                                                <p>@user.getLicense().getNumber()</p>
+                                            } else {
+                                                <p>Onbekend</p>
+                                            }
+                                            <h5>Foto:</h5>
+                                            @if(user.getLicense().getFile() != null){
+                                                <a class="thumbnail" href="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getLicense().getFile())}" target="_blank">
+                                                    <img src="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getLicense().getFile())}" />
+                                                </a>
+                                            } else {
+                                                <p>Onbekend</p>
+                                            }
+                                        }
+
+                                    }
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <input type="checkbox" class="registrationCheckbox" id="contractCheckboxOwner" value="Contract"> Deze gebruiker heeft het contract getekend. <br />
+                                    <input type="checkbox" class="registrationCheckbox" id="waarborgCheckboxOwner" value="Waarborg"> Deze gebruiker heeft zijn waarborg betaald. <br />
+                                    <div class="btn-group-vertical">
+                                        <button value="accept" id="submitOwner" onclick="$('#modalOwner@{user.getId.toString}').modal('hide'); $('#owner@{user.getId.toString}').removeClass('danger succes').addClass('success'); $('#ownerField@{user.getId.toString}').val('true');" class="btn btn-success" disabled>Goedkeuren</button>
+                                        <button value="reject" onclick="$('#modalOwner@{user.getId.toString}').modal('hide'); $('#owner@{user.getId.toString}').removeClass('danger succes').addClass('danger');  $('#ownerField@{user.getId.toString}').val('false');" class="btn btn-danger">Afkeuren</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+
+}
+    @if(tab == "mailpreferences") {
+        @adminmailpref.render(templates)
+    }
+
+    @if(tab == "accounts") {
+        @adminaccounts.render(priceranges)
+    }
+
+    @if(tab == "proof"){
+        @adminproofs.render()
+    }
+
+    @if(tab == "backup"){
+        @adminparameters.render()
+    }
+
+    @if(tab == "cars"){
+        @admincars.render()
+    }
+
+    <div class="row">
+    @footer()
+    </div>
+}}
+
+

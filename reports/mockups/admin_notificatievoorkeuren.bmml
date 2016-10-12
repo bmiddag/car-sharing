@@ -1,0 +1,36 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1311" measuredH="864" mockupW="1263" mockupH="806">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="48" y="58" w="1263" h="806" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//www.degage.be</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::HRule" x="55" y="176" w="1248" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::DataGrid" x="492" y="241" w="302" h="149" measuredW="123" measuredH="21" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Event%2C%20parameter</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::TextArea" x="492" y="405" w="302" h="67" measuredW="200" measuredH="140" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Details%20selectie%20aanpassen</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Button" x="492" y="496" w="-1" h="-1" measuredW="144" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Selectie%20verwijderen</text>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::Button" x="650" y="496" w="-1" h="-1" measuredW="191" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Nieuwe%20notificatie%20toevoegen</text>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::ButtonBar" x="303" y="186" w="902" h="27" measuredW="543" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>3</selectedIndex>
+        <text>Gebruikers%2C%20E-mail-voorkeuren%2C%20Notificatie%20voorkeuren%2C%20Schade%2C%20Afrekeningen</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

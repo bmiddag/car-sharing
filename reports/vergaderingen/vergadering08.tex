@@ -1,0 +1,157 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tkz-graph}
+\usepackage[light,math]{iwona}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+	\floatname{algorithm}{Algoritme}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+%\usepackage{gensymb} % throws errors: 'not defining \perthousand' and 'noet defining \micro'
+\usepackage{array}
+	\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+\lstset{
+language=JAVA,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+\title{Vergadering 8}
+\author{Team Edran}
+\date{24 april 2014}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Plaats \& tijd:}
+Het kot van Gilles; 16u00-17u00\\
+\textbf{Aanwezig:} iedereen\par
+\textbf{Agendapunten:}
+\begin{itemize}
+\item \textbf{Overlopen wat er gedaan is:}\\
+\begin{itemize}
+\item Tests infosessies: klaar, maar nog bugs
+\item Autogebonden gegevens: klaar
+\item Bewijsmateriaal uploaden: bijna klaar
+\item Verifi\"eren van bewijsmateriaal: view is er al, maar logica moet nog gekoppeld worden
+\item Notificaties: nog wat werk aan
+\item Beheer notificaties: nog wat werk aan
+\item Tijdelijk blokkeren gebruiker: klaar, maar e-mails moeten nog gestuurd worden en permissies moeten nog toegevoegd worden
+\end{itemize}
+
+\item \textbf{Notificaties:\\}
+Voor deze mijlpaal zullen we de notificaties hardcoderen in het systeem. Later zullen we ze instelbaar maken.\\
+We moeten een lijst maken van welke notificaties we moeten maken. Deze lijst komt in een Github issue of in een Google Drive-document.\\
+We zullen alvast een notificatie moeten sturen voor alles wat ingediend en goed/afgekeurd wordt, zowel aan de kant van de autolener als aan die van de autobeheerder.
+
+\item \textbf{Schadedossiers:\\}
+De rest van de implementatie van schadedossiers wordt verplaatst naar de volgende mijlpaal.
+
+\item \textbf{Beheer tabbladen:\\}
+De beheerspagina moet herzien worden: tabbladen zouden andere namen moeten krijgen en sommige mogen zelfs weg.
+
+\item \textbf{Zones:\\}
+Het is de bedoeling dat de beheerder kan kiezen van welke zone een gebruiker deel uitmaakt.\\
+Zones laten we voor de volgende mijlpaal. Het is optioneel, dus het krijgt een iets lagere prioriteit. We laten zones dan ook weg uit het filtersysteem voor deze mijlpaal.
+
+\item \textbf{Templates:\\}
+Aan de beheerskant moet er nog een keuze zijn welke templates gebruikt worden voor wat. Gekozen templates mogen dan ook niet verwijderd worden.\\
+Om de mails die met templates werken te versturen, is er al een parser van Bart beschikbaar, deze moet gewoon gebruikt worden.
+
+\item \textbf{Ritgegevens:\\}
+Invullen van ritgegevens moet gesynchroniseerd worden met een klok. De gebruiker zou niet zelf een nieuw ritgegeven moeten maken, het systeem zou dit voor hem moeten doen.\\
+Er zijn ook nog veel bugs in ritgegevens.
+
+\item \textbf{Internettechnologie:\\}
+Het is afgeraakt bij iedereen!
+
+\item \textbf{Taken tegen het einde van deze mijlpaal:\\}
+Iedereen werkt af waar hij nog mee bezig was.
+\begin{itemize}
+\item Rapport genereren: Robin
+\item Machtigingen toevoegen: Steven
+\item Bewijsmateriaal: Wouter P.
+\item Notificaties: Stijn en Gilles
+\item Bewijsmateriaal verifieren: Laurens
+\item Databank: Wouter T.
+\item Auto toevoegen aan systeem door autobeheerder + als beheerder goedkeuren/afkeuren: Bart
+\end{itemize}
+
+\par\item \textbf{Volgende vergadering} \\
+Maandag 28 april om 14u30, op Edran HQ - het kot van Laurens.\\
+De volgende vergadering zouden we best nog eens brainstormen over wat er op het dashboard moet komen, de lay-out, welke statistieken we zullen oplijsten...\\
+We zouden ook best features zoeken die we nog niet ge\"implementeerd hebben, zoals een zip-backup maken van de databank (dit is al ongeveer ge\"implementeerd - er kunnen al csv-bestanden van de data gemaakt worden.\\
+We maken dan ook best voor elke nog te implementeren feature een Github issue.
+
+
+\end{itemize}
+
+\end{document}

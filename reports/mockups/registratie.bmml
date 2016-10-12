@@ -1,0 +1,20 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1318" measuredH="596" mockupW="1263" mockupH="569">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="55" y="27" w="1263" h="569" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//www.degage.be</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Button" x="368" y="255" w="171" h="112" measuredW="145" measuredH="27" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Ik%20wil%20een%20auto%20lenen</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Button" x="587" y="255" w="184" h="112" measuredW="147" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Ik%20wil%20mijn%20auto%20delen</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::HRule" x="55" y="176" w="1248" h="-1" measuredW="100" measuredH="10" zOrder="3" locked="false" isInGroup="-1"/>
+  </controls>
+</mockup>

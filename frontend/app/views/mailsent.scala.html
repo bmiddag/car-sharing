@@ -1,0 +1,17 @@
+@(email : String)
+
+@main("Email verzonden"){
+
+    <h1>Email verzonden</h1>
+    <p>Er werd een mail verzonden naar @{email}, daarin zal je instructies vinden om jouw wachtwoord opnieuw in te stellen.</p>
+    <p>Het kan enkele minuten duren voor je deze mail ontvangt.</p>
+    <h2>Niets ontvangen?</h2>
+    <p>Vergewis je ervan dat je je inschreef met @{email} en neem zeker ook eens een kijkje bij jouw ongewenste berichten.</p>
+    <p>Je kan contact met ons opnemen als je problemen blijft ondervinden.</p>
+    <p>Dit kan zowel <a href="mailto:edran.vopro@@gmail.com">per mail</a> als telefonisch op 09/3299477.</p>
+
+    <div class="row">
+    @footer()
+    </div>
+
+}

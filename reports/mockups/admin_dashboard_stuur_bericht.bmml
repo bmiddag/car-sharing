@@ -1,0 +1,62 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1311" measuredH="766" mockupW="1263" mockupH="708">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="48" y="58" w="1263" h="708" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//www.degage.be</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::HRule" x="55" y="176" w="1248" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="29" controlTypeID="com.balsamiq.mockups::Label" x="552" y="255" w="61" h="-1" measuredW="32" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Naar%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="30" controlTypeID="com.balsamiq.mockups::Label" x="552" y="284" w="80" h="-1" measuredW="70" measuredH="21" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Onderwerp%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="33" controlTypeID="com.balsamiq.mockups::TextInput" x="674" y="252" w="175" h="-1" measuredW="176" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%3C%20Gebruikers%20ID%20of%20e-mail%20%3E</text>
+      </controlProperties>
+    </control>
+    <control controlID="34" controlTypeID="com.balsamiq.mockups::TextInput" x="674" y="281" w="175" h="-1" measuredW="79" measuredH="26" zOrder="6" locked="false" isInGroup="-1"/>
+    <control controlID="44" controlTypeID="com.balsamiq.mockups::Label" x="622" y="373" w="147" h="-1" measuredW="89" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Laad%20template%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="45" controlTypeID="com.balsamiq.mockups::ComboBox" x="734" y="373" w="133" h="-1" measuredW="112" measuredH="78" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Kies%20template%0AGeen%0ATemplate%201%0ATemplate%202</text>
+      </controlProperties>
+    </control>
+    <control controlID="46" controlTypeID="com.balsamiq.mockups::CheckBox" x="552" y="322" w="-1" h="-1" measuredW="148" measuredH="22" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>verstuur%20ook%20in%20e-mail</text>
+      </controlProperties>
+    </control>
+    <control controlID="47" controlTypeID="com.balsamiq.mockups::FieldSet" x="508" y="224" w="359" h="140" measuredW="200" measuredH="170" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bericht%20header</text>
+      </controlProperties>
+    </control>
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::Button" x="794" y="689" w="-1" h="-1" measuredW="73" measuredH="27" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Verstuur</text>
+      </controlProperties>
+    </control>
+    <control controlID="49" controlTypeID="com.balsamiq.mockups::TextArea" x="507" y="466" w="360" h="209" measuredW="200" measuredH="140" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bericht%20body</text>
+      </controlProperties>
+    </control>
+    <control controlID="50" controlTypeID="com.balsamiq.mockups::ButtonBar" x="303" y="186" w="902" h="27" measuredW="842" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>1</selectedIndex>
+        <text>Gebruikers%2C%20Verstuur%20berichten%2C%20E-mail-voorkeuren%2C%20Notificatie%20voorkeuren%2C%20Bewijsmateriaal%2C%20Schadedossiers%2C%20Afrekeningen</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

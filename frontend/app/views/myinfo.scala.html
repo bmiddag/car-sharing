@@ -1,0 +1,443 @@
+@(user: objects.User)
+
+@stylesheets = {
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/parsley.css")" />
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/bootstrap-select.min.css")" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+    <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 999px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            background: red;
+            cursor: inherit;
+            display: block;
+        }
+        input[readonly] {
+            background-color: white !important;
+            cursor: text !important;
+        }
+    </style>
+}
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/parsley.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/bootstrap-select.min.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.selectpicker').selectpicker();
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).on('change', '.btn-file :file', function() {
+            var input = $(this ),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            var f = input.get(0).files[0];
+            var reader = new FileReader();
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    $('#myinfo_avatar' ).attr({
+                        src: e.target.result
+                    });
+                };
+            })(f);
+            // Read in the image file as a data URL.
+            reader.readAsDataURL(f);
+            input.trigger('fileselect', [numFiles, label]);
+        });
+
+        $(document).ready( function() {
+            $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+                var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+                if( input.length ) {
+                    input.val(log);
+                } else {
+                    if( log ) alert(log);
+                }
+            });
+        });
+    </script>
+
+}
+
+@main("Mijn Gegevens",stylesheets,javascripts, null, NotificationModel.getNumberOfUnreadNotifications()){
+    <style>
+        table tr td {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left:10px;
+        }
+    </style>
+    <div class="row">
+        <div class="col-md-4" style="text-align: center;">
+            <div class="row">
+                @if(user.getPhoto() != null){
+                    <img id="myinfo_avatar" src="@{routes.FileRenderer.getFile(user.getPhoto())}" width="70%" style="margin-top: 40px;">
+                } else {
+                    <img id="myinfo_avatar" src="@{routes.Assets.at("images/default_avatar.svg")}" width="70%" style="margin-top: 40px;" onerror="this.src='@{routes.Assets.at("images/default_avatar.png")}'">
+                }
+            </div>
+            @helper.form(action = routes.MyInfo.changeProfilePicture(), 'enctype -> "multipart/form-data") {
+                <div class="row">
+                    <div class="col-xs-8 col-md-12">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <span class="btn btn-default btn-file">
+                                    Bladeren&hellip; <input type="file" title="Profielfoto bewerken" data-filename-placement="inside" class="form-control" id="pic" name="pic" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf"/>
+                                </span>
+                            </span>
+                            <input type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 col-md-12">
+                        <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok-circle"></span> Opslaan</button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-8">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="3"><h4><span class="glyphicon glyphicon-user"></span> Profiel</h4></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Naam:</strong></td>
+                        <td>@user.getName()</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Familienaam:</strong></td>
+                        <td>@user.getSurname()</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>E-mailadres:</strong></td>
+                        <td>@user.getMail()</td>
+                        <td><button data-toggle="modal" data-target="#changeEmail" name="changeEmail" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Wachtwoord:</strong></td>
+                        <td>Verborgen</td>
+                        <td><button data-toggle="modal" data-target="#changePassword" name="changePassword" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Telefoon:</strong></td>
+                        <td>@if(user.getPhone()!=null && !user.getPhone().isEmpty()){@user.getPhone()}else{Geen telefoonnummer}</td>
+                        <td><button data-toggle="modal" data-target="#changePhone" name="changePhone" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Adres:</strong></td>
+                        <td>@if(user.getAddress()!=null){@user.getAddress().toString()}else{Geen adres}</td>
+                        <td><button data-toggle="modal" data-target="#changeAddress" name="changeAddress" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Domicilieadres:</strong></td>
+                        <td>@if(user.getDomicile()!=null){@user.getDomicile().toString()}else{Geen adres}</td>
+                        <td><button data-toggle="modal" data-target="#changeDomicile" name="changeDomicile" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zone:</strong></td>
+                        <td>@if(user.getZone()!=null){@user.getZone().getName()}else{Geen zone}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ongevallenverleden:</strong></td>
+                        <td>@if(user.getPast()!=null){@user.getPast()}else{Geen schadeverleden}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rapport: </strong></td>
+                        <td>
+                            <form method="post" action='@routes.Report.getReportUser(user.getId())'>
+                                <button type="submit"  class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-file"></span> </button>
+                            </form>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="4"><h4><span class="glyphicon glyphicon-euro"></span> Facturen</h4></th>
+                    </tr>
+                    <tr>
+                        <th>Datum</th>
+                        <th>Prijs</th>
+                        <th>PDF</th>
+                        <th>Excel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(invoice <- FacturisationModel.getInvoicesByUser(user)) {
+                        <tr>
+                            <td>@{utils.TimeUtils.getFormattedDate("dd/MM/yyyy",invoice.getTillDate)} - @{utils.TimeUtils.getFormattedDate("dd/MM/yyyy",invoice.getTime)}</td>
+                            <td>&#8364;@{var cost = invoice.getTotalCost(); String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</td>
+                            <td>@helper.form(action = routes.Admin.renderPDF(invoice.getId)) {
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <span style="color: #e53c39;" class="fa fa-file-pdf-o"></span>
+                                </button>
+                            }</td>
+                            <td>@helper.form(action = routes.Admin.renderExcel(invoice.getId)) {
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <span style="color: #1f6e42;" class="fa fa-file-excel-o"></span>
+                                </button>
+                            }</td>
+                        </tr>
+                    }
+                    @if(FacturisationModel.getInvoicesByUser(user).isEmpty()) {
+                        <tr>
+                            <td colspan="4" style="text-align: center;">Er zijn geen facturen gevonden.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="2"><h4><span class="glyphicon glyphicon-stats"></span> Statistieken</h4></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Totaal aantal uren gereden: </strong></td>
+                        <td>@DashboardModel.getTotalNumberOfHoursDriven(CarManagementModel.getRidesForUser(user))</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Totaal aantal kilometer gereden: </strong></td>
+                        <td>@DashboardModel.getTotalNumberOfKMDriven(CarManagementModel.getRidesForUser(user))</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Favoriete auto: </strong></td>
+                        <td>@DashboardModel.getFavoriteCar(CarManagementModel.getRidesForUser(user))</td>
+                    </tr>
+                    @if(UserModel.getCarOwnedByUser(UserModel.getCurrentUser().getId()) != null){
+                        <tr>
+                            <td><strong>Aantal keren gereden met uw auto: </strong></td>
+                            <td>@DashboardModel.getTimesDrivenWithCar(CarManagementModel.getRidesForUser(user), UserModel.getCarOwnedByUser(UserModel.getCurrentUser().getId()))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        @footer()
+    </div>
+
+    <!---------------------- MODALS ---------------------->
+
+    <div class="modal fade" id="changePassword" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Wachtwoord veranderen</h4>
+                </div>
+
+
+                <form role="form" action="@routes.MyInfo.changePassword()" method="post" data-parsley-validate>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <table>
+                                        <tr>
+                                            <td><label>Geef uw oude wachtwoord in:</label></td>
+                                            <td><input type="password" id="oldPassword" name="oldPassword" class="form-control" data-parsley-trigger="change" required></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Geef uw nieuwe wachtwoord in:</label></td>
+                                            <td><input type="password" id="newPassword1" name="newPassword1" class="form-control" data-parsley-minlength="4" data-parsley-trigger="change" required></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Geef uw nieuwe wachtwoord opnieuw in:</label></td>
+                                            <td><input type="password" id="newPassword2" name="newPassword2" data-parsley-equalto="#newPassword1" class="form-control" data-parsley-trigger="change" data-parsley-error-message="De 2 paswoorden komen niet met elkaar overeen!" required></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" name="changePasswordCancel" value="Annuleer" data-dismiss="modal">
+                        <input type="submit" class="btn btn-success" name="changePasswordAccept" value="Verander">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="changeEmail" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Email veranderen</h4>
+                </div>
+                <form role="form" action="@routes.MyInfo.changeEmail()" method="post" data-parsley-validate>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-xs">
+                                <div class="form-group">
+                                    <table>
+                                        @* <tr>
+                                            <td><label>Geef uw oud e-mailadres in:</label></td>
+                                            <td><input type="email" id="oldEmail" name="oldEmail" class="form-control" data-parsley-trigger="change" required></td>
+                                        </tr> *@
+                                        <tr>
+                                            <td><label>Geef uw nieuw e-mailadres in:</label></td>
+                                            <td><input type="email" id="newEmail1" name="newEmail1" class="form-control" data-parsley-trigger="change" required></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Geef uw nieuw e-mailadres opnieuw in:</label></td>
+                                            <td><input type="email" id="newEmail2" name="newEmail2" class="form-control" data-parsley-equalto="#newEmail1" data-parsley-trigger="change" data-parsley-error-message="De 2 emailadressen komen niet met elkaar overeen!" required></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" name="changeEmailCancel" value="Annuleer" data-dismiss="modal">
+                        <input type="submit" class="btn btn-success" name="changeEmailAccept" value="Verander">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="changePhone" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Telefoonnummer veranderen</h4>
+                </div>
+                <form role="form" action="@routes.MyInfo.changePhone()" method="post">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <table>
+                                        <tr>
+                                            <td><label>Geef uw nieuwe telefoonnummer in:</label></td>
+                                            <td><input type="text" name="newPhone" class="form-control" @if(user.getPhone()!=null){value="@user.getPhone()"}></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" name="changePhoneCancel" value="Annuleer" data-dismiss="modal">
+                        <input type="submit" class="btn btn-success" name="changePhoneAccept" value="Verander">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="changeAddress" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Adres veranderen</h4>
+                </div>
+                <form role="form" action="@routes.MyInfo.changeAddress()" method="post" data-parsley-validate>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <table>
+                                        <tr>
+                                            <td><label>Straatnaam:</label></td>
+                                            <td colspan="2"><input type="text" @if(user.getAddress!=null && user.getAddress().getStreet!=null){value="@user.getAddress().getStreet"} name="newStreet" class="form-control" data-parsley-trigger="change" required></td>
+                                            <td><label>Nummer:</label></td>
+                                            <td><input type="number" @if(user.getAddress!=null && user.getAddress().getNumber!=null){value="@user.getAddress().getNumber"} name="newNumber" class="form-control" min="1" data-parsley-trigger="change" data-parsley-error-message="Gelieve een geldig nummer op te geven!" required></td>
+                                            <td><label>Bus:</label></td>
+                                            <td><input type="text" @if(user.getAddress!=null && user.getAddress().getBus!=null){value="@user.getAddress().getBus"} name="newBus" class="form-control" data-parsley-trigger="change"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Gemeente:</label></td>
+                                            <td colspan="3"><input type="text" @if(user.getAddress!=null && user.getAddress().getPlace!=null && user.getAddress().getPlace.getName!=null){value="@user.getAddress().getPlace().getName"} name="newCity" class="form-control" data-parsley-trigger="change" required></td>
+                                            <td><label>Postcode:</label></td>
+                                            <td colspan="2"><input type="number" @if(user.getAddress!=null && user.getAddress().getPlace!=null && user.getAddress().getPlace.getZip!=null){value="@user.getAddress().getPlace().getZip"} name="newPCode" class="form-control" min="1" data-parsley-trigger="change" data-parsley-error-message="Gelieve een geldige postcode op te geven!" required></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" name="changeAddressCancel" value="Annuleer" data-dismiss="modal">
+                        <input type="submit" class="btn btn-success" name="changeAddressAccept" value="Verander">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="changeDomicile" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Domicilie-adres veranderen</h4>
+                </div>
+                <form role="form" action="@routes.MyInfo.changeDomicile()" method="post" data-parsley-validate>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="form-group">
+                                    <table>
+                                        <tr>
+                                            <td><label>Straatnaam:</label></td>
+                                            <td colspan="2"><input type="text" @if(user.getDomicile!=null && user.getDomicile().getStreet!=null){value="@user.getDomicile().getStreet"} name="newStreet" class="form-control" data-parsley-trigger="change" required></td>
+                                            <td><label>Nummer:</label></td>
+                                            <td><input type="number" @if(user.getDomicile!=null && user.getDomicile().getNumber!=null){value="@user.getDomicile().getNumber"} name="newNumber" class="form-control" min="1" data-parsley-trigger="change" data-parsley-error-message="Gelieve een geldig nummer op te geven!" required></td>
+                                            <td><label>Bus:</label></td>
+                                            <td><input type="text" @if(user.getDomicile!=null && user.getDomicile().getBus!=null){value="@user.getDomicile().getBus"} name="newBus" class="form-control" data-parsley-trigger="change"></td>
+                                        </tr>
+                                        <tr>
+                                            <td><label>Gemeente:</label></td>
+                                            <td colspan="3"><input type="text" @if(user.getDomicile!=null && user.getDomicile().getPlace!=null && user.getDomicile().getPlace.getName!=null){value="@user.getDomicile().getPlace().getName"} name="newCity" class="form-control" data-parsley-trigger="change" required></td>
+                                            <td><label>Postcode:</label></td>
+                                            <td colspan="2"><input type="number" @if(user.getDomicile!=null && user.getDomicile().getPlace!=null && user.getDomicile().getPlace.getZip!=null){value="@user.getDomicile().getPlace().getZip"} name="newPCode" class="form-control" min="1" data-parsley-trigger="change" data-parsley-error-message="Gelieve een geldige postcode op te geven!" required></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" name="changeDomicileCancel" value="Annuleer" data-dismiss="modal">
+                        <input type="submit" class="btn btn-success" name="changeDomicileAccept" value="Verander">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

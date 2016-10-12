@@ -1,0 +1,12 @@
+@*************************************************************
+ * XML representation of a list of user permissions.         *
+ *                                                           *
+ * @param permissions The permissions to list                *
+ ************************************************************@
+@(permissions: Collection[String])<?xml version="1.0" encoding="utf-8"?>
+
+<permissions>
+    @for(permission <- permissions) {
+    <permission name="@permission"/>
+    }
+</permissions>

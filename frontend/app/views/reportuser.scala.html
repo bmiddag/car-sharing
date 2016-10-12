@@ -1,0 +1,97 @@
+@(user: objects.User)
+
+
+<head>
+    <style>
+        table, th, td
+        {
+            border-collapse:collapse;
+            border:1px solid black;
+
+        }
+        th, td
+        {
+            padding:15px;
+        }
+    </style>
+</head>
+<body>
+<h1>Rapport gebruiker</h1>
+<div class="row">
+    <table>
+        <tr>
+            <td>Id</td>
+            <td>@{user.getId()}</td>
+
+
+        </tr>
+        <tr>
+            <td>Rol</td>
+            <td>@if(user.getRole().getName().equals("admin")){Beheerder}else{
+                @if(user.getRole().getName().equals("DBA")){Databankbeheerder}else{
+                    @if(user.getRole().getName().equals("user")){Autolener}else{
+                        @if(user.getRole().getName().equals("owner")){Auto-eigenaar}else{
+                            @if(user.getRole().getName().equals("new_user")){Potenti&euml;le autolener}else{
+                                @if(user.getRole().getName().equals("new_owner")){Potenti&euml;le auto-eigenaar}else{
+                                    @if(user.getRole().getName().equals("almost_owner")){Bijna auto-eigenaar}else{
+                                        @if(user.getRole().getName().equals("almost_user")){Bijna autolener}else{
+                                            Geen
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }</td>
+
+        </tr>
+        <tr>
+            <td>Naam</td>
+            <td>@{user.getName()}</td>
+
+        </tr>
+        <tr>
+            <td>Voornaam</td>
+            <td>@{user.getSurname()}</td>
+
+        </tr>
+        <tr>
+            <td>Mail</td>
+            <td>@{user.getMail()}</td>
+
+        </tr>
+        <tr>
+            <td>Telefoonnummer</td>
+            <td>@{user.getPhone()}</td>
+
+        </tr>
+        <tr>
+            <td>Borg</td>
+            <td>@{user.getGuarantee()}</td>
+
+        </tr>
+        <tr>
+            <td>Verleden</td>
+            <td>@if(user.getPast().isEmpty){
+                Geen verleden
+                }else{
+                @{user.getPast()}
+                }</td>
+
+        </tr>
+        <tr>
+            <td>Postcode</td>
+            <td>@{user.getAddressID()}</td>
+
+        </tr>
+
+
+    </table>
+</div>
+</body>
+
+
+
+
+

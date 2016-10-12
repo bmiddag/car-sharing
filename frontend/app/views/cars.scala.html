@@ -1,0 +1,9 @@
+@(cars: Collection[objects.Car])
+
+@cars.map { car =>
+    <tr>
+        <td style="display: none">@car.getId</td>
+        <td>@car.getName</td>
+        <td>@car.getAddress</td>
+    </tr>
+}

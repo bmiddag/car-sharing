@@ -1,0 +1,139 @@
+@(title: String, invoice: objects.Invoice, rides: List[objects.Ride], refuelings: List[objects.Refueling], payDate: Long)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+        <link rel="stylesheet" href="file://conf/pdf/bootstrap-pdf.css">
+    </head>
+    <body>
+        <div class="navbar navbar-default navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand"><span class="degage_glyph logo_complete"></span></a></div>
+                <div class="collapse navbar-collapse">
+                    <div class="container">
+                        <ul class="nav navbar-nav navbar-left">
+                            <li><a>D&eacute;gage! vzw</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#">@{utils.TimeUtils.getFormattedDate("dd/MM/yyyy",invoice.getTillDate)} - @{utils.TimeUtils.getFormattedDate("dd/MM/yyyy",invoice.getTime)}</a></li>
+                            <li class="active"><a href="#">Prijs: &#8364;@{var cost = invoice.getTotalCost(); java.lang.String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="wrap">
+            <div class="container" id="main">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <div class="alert alert-info">
+                            Heb je vragen? Bel naar <strong>09/329.94.77</strong> of stuur een mailtje naar <strong>info&#64;degage.be</strong>.
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">@title<div class="pull-right">Factuurnummer: @{String.format("%010d", invoice.getId(): Integer)}</div></h4>
+                            </div>
+                            <div class="panel-body">
+                                Geachte @{invoice.getUser.getTitle} @{invoice.getUser.getSurname},<br>
+                                Gelieve de volgende som te betalen v&oacute;&oacute;r <strong>@{utils.TimeUtils.getFormattedDate("dd/MM/yyyy",payDate)}</strong>.
+                                @if(!rides.isEmpty) {
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Auto</th>
+                                                <th class="text-center">Datum</th>
+                                                <th class="text-center">Beginkilometerstand</th>
+                                                <th class="text-center">Eindkilometerstand</th>
+                                                <th class="text-center">Aantal gereden kilometers</th>
+                                                <th class="text-right">Prijs</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @for(ride: objects.Ride <- rides) {
+                                                <tr>
+                                                    <td>@{ride.getCar.getName}</td>
+                                                    <td class="text-center">@{utils.TimeUtils.getFormattedDate("%dd/MM/yyyy",ride.getTime)}</td>
+                                                    <td class="text-center">@{ride.getStartKM}km</td>
+                                                    <td class="text-center">@{ride.getStopKM}km</td>
+                                                    <td class="text-center">@{ride.getStopKM-ride.getStartKM}km</td>
+                                                    <td class="text-right">&#8364;@{var cost = ride.getPrice(); String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line text-center"><strong>Subtotaal</strong></td>
+                                                <td class="thick-line text-right">&#8364;@{var cost = FacturisationModel.getSubtotalByInvoice(invoice,rides,refuelings, true); String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                }
+
+                                <table class="table table-striped">
+                                    @if(!refuelings.isEmpty) {
+                                        <thead>
+                                            <tr>
+                                                <th>Tankbeurt</th>
+                                                <th class="text-center">Aantal liter</th>
+                                                <th class="text-center">Datum</th>
+                                                <th class="text-right">Prijs</th>
+                                            </tr>
+                                        </thead>
+                                    }
+                                    <tbody>
+                                        @for(refueling: objects.Refueling <- refuelings) {
+                                            @if(!refueling.getRide().getCar().getOwner().equals(invoice.getUser())) {
+                                                <tr>
+                                                    <td>#@{refueling.getId}</td>
+                                                    <td class="text-center">@{refueling.getLitre}</td>
+                                                    <td class="text-center">@{utils.TimeUtils.getFormattedDate("%dd/MM/yyyy",refueling.getTime)}</td>
+                                                    <td class="text-right">- &#8364;@{var cost = refueling.getPrice(); String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</td>
+                                                </tr>
+                                            }
+                                        }
+                                        @if(!refuelings.isEmpty) {
+                                            <tr>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line text-center"><strong>Subtotaal</strong></td>
+                                                <td class="thick-line text-right">- &#8364;@{var cost = FacturisationModel.getSubtotalByInvoice(invoice, rides,refuelings, false); String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td class="no-line"></td>
+                                            <td class="no-line"></td>
+                                            <td class="no-line"></td>
+                                            <td class="no-line"></td>
+                                            <td class="no-line text-center"><strong>Totaal</strong></td>
+                                            <td class="no-line text-right">&#8364;@{var cost = invoice.getTotalCost(); String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</td>
+                                        </tr>
+                                        @* <tr>
+                                        <td class="no-line"></td>
+                                        <td class="no-line"></td>
+                                        <td class="no-line text-center"><strong>Shipping</strong></td>
+                                        <td class="no-line text-right">$15</td>
+                                        </tr> *@
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="bill price_euro">@{String.format("%d",invoice.getTotalCost/100: Integer).replace("", " ").trim()}</div>
+                    <div class="bill price_cent">@{String.format("%02d",invoice.getTotalCost%100: Integer).replace("", " ").trim()}</div>
+                    <div class="bill date">@{utils.TimeUtils.getFormattedDate("ddMMyy",payDate).replace("", " ").trim()}</div>
+                    <div class="bill iban">B E 7 8 5 2 3 0 8 0 4 5 2 9 8 6</div>
+                    <div class="bill bic">T R I O B E B B</div>
+                    <div class="bill name_address">D &Eacute; G A G E &nbsp; V Z W<br>F U C H S I A S T R A A T &nbsp; 8 1<br>9 0 0 0 &nbsp; G E N T</div>
+                    <div class="bill structured_code">@{FacturisationModel.getOGM(invoice).replace("", " ").trim()}</div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

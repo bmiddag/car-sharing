@@ -1,0 +1,4 @@
+#!/bin/bash
+source ../configurations/database.conf
+
+$DBsft --local-infile -u$DBusr -p$DBpass -e "$1"

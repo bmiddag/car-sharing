@@ -1,0 +1,191 @@
+\documentclass[11pt,a4paper,oneside]{article}
+\usepackage[dutch]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{dsfont}
+\usepackage{parskip}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{cite}
+\usepackage[nottoc]{tocbibind}
+\usepackage[T1]{fontenc}
+\usepackage[light,math]{iwona}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{subfig}
+\usepackage{textcomp}
+\usetikzlibrary{arrows,automata}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{titling,enumitem}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{rotating}
+\usepackage{listings}
+\usepackage[top=1.1in, bottom=1.2in, left=1.1in, right=1.1in]{geometry}
+\usepackage{array}
+\usepackage{titling}
+\usepackage{blindtext}
+\usepackage{hyperref}
+\usepackage{chngpage}
+\usepackage{calc}
+\definecolor{lightgray}{gray}{0.8}
+\newcolumntype{L}{>{\raggedleft}p{0.50\textwidth}}
+\newcolumntype{R}{p{0.8\textwidth}}
+\newcommand\VRule{\color{lightgray}\vrule width 0.5pt}
+\usepackage{color, colortbl}
+\definecolor{Gray}{gray}{0.9}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{ugentblue}{rgb}{0.05,0.18,0.37}
+\usepackage{import}
+\usepackage[T1]{fontenc}
+\lstset{
+language=BASH,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+
+\begin{document}
+
+\newgeometry{top=0.8cm, right=1.70cm, left=1.7cm}
+\begin{titlepage}
+
+\thispagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{}
+\begin{figure}[!ht]
+  \begin{adjustwidth}{-\oddsidemargin-1in}{-\rightmargin}
+    \centering
+    \includegraphics[width=\paperwidth]{img/banner}
+  \end{adjustwidth}
+\end{figure}
+\vspace{-0.2em}
+\begin{center}
+\vspace{5cm}
+\Huge \textbf{Vakoverschrijdend Project: team Edran\\ Ontwerp en technische beslissingen}\\
+\vspace{6.0cm}
+\large
+\begin{tabular}{L! {} R}
+& {\LARGE\bf Team Edran} \\
+& \\
+& {\bf Steven De Blieck} \\
+& {\bf Laurens De Graeve} \\
+& {\bf Bart Middag} \\
+& {\bf Wouter Pinnoo} \\
+& {\bf Robin Praet} \\
+& {\bf Stijn Seghers} \\
+& {\bf Wouter Termont} \\
+& {\bf Gilles Vandewiele} \\
+\end{tabular}
+\end{center}
+\end{titlepage}
+\restoregeometry
+\newpage
+
+\fancyheadoffset[RO,LE]{0in}
+\fancypagestyle{plain}{
+\fancyhead[L]{Ontwerp en technische beslissingen}
+\fancyhead[R]{Team Edran}
+\fancyfoot[L]{}
+\fancyfoot[R]{\thepage}}
+
+\fancyhead[L]{Ontwerp en technische beslissingen}
+\fancyhead[R]{Team Edran}
+\fancyfoot[L]{}
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
+
+\section{Subsystemen}
+Dit is een overzicht van de grote subsystemen waarin de applicatie kan opgedeeld worden:
+\begin{itemize}
+\item Databank
+\item Mail
+\item Infosessies
+\item Reserveren
+\end{itemize}
+
+\section{Technische Beslissingen per subsysteem}
+\subsection{Algemeen}
+\begin{itemize}
+\item Voor HTML/css hebben we gekozen voor Twitter Bootstrap. Dit wegens de mobile-first approach en de vele "snippets" die hier gratis voor te vinden zijn.
+\end{itemize}
+\subsection{Databank}
+\begin{itemize}
+\item DAO zo onafhankelijk mogelijk gemaakt van de rest van de applicatie
+\item Referenties gebeuren met objecten ipv sleutels voor betere toegankelijkheid in de controllers
+\item Timestamps gebruikt wegens de integratie met Java
+\item Lossere Mysql integriteitsrestricties voor portabiliteit, extra controle moet dan in (form) validators gebeuren
+\end{itemize}
+\subsection{Mail}
+\begin{itemize}
+\item We hebben de Play "mailer" plug-in gekozen wegens zijn simpelheid en functies die voldoen aan onze vereisten.
+\item De templates van de te verzenden e-mails worden in de Databank opgeslagen. Deze worden at runtime gecompileerd. Het voordeel is dat ze dus kunnen aangepast worden (vb. met bijkomstige variabelen).
+\end{itemize}
+\subsection{Infosessies}
+\begin{itemize}
+\item Geen noemenswaardige beslissingen
+\end{itemize}
+\subsection{Reserveren}
+\begin{itemize}
+\item Voor de logica van de kalender werd javascript gebruikt (public/reserve.js).
+\item Ajax wordt gebruikt om op de client-side een xml op te vragen die gebruikt wordt om de weergave dynamisch aan te passen:
+\begin{itemize}
+\item Reservations.scala.xml: doel is weten welke dagen in de kalender rood/groen moeten gekleurd worden
+\item Cars.scala.xml: doel is weten welke autos vrij zijn in de periode geselecteerd in de kalender
+\end{itemize}
+\end{itemize}
+
+
+\section{Gebruikte architecturen}
+\begin{itemize}
+        \item Er wordt gebruikt gemaakt van \emph{Ajax} en \emph{JavaScript}.
+        \item Het gebruikte dialect voor het databankbeheer is \emph{MySQL}.
+\end{itemize}
+ 
+\section{Programmeersconventies}
+\begin{itemize}
+        \item Methode- en veldnamen moeten in het Engels en camelcase.
+\end{itemize}
+ 
+\section{Afspraken over het versiesysteem}
+\begin{itemize}
+        \item Voor een nieuwe functie te implementeren wordt een nieuwe branch aangemaakt, deze wordt pas gemerged met de development server nadat deze af is.
+\end{itemize}
+ 
+\section{Voorschriften voor programmadocumentatie}
+\begin{itemize}
+        \item Methodes die niet duidelijk zijn bij naam alleen moeten gedocumenteerd worden.
+        \item Bovenaan elke afgewerkte Java-klasse zetten we de edran signatuur (zie momenteel de DAO-klasses). Hierbovenop komt de datum van creatie en de naam van de persoon die klasse aanmaakt.
+\end{itemize}
+ 
+\section{Gebruikte IDE}
+\begin{itemize}
+        \item Iedereen gebruikt IntelliJ, die ondersteuning biedt aan het Play Framework, als programmeersomgeving.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,223 @@
+
+@(templates: List[objects.Template])
+@import be.objectify.deadbolt.core.PatternType;
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
+<div class="row">
+    <div class="col-md-6" style="height : 200px ; overflow : auto">
+        <table id="templatesTable" class="table table-hover">
+            <tbody id="templatesTableBody">
+            @for((template) <- templates) {
+                <tr>
+                    <td style="display : none">@template.getId()</td>
+                    <td style="display : none">@Html(template.getContent())</td>
+                    <td id="templateRow">@template.getName()</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <style>
+        tbody tr.highlight td {
+        background-color : #f9f9f9 ;
+        }
+        </style>
+    </div>
+    <div class="col-md-6">
+        @pattern("emails.remove") {
+            <a data-toggle="modal" href="#deletetemplate" name="deleteTemplate"><button class="btn btn-default" name="deleteTemplate">
+                Verwijderen</button></a>
+        }
+
+    <br>
+        @pattern("emails.add") {
+            <a name="createNewTemplate" data-toggle="modal" href="#newtemplate"><button name="createNewTemplate" class="btn btn-default">
+                Nieuwe template aanmaken</button></a>
+        }
+    </div>
+</div>
+@pattern("emails.edit") {
+    <form id="editTemplateContainer" role="form" action="@routes.Admin.saveTemplate()" method="post" style="display : none ;">
+        <input type="hidden" name="templateid" id="templateid-form"/>
+        <div class="badger-left" data-badger="Template wijzigen">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Naam</label>
+                        <input type="text" name="templatename" class="form-control">
+                    </div>
+                    <input type="checkbox" value="activated" name="activated"> Geactiveerd<br><br>
+                    <select class="form-control" name="frequency">
+                        <option value="1" selected="true">Wekelijks</option>
+                        <option value="2">Maandelijks</option>
+                        <option value="3">Halfjaarlijks</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div id="alerts"></div>
+                <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
+                    <div class="col-xs-12">
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font"><i class="icon-font" style="color: black"></i><b class="caret" style="color: black"></b></a>
+                            <ul class="dropdown-menu">
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="icon-text-height" style="color: black"></i>&nbsp;<b class="caret" style="color: black"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a data-edit="fontSize 5"><font size="5">Huge</font></a></li>
+                                <li><a data-edit="fontSize 3"><font size="3">Normal</font></a></li>
+                                <li><a data-edit="fontSize 1"><font size="1">Small</font></a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="icon-bold" style="color: black"></i></a>
+                            <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="icon-italic" style="color: black"></i></a>
+                            <a class="btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="icon-underline" style="color: black"></i></a>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn" data-edit="insertunorderedlist" title="Bullet list"><i class="icon-list-ul" style="color: black"></i></a>
+                            <a class="btn" data-edit="insertorderedlist" title="Number list"><i class="icon-list-ol" style="color: black"></i></a>
+                            <a class="btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="icon-indent-left" style="color: black"></i></a>
+                            <a class="btn" data-edit="indent" title="Indent (Tab)"><i class="icon-indent-right" style="color: black"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="btn-group">
+                            <a class="btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="icon-align-left"style="color: black"></i></a>
+                            <a class="btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="icon-align-center"style="color: black"></i></a>
+                            <a class="btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="icon-align-right"style="color: black"></i></a>
+                            <a class="btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="icon-align-justify"style="color: black"></i></a>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="icon-link"style="color: black"></i></a>
+                            <div class="dropdown-menu input-append">
+                                <input class="span2" placeholder="URL" type="text" data-edit="createLink"/>
+                                <button class="btn" type="button">Add</button>
+                            </div>
+                            <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="icon-cut"style="color: black"></i></a>-
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="icon-picture"style="color: black"></i></a>
+                            <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
+                            <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="icon-undo"style="color: black"></i></a>
+                            <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="icon-repeat"style="color: black"></i></a>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" title="Variabelen (worden achteraan toegevoegd)"><i class="glyphicon glyphicon-tag" style="color: black"></i>&nbsp;<b class="caret" style="color: black"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="addVariable">name</a></li>
+                                <li><a class="addVariable">surname</a></li>
+                                <li><a class="addVariable">title</a></li>
+                                <li><a class="addVariable">email</a></li>
+                                <li><a class="addVariable">phone</a></li>
+                                <li><a class="addVariable">address</a></li>
+                                <li><a class="addVariable">domicile</a></li>
+                                <li><a class="addVariable">zone</a></li>
+                                <li><a class="addVariable">infosession.address</a></li>
+                                <li><a class="addVariable">infosession.date</a></li>
+                                <li><a class="addVariable">token</a></li>
+                                <li><a class="addVariable">notifications</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <input type="hidden" name="editor" id="hidden-editor"/>
+                    <div id="editor"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" style="text-align: right;">
+                    <button type="button" id="previewTemplateButton" class="btn btn-default">Preview</button>
+                    <input type="submit" class="btn btn-success" id="template-submit" name="submit" value="Template opslaan">
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
+<!---------------------- MODALS ---------------------->
+
+<div class="modal fade" id="newtemplate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Nieuwe template aanmaken</h4>
+
+            </div>
+            <form role="form" action="@routes.Admin.createTemplate()" method="post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Geef naam op voor nieuwe template:</label>
+                                <input type="text" name="templateName" class="form-control" placeholder="Template">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" name="createCancel" value="Annuleer" data-dismiss="modal">
+                    <input type="submit" class="btn btn-default" name="createAccept" value="Creëer">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deletetemplate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Template verwijderen</h4>
+            </div>
+
+
+            <form role="form" action="@routes.Admin.deleteTemplate()" method="post">
+
+                <div class="modal-body">
+                    <div class="row">
+                        <strong>Ben je zeker dat je de template "<span id="deleteTemplateName"></span>
+                            " wil verwijderen?</strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="deleteTemplateId">
+                    <input type="button" class="btn btn-default" name="deleteCancel" value="Annuleer" data-dismiss="modal">
+                    <input type="submit" class="btn btn-success" name="deleteAccept" value="Bevestig">
+                </div>
+            </form>
+        </div>
+        <form role="form" action="@routes.Admin.deleteTemplate()" method="post">
+            <div class="modal-body">
+                <div class="row" name="previewContent" id="previewContent">
+                    <strong>Ben je zeker dat je de template "<span id="deleteTemplateName"></span>" wil verwijderen?</strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" name="deleteTemplateId">
+                <input type="button" class="btn btn-default" name="deleteCancel" value="Annuleer" data-dismiss="modal">
+                <input type="submit" class="btn btn-success" name="deleteAccept" value="Bevestig">
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade" id="previewtemplate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Template preview</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" name="previewContent" id="previewContent">
+                            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Preview sluiten</button>
+            </div>
+        </div>
+    </div>
+</div>

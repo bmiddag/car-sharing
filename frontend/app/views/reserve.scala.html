@@ -1,0 +1,730 @@
+@**************************************************************************
+ * Reserve page, ride info page and existing reservations page.           *
+ *                                                                        *
+ * @param tab A string defining which of the three pages to show.         *
+ * @param unavailableMoments A list of moments when no cars are available *
+ * @param rides A list of the rides made                                  *
+ * @param reservationsWithoutRide                                         *
+ * @param reservations A list of reservations made                        *
+ * @param currentUser The currently logged in user                        *
+ * @param zones The zones in the city                                     *
+ * @param extraData The data passed through by the filter                 *
+ **************************************************************************@
+@(tab: String,
+ unavailableMoments: Collection[ReserveModel.Moment],
+ rides: Collection[RideWrapper],
+ reservationsWithoutRide: Collection[objects.Reservation],
+ reservations: Collection[objects.Reservation],
+ currentUser: objects.User,
+ zones: Collection[objects.Zone],
+ extraData: Map[String, Array[String]])
+
+@import java.util.Date;
+@import utils.TimeUtils
+@import play.api.libs.json.Json
+
+@stylesheets = {
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("vendor/fullcalendar/css/fullcalendar.css")" />
+    <link rel="stylesheet" type="text/css" media="print" href="@routes.Assets.at("vendor/fullcalendar/css/fullcalendar.print.css")" />
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/reserve.css")" />
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("vendor/datetimepicker/css/jquery.datetimepicker.css")" />
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("vendor/bootstrap3-editable/css/bootstrap-editable.css")" />
+}
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Assets.at("vendor/fullcalendar/js/fullcalendar.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("vendor/datetimepicker/js/jquery.datetimepicker.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("vendor/bootstrap3-editable/js/bootstrap-editable.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("vendor/bootstrap3-editable/js/moment.min.js")"></script>
+    <script type="text/javascript" src="@routes.Application.javascriptRoutes()"></script>
+    <script type="text/javascript">
+        unavailableMoments = [
+          @unavailableMoments.map { moment =>
+            {start: @moment.getStart.getTime, end: @moment.getEnd.getTime},
+          }
+        ];
+
+        rideMap = {
+          @rides.map { ride =>
+            @ride.ride.getId(): {
+              "begin": @ride.ride.getBegin(),
+              "end": @ride.ride.getEnd(),
+              "km-start": "@{if(ride.ride.getStartKM() != null){ ride.ride.getStartKM() } else {0}}",
+              "km-end": "@{if(ride.ride.getStopKM() != null){ ride.ride.getStopKM() } else {0}}",
+              "refuelings": {
+                @ride.refuelings.map { r =>
+                  @if(r != null) {
+                      @r.getId(): {
+                        "litre": "@{if(r.getLitre() != null){ r.getLitre() } else {0}}",
+                        "price": "@{if(r.getPrice() != null){ "%.2f".format(r.getPrice().toDouble / 100) } else {0}}",
+                        "proof": "@if(r.getProof() != null) { @routes.FileRenderer.getFile(r.getProof()) }",
+                        "type": "@{if(r.getType() != null && !r.getType().isEmpty()){ r.getType() } else { "?"}}",
+                      },
+                  }
+                }
+              },
+              "damages": {
+                @for((key, value) <- ride.damages) {
+                    @if(key != null) {
+                      @key.getId: {
+                        "status": "@key.getStatus",
+                        "description": "@{if(key.getDescription() != null && !key.getDescription().isEmpty()){ key.getDescription() } else {"?"}}",
+                        "time": "@{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", key.getOccurred())}",
+                        "docs": {
+                          @value.map { doc =>
+                                @if(doc != null) {
+                                    @doc.getFile(): {
+                                      "url": "@if(doc.getFile() != null) { @routes.FileRenderer.getFile(doc.getFile) }"
+                                    },
+                                }
+                          }
+                        },
+                      },
+                    }
+                }
+              },
+            },
+          }
+        };
+
+        updateRideUrl = "@routes.Ride.updateRide()";
+        updateRefuelingUrl = "@routes.Refueling.updateRefueling()";
+        deleteRefuelingUrl = "@routes.Refueling.deleteRefueling()";
+        extraRefuelingFileUrl = "@routes.Refueling.extraRefuelingFile()";
+        updateDamageUrl = "@routes.Damage.updateDamage()";
+        deleteDamageUrl = "@routes.Damage.deleteDamage()";
+        extraDamageFileUrl = "@routes.Damage.extraDamageFile()";
+        searchCarUrl = "@routes.Car.search()";
+    </script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/reserve.js")"></script>
+}
+
+@tabs = {
+    <ul class="nav nav-tabs">
+        <li class="@if(tab == "reserve") {
+            active
+        }"><a href="@routes.Reserve.index("reserve")">Reserveren</a></li>
+        <li class="@if(tab == "trips") {
+            active
+        }"><a href="@routes.Reserve.index("trips")" name="rideDetails">Ritgegevens</a></li>
+        <li class="@if(tab == "my-reservations") {
+            active
+        }"><a href="@routes.Reserve.index("my-reservations")">Mijn reservaties</a></li>
+    </ul>
+}
+
+@main("Reserveer uw auto", stylesheets, javascripts, tabs, NotificationModel.getNumberOfUnreadNotifications()) {
+    <div class="row">
+        @if(tab == "reserve"){
+            <div class="row">
+                <div class="col-md-8" id="calendar"></div>
+                <div class="col-md-4" style="text-align: right; horizontal-align: right">
+                    <form role="form" id="filter" class="form-horizontal" action="@routes.Reserve.filter()" method="get">
+                        
+                        <div class="form-group">
+                            <!--<label for="duration" class="col-sm-4 control-label">Duur</label>-->
+                            <div class="col-sm-11">
+                                <input type="checkbox" name="use_duration" value="on" data-label="Zoek beperkte duur:"
+                                    @if(extraData.contains("use_duration")){checked="checked"} />
+                            </div>
+                            <div class="col-sm-offset-4 col-sm-8">
+                                <div id="days" class="spinner input-group">
+                                    <input id="days-input" class="form-control" type="text" name="duration_days"
+                                        value="@{extraData.getOrElse("duration_days", "0")}">
+                                    <label for="days-input" class="input-group-addon">dagen</label>
+                                    <div class="input-group-btn-vertical">
+                                        <button class="btn btn-default"><i class="fa fa-caret-up"></i></button>
+                                        <button class="btn btn-default"><i class="fa fa-caret-down"></i></button>
+                                    </div>
+                                </div>
+                                <div id="hours" class="spinner input-group">
+                                    <input id="hours-input" class="form-control" type="text" name="duration_hours"
+                                        value="@{extraData.getOrElse("duration_hours", "0")}">
+                                    <label for="hours-input" class="input-group-addon">uur</label>
+                                    <div class="input-group-btn-vertical">
+                                        <button class="btn btn-default"><i class="fa fa-caret-up"></i></button>
+                                        <button class="btn btn-default"><i class="fa fa-caret-down"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="car_name" class="col-sm-4 control-label">Autonaam</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="car_name" name="car_name" placeholder="Autonaam"
+                                    value="@{extraData.get("car_name")}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="seats" class="col-sm-4 control-label">Zitplaatsen</label>
+                            <div class="col-sm-8">
+                                <input type="number" min="0" class="form-control" id="seats" name="seats" placeholder="0"
+                                    value="@{extraData.get("seats")}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="zone" class="col-sm-4 control-label">Locatie</label>
+                            <div class="col-sm-8">
+                                <select id="zone" name="zone" class="form-control">
+                                    <option value="" style="font-weight: bold"
+                                        @if(! extraData.contains("zone")) {
+                                            selected="selected"
+                                        }>
+                                        Geen filter
+                                    </option>
+                                    @zones.map { zone =>
+                                        <option value="@zone.getId"
+                                        @if(extraData.getOrElse("zone", Array()).mkString == "" + zone.getId){selected="selected"}>
+                                            @zone.getName
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-8">
+                                <input type="checkbox" name="has_towbar" value="on" data-label="Trekhaak"
+                                    @if(extraData.contains("has_towbar")){checked="checked"} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-8">
+                                <input type="checkbox" name="has_gps" value="on" data-label="GPS"
+                                    @if(extraData.contains("has_gps")){checked="checked"} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <input type="submit" class="btn btn-default" value="Filter" />
+                            </div>
+                        </div>
+                   </form>
+                </div>
+            </div>
+
+            <div class="row">
+            <div id="invalidSelection" class="alert alert-danger" style="display: none;">
+                Je kan geen reservatie maken die begint in het verleden. Selecteer een andere periode om een reservatie te maken.
+            </div>
+            <div id="confirmation" class="row" style="display: none;">
+                <div class="col-md-4 well">
+                    <h4>Geef beschikbare auto's weer voor de periode</h4>
+                    <form role="form" class="form-horizontal" action="javascript:submitTimePicker();" method="post" style="text-align: right; horizontal-align: right">
+                        <div class="form-group">
+                            <label for="picker-start" class="col-sm-7 control-label">van <span id="confirmation-start-date"></span> om</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="picker-start" name="picker-start" placeholder="uur">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="picker-end" class="col-sm-7 control-label">tot <span id="confirmation-end-date"></span> om</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="picker-end" name="picker-end" placeholder="uur">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">Zoek</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="carTableContainer" class="col-md-8" style="display: none;">
+                    <div class="table-responsive">
+                        <table id="carsTable" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="display: none">ID</th>
+                                    <th>Auto</th>
+                                    <th>Van</th>
+                                    <th>Tot</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="carTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="carModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="carsmodaltitle" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="carsmodeltitle"><span class="glyphicon glyphicon-info-sign"></span> Auto details</h4>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div>
+                                        <p>Hieronder zie je de details van de auto.</p>
+                                        <p>Klik onderaan op de knop "Reserveer auto!" om een aanvraag tot reservatie in te dienen voor deze auto van <b><span id="carModalDateStart"></span> om <span id="carModalTimeStart"></span> tot <span id="carModalDateEnd"></span> om <span id="carModalTimeEnd"></span></b>.</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table id="carDetailsTable" class="table table-hover">
+                                                <tbody id="carDetailsTableBody">
+                                                    <tr>
+                                                        <td>Autonaam</td>
+                                                        <td id="carModalCarName"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Zone</td>
+                                                        <td id="carModalCarZone"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Eigenaar</td>
+                                                        <td id="carModalCarOwner"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Adres</td>
+                                                        <td id="carModalCarAddress"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Model</td>
+                                                        <td id="carModalCarModel"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Type</td>
+                                                        <td id="carModalCarType"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Beschrijving</td>
+                                                        <td id="carModalCarDescription"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Brandstof</td>
+                                                        <td id="carModalCarFuel"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Deuren</td>
+                                                        <td id="carModalCarDoors"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Capaciteit</td>
+                                                        <td id="carModalCarCapacity"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Trekhaak</td>
+                                                        <td id="carModalCarTow"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>GPS</td>
+                                                        <td id="carModalCarGps"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jaar</td>
+                                                        <td id="carModalCarYear"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <form role="form" action="@routes.Reserve.reserve()" method="post">
+                                    <input type="hidden" name="carModalCarId">
+                                    <input type="hidden" name="carModalStart">
+                                    <input type="hidden" name="carModalEnd">
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+
+                                            <button id="carModalConfirmButton" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-ok-circle"></span> Reserveer deze auto!</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+        @if(tab == "trips"){
+            <h3>Selecteer een rit uit de lijst om de gegevens te bekijken of aan te passen.</h3>
+            <div class="well col-md-3" style="height: 500px; overflow: auto">
+                <div class="table-responsive">
+                    <table id="ridesTable" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th colspan="3">
+                                    <div class="btn-group">
+                                        <button id="addRideButton" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Voeg een rit toe <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="javascript:addRide()">Manueel</a></li>
+                                            <li><a href="javascript:addRideManual()">Op basis van reservatie</a></li>
+                                        </ul>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th style="display: none">ID</th>
+                                <th>Auto</th>
+                                <th>Datum</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if(!rides.isEmpty){
+                                @rides.map { ride =>
+                            <tr name="ridesRowElement">
+                                <td style="display: none">@ride.ride.getId()</td>
+                                <td>@ride.ride.getCar().getName()</td>
+                                <td>@{TimeUtils.getFormattedDate("d/MM/yyyy HH:mm", ride.ride.getBegin())}</td>
+                            </tr>
+                        }
+                            } else {
+                            <td colspan="2">Geen ritten weer te geven</td>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <style>
+                    tbody tr.highlight td {
+                        background-color: #f9f9f9;
+                    }
+                </style>
+            </div>
+
+            <div id="rideModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ridesmodaltitle" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="ridesmodeltitle"><span class="glyphicon glyphicon-plus-sign"></span> Voeg een rit toe</h4>
+                        </div>
+
+                        <form role="form" action="@routes.Ride.addRide()" method="post">
+                            <div class="modal-body">
+                                <div class="row form-group">
+                                    <label for="ride-start" class="col-sm-2 control-label">Start datum</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="start" id="ride-start">
+                                        <input type="hidden" name="ride-start"/>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="ride-end" class="col-sm-2 control-label">Eind datum</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="end" id="ride-end">
+                                        <input type="hidden" name="ride-end"/>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label for="search" class="col-sm-2 control-label">Auto</label>
+                                    <div class="col-sm-10">
+                                        <input type="hidden" name="carId" id="ride-car">
+
+                                        <input type="text" class="form-control" id="search" autocomplete="off" placeholder="Zoek een auto...">
+                                        <div class="table-responsive" style="height: 200px; overflow-y: scroll;">
+                                            <table id="carSearchTable" class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="display: none">ID</th>
+                                                        <th>Auto</th>
+                                                        <th>Adres</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody id="carSearchTableBody"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="userId" value="@currentUser.getId">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                                <button id="rideModalConfirmButton" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Voeg rit toe!</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rideModalManual" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="ridesmodalmanualtitle" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="ridesmodelmanualtitle"><span class="glyphicon glyphicon-plus-sign"></span> Voeg een rit toe</h4>
+                        </div>
+
+                        <form role="form" action="@routes.Ride.addRideFromReservation()" method="post">
+                            <div class="modal-body">
+                                <div class="row form-group">
+                                    @if(reservationsWithoutRide.isEmpty()){
+                                        <label class="col-sm-12 control-label">Je hebt geen nieuwe reservaties openstaan waarvan de ritgegevens nog niet ingevuld zijn.</label>
+                                    } else {
+                                        <label class="col-sm-4 control-label">Kies een reservatie</label>
+                                        <div class="btn-group col-sm-8">
+                                            <select class="form-control" id="reservationSelect" name="reservationId">
+                                            @reservationsWithoutRide.map { r =>
+                                                @if(new Date(r.getBegin()).before(new Date())){
+                                                    <option value="@r.getId()">@{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", r.getBegin())} met auto @r.getCar()</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                                @if(!reservationsWithoutRide.isEmpty()){
+                                    <button id="rideModalManualConfirmButton" type="submit" class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Voeg rit toe!</button>
+                                }
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rideDetailsContainer" class="container col-md-9" style="display: none;" >
+                <div class="panel panel-default">
+                    <div class="panel-heading">Kilometerstand</div>
+                    <div class="panel-body">
+                        <div class="col-sm-3">
+                            bij vertrek:
+                        </div>
+                        <div class="col-sm-9">
+                            <a href="#" id="km-start" data-name="km-start">0</a> km
+                        </div>
+                        <div class="col-sm-3">
+                            bij aankomst:
+                        </div>
+                        <div class="col-sm-9">
+                            <a href="#" id="km-end" data-name="km-end">0</a> km
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Tankbeurten</div>
+                    <div class="panel-body">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table id="refuelingsTable" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 25%;">Type</th>
+                                            <th style="width: 15%;">Liter</th>
+                                            <th style="width: 15%;">Prijs</th>
+                                            <th>Bewijs</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="refuelingsTableBody" style="text-align: left;">
+                                    </tbody>
+
+                                    <tfoot id="addNewRefueling">
+                                        <tr>
+                                            <form role="form" action="@routes.Refueling.newRefueling()" method="post" enctype="multipart/form-data">
+                                                <input type="hidden" name="newRefuelingRideId"/>
+                                                <th><input class="form-control input-block-level" name="type"/></th>
+                                                <th><input class="form-control input-block-level" name="litre"/></th>
+                                                <th><input class="form-control input-block-level" name="price"/></th>
+                                                <th><div class="input-group">
+                                                        <span class="input-group-btn">
+                                                            <span class="btn btn-primary btn-file">
+                                                                <span class="glyphicon glyphicon-upload"></span><input type="file" name="proof">
+                                                            </span>
+                                                        </span>
+                                                        <input type="text" class="form-control" readonly="">
+                                                    </div>
+                                                </th>
+                                                <th><button type="submit" class="btn btn-primary" name="submit"><span class="glyphicon glyphicon-plus-sign"></span></button></th>
+                                            </form>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Schadegevallen</div>
+                    <div class="panel-body">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table id="damagesTable" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 0%"></th>
+                                            <th style="width: 30%;">Datum</th>
+                                            <th style="width: 30%;">Beschrijving</th>
+                                            <th style="width: 40%">Bewijs</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="damagesTableBody" style="text-align: left;">
+                                    </tbody>
+                                    <tfoot id="addNewDamage">
+                                        <form role="form" action="@routes.Damage.newDamage()" method="post" enctype="multipart/form-data">
+                                            <tr>
+                                                <input type="hidden" name="newDamageRideId"/>
+                                                <input type="hidden" name="date-hidden"/>
+                                                <th style="width: 30%;" colspan="2">
+                                                    <input type="text" style="text-align: right;" class="form-control input-block-level"
+                                                        id="damage-date" name="date" placeholder="datum">
+                                                </th>
+                                                <th style="width: 30%;"><input class="form-control input-block-level" name="description"/></th>
+                                                <th style="width: 40%;">
+                                                    <div class="input-group">
+                                                        <span class="input-group-btn">
+                                                            <span class="btn btn-primary btn-file">
+                                                                <span class="glyphicon glyphicon-upload"></span><input type="file" name="files" multiple="">
+                                                            </span>
+                                                        </span>
+                                                        <input type="text" class="form-control" readonly="">
+                                                    </div>
+                                                </th>
+                                                <th rowspan="2" style="vertical-align: middle;">
+                                                    <button type="submit" class="btn btn-primary" name="submit"><span class="glyphicon glyphicon-plus-sign"><span/></button>
+                                                </th>
+                                            </tr>
+                                        </form>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="modal fade" id="picsModal" tabindex="-1" role="dialog" aria-labelledby="picsModalTitle" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="height: 60px;">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="picsModalTitle">
+                                                <button type="button" id="picsModalButton" class="btn btn-primary btn-default" style="float: left;"><span class="glyphicon glyphicon-download"></span> Download</button>
+                                                <form action="@routes.File.deleteFile()" method="post">
+                                                    <input type="hidden" name="picsModalDeleteId"/>
+                                                    <input type="hidden" name="picsModalDeleteType"/>
+                                                    <button type="submit" id="picsModalDeleteButton" class="btn btn-primary btn-danger" style="float: left; margin-left: 10px;"><span class="glyphicon glyphicon-remove"></span> Verwijder</button>
+                                                </form>
+                                            </h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <img id="picsModalImg" src="" style="max-width: 550px; max-height: 550px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if(tab == "my-reservations"){
+            <div class="col-md-12">
+                <h2>Lopende reservaties</h2>
+                <div class="well">
+                    <div class="table-responsive" style="height: 200px; overflow: auto">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Auto</th>
+                                    <th>Datum</th>
+                                    <th>Status</th>
+                                    <th>Vorige Lener</th>
+                                    <th>Volgende Lener</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                            @defining(reservations.filter (r =>new Date(r.getBegin()).after(new Date()))){ rs =>
+                                @if(!rs.isEmpty) {
+                                    @rs.map { r =>
+                                        <tr>
+                                            <td>@r.getCar()</td>
+                                            <td>@{
+                                                TimeUtils.getFormattedDate("EEEEE d MMMMM yyyy 'om' HH:mm", r.getBegin())
+                                            }</td>
+                                            <td>
+                                            @if(r.getPending()) {
+                                                In behandeling
+                                            } else {
+                                                @if(r.getApproved()) {
+                                                    Goedgekeurd
+                                                } else {
+                                                    Afgekeurd
+                                                }
+                                            }
+                                            </td>
+                                            <td>
+                                            @if(CarManagementModel.getPreviousBorrower(r) != null) {
+                                                <a href="@routes.UserController.getUser(CarManagementModel.getPreviousBorrower(r).getId())">@{
+                                                    CarManagementModel.getPreviousBorrower(r).getName()
+                                                }</a>
+                                            } else {
+                                                Niemand
+                                            }
+                                            </td>
+                                            <td>
+                                            @if(CarManagementModel.getNextBorrower(r) != null) {
+                                                <a href="@routes.UserController.getUser(CarManagementModel.getNextBorrower(r).getId())">@{
+                                                    CarManagementModel.getNextBorrower(r).getName()
+                                                }</a>
+                                            } else {
+                                                Niemand
+                                            }
+                                            </td>
+                                        </tr>
+                                    }
+                                }else{
+                                    <td class="centered" colspan="5">Je hebt geen komende reservaties</td>
+                                }
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h2><a href="javascript:;" id="showPrevResv" style="color: black;"><i id ="prevResIcon" class="glyphicon small glyphicon-plus-sign"></i>Vorige reservaties</a></h2>
+                <div class="well" style="height: 200px; overflow: auto">
+                    <div class="row" id="prevReservations" style="display:none">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <style>
+                                    td { padding: 7px;}
+                                </style>
+                                <thead>
+                                    <tr>
+                                        <th>Auto</th>
+                                        <th>Datum</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                @defining(reservations.filter (r => new Date(r.getBegin()).before(new Date()))){ rs =>
+                                    @if(!rs.isEmpty) {
+                                    @rs.map { r =>
+
+                                        <tr>
+                                            <td>@r.getCar()</td>
+                                            <td>@{
+                                                TimeUtils.getFormattedDate("EEEEE d MMMMM yyyy 'om' HH:mm", r.getBegin())
+                                            }</td>
+                                        </tr>
+                                    }
+                                    }else{
+                                           <td class="centered" colspan="2">Er zijn geen vorige reservaties weer te geven</td>
+                                        }
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+    @footer()
+    </div>
+}

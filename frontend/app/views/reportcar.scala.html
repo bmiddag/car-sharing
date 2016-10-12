@@ -1,0 +1,145 @@
+@(car: objects.Car)
+
+
+        <head>
+            <style>
+                table, th, td
+                {
+                    border-collapse:collapse;
+                    border:1px solid black;
+
+                }
+                th, td
+                {
+                    padding:15px;
+                }
+            </style>
+        </head>
+        <body>
+        <h1>Rapport auto</h1>
+<div class="row">
+        <table>
+            <tr>
+                <td>Id:</td>
+                <td>@{car.getId()}</td>
+
+
+            </tr>
+            <tr>
+            <td>Eigenaar</td>
+            <td>@{car.getOwner().getName()}</td>
+
+        </tr>
+            <tr>
+                <td>Naam</td>
+                <td>@{car.getName()}</td>
+
+            </tr>
+            <tr>
+                <td>Nummerplaat</td>
+                <td>@{car.getPlate()}</td>
+
+            </tr>
+            <tr>
+                <td>Adres</td>
+                <td>@{car.getAddress().getStreet()} @{car.getAddress().getNumber()} @{car.getAddress().getPlace().getName()} @{car.getAddress().getPlace().getZip()}</td>
+
+            </tr>
+            <tr>
+                <td>Zone</td>
+                <td>@{car.getZone().getName()}</td>
+
+            </tr>
+            <tr>
+                <td>Inscriptie</td>
+                <td>@{car.getInscription()}</td>
+
+            </tr>
+            <tr>
+                <td>Merk</td>
+                <td>@{car.getMake()}</td>
+
+            </tr>
+            <tr>
+                <td>Type</td>
+                <td>@{car.getType()}</td>
+
+            </tr>
+            <tr>
+                <td>Model</td>
+                <td>@{car.getModel()}</td>
+
+            </tr>
+            <tr>
+                <td>Jaar</td>
+                <td>@{car.getYear()}</td>
+
+            </tr>
+            <tr>
+                <td>Brandstof</td>
+                <td>@{car.getFuel()}</td>
+
+            </tr>
+
+
+            <tr>
+                <td>Beschrijving</td>
+                <td>@{car.getDescription()}</td>
+
+            </tr>
+
+            <tr>
+                <td>Aantal deuren</td>
+                <td>@{car.getDoors()}</td>
+
+            </tr>
+            <tr>
+                <td>Capaciteit</td>
+                <td>@{car.getCapacity()}</td>
+
+            </tr>
+
+            <tr>
+                <td>Trekhaak</td>
+                <td>@if(car.getTow()){
+                Ja}else{Nee}</td>
+
+            </tr>
+
+            <tr>
+                <td>Gps aanwezig?</td>
+                <td>@if(car.getGps()){
+                Ja}else{Nee}</td>
+
+            </tr>
+            <tr>
+                <td>Gemiddeld brandstofverbruik per 100 km</td>
+                <td>@{car.getConsumption()}</td>
+
+            </tr>
+            <tr>
+                <td>Chassis</td>
+                <td>@{car.getChassis()}</td>
+
+            </tr>
+            <tr>
+                <td>Waarde</td>
+                <td>@{car.getValue()}</td>
+
+            </tr>
+            <tr>
+                <td>Kilometerstand</td>
+                <td>@{car.getMileage()}</td>
+
+            </tr>
+            <tr>
+                <td>Kilometers per jaar</td>
+                <td>@{car.getKmpy()}</td>
+
+            </tr>
+        </table>
+    </div>
+        </body>
+
+
+

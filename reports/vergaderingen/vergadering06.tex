@@ -1,0 +1,109 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tkz-graph}
+\usepackage[light,math]{iwona}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+	\floatname{algorithm}{Algoritme}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+%\usepackage{gensymb} % throws errors: 'not defining \perthousand' and 'noet defining \micro'
+\usepackage{array}
+	\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+\lstset{
+language=JAVA,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+\title{Vergadering 6}
+\author{Team Edran}
+\date{26 maart 2014}
+
+\begin{document}
+\maketitle
+	\begin{itemize}
+	
+	\item Vooropgelegde deadline:
+	\begin{itemize}
+		\item deadbolt: compileren nog niet op jenkins
+		\item ritgegevens: werkt, behalve bewijsmateriaal uploaden
+		\item kalenderfilter: aan begonnen, Stijn en Wouter T. gaan samenzitten voor naar DAO methodes te kijken
+		\item inlogsysteem: bijna af
+		\item autogegevens: mee bezig
+	\end{itemize}
+	\item views zijn te lang, moeten gesplitst worden (bv. tabs in controllers verwerken i.p.v. alle tabs in 1 html pagina te steken).
+	\item getCars: Gilles was ermee bezig.
+	\item Facturisatie: algoritme in dbmodule schrijven
+	\item werkverdeling: iedereen werkt deadlines af die vorige vergadering zijn opgelegd.
+	\item donderdag 27 maart hackaton 10u.
+	\end{itemize}
+
+\end{document}

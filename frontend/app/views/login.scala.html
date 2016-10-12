@@ -1,0 +1,29 @@
+@(form: Form[Login])
+
+@main("Log-in"){
+
+@helper.form(routes.Login.authenticate()) {
+
+    <div class=" centered ">
+    <p>
+        <input type="email" name="email" placeholder="Email" value="@form("email").value">
+    </p>
+    <p>
+        <input type="password" name="password" placeholder="Wachtwoord" value ="@form("password").value">
+    </p>
+        <p class=" right ">
+            <!--<input type="checkbox" data-label="Onthoud mij"/> -->
+            <button class="btn btn-success" type="submit">Log in</button>
+        </p>
+     </div>
+    <p>
+        <a class=" pull-right text-muted " href="@routes.ForgotPassword.forgot()">Wachtwoord vergeten?</a>
+    </p>
+}
+
+    <div class="row">
+    @footer()
+    </div>
+}
+
+

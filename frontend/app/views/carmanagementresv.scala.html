@@ -1,0 +1,196 @@
+@(reservations: List[objects.Reservation])
+
+<style>
+    .table-responsive{
+        overflow-x: auto;
+    }
+</style>
+
+@defining(reservations.filter(r => r.getPending)){pendingRs =>
+<div class="well">
+    <div class="row" id="pendingReservationsHeader">
+        <div class="col-md-8">
+            <h2> <a href="javascript:;" id="showPendingResTable" style="color: black;"><i id ="resvIcon" class="glyphicon small glyphicon-minus-sign"></i>Reservatieaanvragen</a> </h2>
+        </div>
+    </div>
+    <div class="row" id="pendingReservationsTable" >
+        @if(pendingRs != null && !pendingRs.isEmpty){
+            <form action="@routes.CarManagement.postReservations()" method="post" name="pendingRes">
+                <div class="col-md-8">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <th> Gebruiker </th>
+                                <th> Begin </th>
+                                <th> Eind </th>
+                                <th></th>
+                            </tr>
+
+                            @defining(Calendar.getInstance()) { cal =>
+                                @for((reservation) <- pendingRs){
+                                    <tr id="reservation@reservation.getId()">
+                                        <td> <a href="@routes.UserController.getUser(reservation.getUser().getId())">@{reservation.getUser().getName()}</a></td>
+                                        @{cal.setTimeInMillis(reservation.getBegin());}
+                                        <td> @{String.format("%02d/%02d %02d:%02d",
+                                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                        @{cal.setTimeInMillis(reservation.getEnd());}
+                                        <td> @{String.format("%02d/%02d %02d:%02d",
+                                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                        <td> <input type="checkbox" name="selectedReservations" value="@{reservation.getId()}"> </td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <input type="submit" class="btn btn-default" name="submit" value="Goedkeuren">
+                    </div>
+                    <div class="row">
+                        <input type="text" class="form-control" name="reason" placeholder="Waarom weiger je deze reservatie?">
+                        <input type="submit" class="btn btn-default" name="submit"  value="Afwijzen">
+                    </div>
+                </div>
+            </form>
+        } else {
+            <div class="col-md-8">
+                <h4><i class="text-success glyphicon glyphicon-check"></i> Geen te verwerken reservatieaanvragen</h4>
+            </div>
+        }
+    </div>
+</div>
+}
+@defining(reservations.filter(r => !r.getPending && r.getApproved)){acceptedRs =>
+<div class="well">
+    <div class="row" id="acceptedReservationsHeader">
+        <div class="col-md-8">
+            <h2> <a href="javascript:;" id="showAccResTable" style="color: black;"><i id ="accIcon" class="glyphicon small glyphicon-plus-sign"></i>Goedgekeurde reservaties</a> </h2>
+        </div>
+    </div>
+    <div class="row" id="acceptedReservationsTable" style="display:none;">
+    @if(acceptedRs != null && !acceptedRs.isEmpty){
+        <form action="@routes.CarManagement.postReservations()" method="post" name="acceptedRes">
+            <div class="col-md-8">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th> Gebruiker </th>
+                            <th> Begin </th>
+                            <th> Eind </th>
+                            <th> </th>
+                        </tr>
+                        @defining(Calendar.getInstance()) { cal =>
+                            @for((reservation) <- acceptedRs){
+                                @* 2 days before the beginning, a reservation can not be cancelled anymore *@
+                                @if(reservation.getApproved() != null
+                                    && reservation.getApproved()
+                                && reservation.getPending() != null
+                                && !reservation.getPending()
+                                && reservation.getBegin() != null
+                                && reservation.getBegin() >= new java.util.Date().getTime() + (1000f*60f*60f*24f*2f)){
+                                    <tr id="reservation@reservation.getId()">
+                                        <td> <a href="@routes.UserController.getUser(reservation.getUser().getId())">@{reservation.getUser().getName()}</a></td>
+                                        @{cal.setTimeInMillis(reservation.getBegin());}
+                                        <td> @{String.format("%02d/%02d %02d:%02d",
+                                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                        @{cal.setTimeInMillis(reservation.getEnd());}
+                                        <td> @{String.format("%02d/%02d %02d:%02d",
+                                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                        <td> <input type="checkbox" name="selectedReservations" value="@{reservation.getId()}"> </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <input type="text" class="form-control" name="reason" placeholder="Waarom weiger je deze reservatie?">
+                    <input type="submit" class="btn btn-default" name="submit" value="Afwijzen">
+                </div>
+            </div>
+        </form>
+    } else {
+        <div class="col-md-8">
+            <h4><i class="text-success glyphicon glyphicon-check"></i> Geen goedgekeurde reservaties</h4>
+        </div>
+    }
+
+    </div>
+</div>
+}
+@defining(reservations.filter(r => !r.getPending && !r.getApproved)){rejectRs =>
+<div class="well">
+    <div class="row" id="rejectedReservationsHeader">
+        <div class="col-md-8">
+            <h2> <a href="javascript:;" id="showRejResTable" style="color: black;"><i id ="rejIcon" class="glyphicon small glyphicon-plus-sign"></i> Afgewezen reservaties</a> </h2>
+        </div>
+    </div>
+    <div class="row" id="rejectedReservationsTable" style="display:none;">
+    @if(rejectRs  != null && !rejectRs .isEmpty){
+        <form action="@routes.CarManagement.postReservations()" method="post" name="rejectedRes">
+            <div class="col-md-8">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th> Gebruiker </th>
+                            <th> Begin </th>
+                            <th> Eind </th>
+                            <th></th>
+                        </tr>
+                        @defining(Calendar.getInstance()) { cal =>
+                            @for((reservation) <- rejectRs ){
+                                @if(reservation.getApproved() != null
+                                    && !reservation.getApproved()
+                                && reservation.getPending() != null
+                                && !reservation.getPending()){
+                                    <tr id="reservation@reservation.getId()">
+                                        <td> <a href="@routes.UserController.getUser(reservation.getUser().getId())">@{reservation.getUser().getName()}</a></td>
+                                        @{cal.setTimeInMillis(reservation.getBegin());}
+                                        <td> @{String.format("%02d/%02d %02d:%02d",
+                                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                        @{cal.setTimeInMillis(reservation.getEnd());}
+                                        <td> @{String.format("%02d/%02d %02d:%02d",
+                                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                                        <td> <input type="checkbox" name="selectedReservations" value="@{reservation.getId()}"> </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <input type="submit" class="btn btn-default" name="submit" value="Goedkeuren">
+                </div>
+            </div>
+        </form>
+    } else {
+        <div class="col-md-8">
+            <h4><i class="text-success glyphicon glyphicon-check"></i> Geen afgewezen reservaties.</h4>
+        </div>
+    }
+    </div>
+</div>
+}

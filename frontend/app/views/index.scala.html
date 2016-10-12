@@ -1,0 +1,936 @@
+@*
+* Home page.
+*
+* @param    formList    a list of Inscriptions. Use InfoSessionsModel.getInscriptionFormDataList(User).
+*@
+
+@(tab: String, formList: List[Form[views.formdata.InfoSessionFormData]], pendingReservationsUser: List[objects.Reservation],
+        pendingRidesUser: List[objects.Ride], pendingDamages: List[objects.Damage],
+        stats: List[String], unreadNotifications: List[objects.Notification], pendingReservationsOwner: List[objects.Reservation],
+        pendingRidesOwner: List[objects.Ride])
+
+@import utils.TimeUtils
+
+@stylesheets = {
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("vendor/jqplot/jquery.jqplot.min.css")" />
+<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/parsley.css")" />
+
+}
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Assets.at("vendor/jqplot/jquery.jqplot.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("vendor/jqplot/plugins/jqplot.pieRenderer.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/fileinput.js")"></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/parsley.min.js")"></script>
+
+}
+
+@tabs = {
+    @if(UserModel.getCurrentUser() == null || !(UserModel.getCurrentUser().getRole().getName().equals("user") ||
+            UserModel.getCurrentUser().getRole().getName().equals("new_user") ||
+            UserModel.getCurrentUser().getRole().getName().equals("new_owner") ||
+            UserModel.getCurrentUser().getRole().getName().equals("owner") ||
+            UserModel.getCurrentUser().getRole().getName().equals("almost_user") ||
+            UserModel.getCurrentUser().getRole().getName().equals("almost_owner") ||
+            UserModel.getCurrentUser().getRole().getName().equals("admin"))) {
+        <ul class="nav nav-tabs">
+            <li class="@if(tab == "home") {
+                active
+            }"><a href="@routes.Application.index("home")">Home</a></li>
+            <li class="@if(tab == "concept") {
+                active
+            }"><a href="@routes.Application.index("concept")">Het concept</a></li>
+            <li class="@if(tab == "auto-eigenaars") {
+                active
+            }"><a href="@routes.Application.index("auto-eigenaars")">Voor auto-eigenaars</a></li>
+            <li class="@if(tab == "auto-lozen") {
+                active
+            }"><a href="@routes.Application.index("auto-lozen")">Voor auto-lozen</a></li>
+        </ul>
+    }
+}
+
+
+<style>
+    a.fill-div {
+        display: block;
+        text-decoration: none;
+        color: black;
+    }
+</style>
+
+@main("Welkom bij Dégage", stylesheets, javascripts, tabs, NotificationModel.getNumberOfUnreadNotifications()) {
+    <script>
+        $(document ).ready(function(){
+            $('input[type=file]').bootstrapFileInput();
+        });
+    </script>
+    @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("user")){
+        <div class="panel panel-default">
+            <div class="panel-heading"><a href="@routes.Notifications.notifications()" class="fill-div">Ongelezen Notificaties</a></div>
+            <div class="panel-body">
+            @if(unreadNotifications == null || unreadNotifications.size == 0){
+                <p>Je hebt geen ongelezen notificaties!</p>
+            } else {
+                <ul>
+                @for((notification) <- unreadNotifications){
+                    <li>@notification.getSubject() om @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", notification.getTime())}</li>
+                }
+                </ul>
+            }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><a href="@routes.Reserve.index("trips")" class="fill-div">Openstaande ritgegevens</a></div>
+                <div class="panel-body">
+                @if( pendingRidesUser == null || pendingRidesUser.size == 0 ){
+                    <p>Al jouw ingevulde ritgegevens zijn goed- of afgekeurd!</p>
+                } else{
+                    <ul>
+                    @for((ride) <- pendingRidesUser){
+                        <li>@{ride.getCar().getName()} van @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", ride.getBegin())} tot @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", ride.getEnd())}</li>
+                    }
+                    </ul>
+                }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><a href="@routes.Reserve.index("my-reservations")" class="fill-div">Openstaande Reservaties</a></div>
+                <div class="panel-body">
+                @if( pendingReservationsUser == null || pendingReservationsUser.size == 0 ){
+                    <p>Je hebt geen openstaande reservaties!</p>
+                } else{
+                    <ul>
+                    @for((reservation) <- pendingReservationsUser){
+                        <li>@{reservation.getCar().getName()} van @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", reservation.getBegin())} tot @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", reservation.getEnd())}</li>
+                    }
+                    </ul>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Huidige Kosten</div>
+                <div class="panel-body">
+                    Huidig kwartaal: <strong>€@{FacturisationModel.getCurrentTotal(UserModel.getCurrentUser())/100f}</strong>
+                    @if(FacturisationModel.getLatestInvoiceByUser(UserModel.getCurrentUser) != null){<br>Afgelopen kwartaal (tot @{utils.TimeUtils.getHumanReadableDate(FacturisationModel.getLatestInvoiceByUser(UserModel.getCurrentUser()).getTime())}): <strong>€@{FacturisationModel.getLatestInvoiceByUser(UserModel.getCurrentUser()).getTotalCost()/100f}</strong>}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Openstaande Schadedossiers</div>
+                <div class="panel-body">
+                @if(pendingDamages.size == 0 || pendingDamages == null ){
+                    <p>Je hebt geen openstaande schadedossiers!</p>
+                } else{
+                    <ul>
+                    @for((damage) <- pendingDamages){
+                        <li>@{damage.getId()} (@{damage.getStatus()}), gebeurd op @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", damage.getOccurred())}</li>
+                    }
+                    </ul>
+                }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> Statistieken</div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <td><strong>Aantal nieuwe gebruikers: </strong></td>
+                            <td>@DashboardModel.getNumberOfNewUsers()</td>
+                        </tr>
+                        <tr>
+                            <td><strong> Aantal kilometer gereden met D&#233;gage: </strong></td>
+                            <td>
+                                <table class="table table-striped">
+                                    <tr>
+                                        <td>Deze week:</td>
+                                        <td>@DashboardModel.getNumberOfTotalKMDrivenThisWeek()</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Deze maand: </td>
+                                        <td>@DashboardModel.getNumberOfTotalKMDrivenThisMonth()</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Totaal: </td>
+                                        <td>@DashboardModel.getNumberOfTotalKMDrivenOverall()</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    @* @for((stat) <- stats){
+                    <div id="stat@{stats.indexOf(stat)}">@{Html(stat)}</div>
+                    } *@
+                </div>
+            </div>
+        </div>
+    </div>
+} else { @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("almost_user")){
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">Registratie voltooien</div>
+            <div class="panel-body">
+                <strong>Bedankt om naar onze infosessie te komen! Je bent bijna een volwaardig lid in het systeem! <br /> <br />
+                    Om volwaardig lid te worden moet je een contract ondertekenen, een waarborg betalen en de volgende gegevens invullen. Hierna moet je wachten op de goedkeuring van een beheerder.</strong>
+
+                <form role="form" class="form-horizontal" id="registrationform2" name="registrationform2" method="POST" enctype="multipart/form-data" action="@routes.Registration.completeRegister()" data-parsley-validate>
+
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <div class="row">
+                            <div class="col-sm-3"><label class="control-label" for="telephone">Telefoonnummer</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getPhone() != null && !UserModel.getCurrentUser().getPhone().equals("") ){
+                                    <input type="tel" value="@{UserModel.getCurrentUser().getPhone()}" class="form-control" id="telephone" name="telephone" data-parsley-type="number" data-parsley-trigger="change" required>
+                                } else {
+                                    <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="Telefoonnummer" data-parsley-type="number" data-parsley-trigger="change" required>
+                                }
+                            </div>
+                                <label class="error label label-danger" for="telephone"></label></div>
+                        </div></div>
+
+
+                        <div class="form-group">
+                            <h3 class="breadcrumb">Verblijfsadres <small>(waar verblijf je?)</small></h3>
+                            <div class="row">
+                            <div class="col-sm-3"><label class="control-label" for="streetname">Straat</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getAddress().getStreet() != null && !UserModel.getCurrentUser().getAddress().getStreet().equals("")){
+                                    <input type="text" class="form-control" id="streetname" name="streetname" value="@{UserModel.getCurrentUser().getAddress().getStreet()}" data-parsley-minlength="2" data-parsley-trigger="change" required>
+                                } else {
+                                    <input type="text" class="form-control" id="streetname" name="streetname" placeholder="Straat" data-parsley-minlength="2" data-parsley-trigger="change" required>
+                                }
+                            </div>
+                                <label class="error label label-danger" for="streetname"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="huisnummer">Nummer</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getAddress().getNumber() != null && !UserModel.getCurrentUser().getAddress().getNumber().equals("")){
+                                    <input type="text" class="form-control" id="huisnummer" name="huisnummer" value="@{UserModel.getCurrentUser().getAddress().getNumber()}" data-parsley-trigger="change"  data-parsley-minlength="1" data-parsley-type="number" data-parsley-error-message="Geen geldig huisnummer" required>
+                                } else {
+                                    <input type="text" class="form-control" id="huisnummer" name="huisnummer" placeholder="Huisnummer" data-parsley-trigger="change"  data-parsley-minlength="1" data-parsley-type="number" data-parsley-error-message="Geen geldig huisnummer" required>
+                                }
+                            </div>
+                                <label class="error label label-danger" for="huisnummer"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="bus">Bus</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">&nbsp;</span>
+                                @if(UserModel.getCurrentUser().getAddress().getBus() != null && !UserModel.getCurrentUser().getAddress().getBus().equals("")){
+                                    <input type="text" class="form-control" id="bus" name="bus" value="@{UserModel.getCurrentUser().getAddress().getBus()}" data-parsley-trigger="change" data-parsley-maxlength="3" >
+                                } else {
+                                    <input type="text" class="form-control" id="bus" name="bus" placeholder="Bus" data-parsley-trigger="change" data-parsley-maxlength="3" >
+                                }
+                            </div>
+                                <label class="error label label-danger" for="bus"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="postalcode">Postcode</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getAddress().getPlace().getZip() != null && !UserModel.getCurrentUser().getAddress().getPlace().getZip().equals("")){
+                                    <input type="text" class="form-control" id="postalcode" name="postalcode" value="@{UserModel.getCurrentUser().getAddress().getPlace().getZip()}" data-parsley-minlength="4" data-parsley-type="number" data-parsley-trigger="change" data-parsley-error-message="Een postcode bestaat uit 4 cijfers." required>
+                                } else {
+                                    <input type="text" class="form-control" id="postalcode" name="postalcode" placeholder="Postcode" data-parsley-minlength="4" data-parsley-type="number" data-parsley-trigger="change" data-parsley-error-message="Een postcode bestaat uit 4 cijfers." required>
+                                }
+                            </div>
+                                <label class="error label label-danger" for="postalcode"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="city">Stad</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getAddress().getPlace().getName() != null && !UserModel.getCurrentUser().getAddress().getPlace().getName().equals("")){
+                                    <input type="text" class="form-control" id="city" name="city" value="@{UserModel.getCurrentUser().getAddress().getPlace().getName()}" data-parsley-minlength="2" data-parsley-trigger="change" required>
+                                } else {
+                                    <input type="text" class="form-control" id="city" name="city" placeholder="Stad" data-parsley-minlength="2" data-parsley-trigger="change" required>
+                                }
+                            </div>
+                                <label class="error label label-danger" for="city"></label></div>
+                        </div></div>
+
+
+                        <div class="form-group">
+                            <h3 class="breadcrumb">Domicilieadres <small>(waar ben je gedomicilieerd?)</small></h3>
+                            <div class="row">
+                            <div class="col-sm-3"><label class="control-label" for="domicile_streetname">Straat</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getDomicile().getStreet() != null && !UserModel.getCurrentUser().getDomicile().getStreet().equals("")){
+                                    <input type="text" class="form-control" id="domicile_streetname" name="domicile_streetname" value="@{UserModel.getCurrentUser().getDomicile().getStreet()}" data-parsley-minlength="2" data-parsley-trigger="change" required>
+                                } else {
+                                    <input type="text" class="form-control" id="domicile_streetname" name="domicile_streetname" placeholder="Straat" data-parsley-minlength="2" data-parsley-trigger="change" required>
+                                    }
+                            </div>
+                                <label class="error label label-danger" for="domicile_streetname"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="domicile_huisnummer">Nummer</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getDomicile().getNumber() != null && !UserModel.getCurrentUser().getDomicile().getNumber().equals("")){
+                                    <input type="text" class="form-control" id="domicile_huisnummer" name="domicile_huisnummer" value="@{UserModel.getCurrentUser().getDomicile().getNumber()}" data-parsley-trigger="change"  data-parsley-minlength="1" data-parsley-type="number" data-parsley-error-message="Geen geldig huisnummer" required>
+                                } else {
+                                    <input type="text" class="form-control" id="domicile_huisnummer" name="domicile_huisnummer" placeholder="Huisnummer" data-parsley-trigger="change"  data-parsley-minlength="1" data-parsley-type="number" data-parsley-error-message="Geen geldig huisnummer" required>
+                                    }
+                            </div>
+                                <label class="error label label-danger" for="domicile_huisnummer"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="domicile_bus">Bus</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">&nbsp;</span>
+                                @if(UserModel.getCurrentUser().getDomicile().getBus() != null && !UserModel.getCurrentUser().getDomicile().getBus().equals("")){
+                                    <input type="text" class="form-control" id="domicile_bus" name="domicile_bus" value="@{UserModel.getCurrentUser().getDomicile().getBus()}" data-parsley-trigger="change" data-parsley-maxlength="3" >
+                                } else {
+                                    <input type="text" class="form-control" id="domicile_bus" name="domicile_bus" placeholder="Bus" data-parsley-trigger="change" data-parsley-maxlength="3" >
+                                    }
+                            </div>
+                                <label class="error label label-danger" for="domicile_bus"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="domicile_postalcode">Postcode</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getDomicile().getPlace().getZip() != null && !UserModel.getCurrentUser().getDomicile().getPlace().getZip().equals("")){
+                                    <input type="text" class="form-control" id="domicile_postalcode" name="domicile_postalcode" value="@{UserModel.getCurrentUser().getDomicile().getPlace().getZip()}" data-parsley-minlength="4" data-parsley-type="number" data-parsley-trigger="change" data-parsley-error-message="Een postcode bestaat uit 4 cijfers." required>
+                                } else {
+                                    <input type="text" class="form-control" id="domicile_postalcode" name="domicile_postalcode" placeholder="Postcode" data-parsley-minlength="4" data-parsley-type="number" data-parsley-trigger="change" data-parsley-error-message="Een postcode bestaat uit 4 cijfers." required>
+                                    }
+                            </div>
+                                <label class="error label label-danger" for="domicile_postalcode"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="domicile_city">Stad</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getDomicile().getPlace().getName() != null && !UserModel.getCurrentUser().getDomicile().getPlace().getName().equals("")){
+                                    <input type="text" class="form-control" id="domicile_city" name="domicile_city" value="@{UserModel.getCurrentUser().getDomicile().getPlace().getName()}" data-parsley-minlength="2" data-parsley-trigger="change" required>
+                                } else {
+                                    <input type="text" class="form-control" id="domicile_city" name="domicile_city" placeholder="Stad" data-parsley-minlength="2" data-parsley-trigger="change" required>
+                                    }
+                            </div>
+                                <label class="error label label-danger" for="domicile_city"></label></div></div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <h3 class="breadcrumb">Identiteitskaart</h3>
+                            <div class="row">
+
+                            <div class="col-sm-3"><label class="control-label" for="id_card_number">Identiteitskaartnr.</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getIdCard().getNumber() != null && !UserModel.getCurrentUser().getIdCard().getNumber().equals("")){
+                                    <input type="text" class="form-control" id="id_card_number" name="id_card_number" value="@{UserModel.getCurrentUser().getIdCard().getNumber()}" data-parsley-type="number"  data-parsley-trigger="change" required>
+                                } else {
+                                    <input type="text" class="form-control" id="id_card_number" name="id_card_number" placeholder="Identiteitskaartnummer" data-parsley-type="number" data-parsley-trigger="change" required>
+                                    }
+                            </div>
+                                <label class="error label label-danger" for="id_card_number"></label></div>
+
+                            <div class="col-sm-3"><label class="control-label" for="id_card_reg">Rijksregisternummer</label></div>
+                            <div class="col-sm-9"><div class="input-group">
+                                <span class="input-group-addon">*</span>
+                                @if(UserModel.getCurrentUser().getIdCard().getRegister() != null && !UserModel.getCurrentUser().getIdCard().getRegister().equals("")){
+                                    <input type="text" class="form-control" id="id_card_reg" name="id_card_reg" value="@{UserModel.getCurrentUser().getIdCard().getRegister()}" data-parsley-type="number"  data-parsley-trigger="change" required>
+                                } else {
+                                    <input type="text" class="form-control" id="id_card_reg" name="id_card_reg" placeholder="Rijksregisternummer" data-parsley-type="number" data-parsley-trigger="change" required>
+                                    }
+                            </div>
+                                <label class="error label label-danger" for="id_card_reg"></label></div>
+
+
+                            <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-9">
+                                <div style="width: 40%;">
+                                    @if(UserModel.getCurrentUser().getIdCard().getFile() != null){
+
+                                       <img id="file_idcard" src="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getIdCard().getFile())}" width="70%" style="margin-top: 40px;">
+
+                                    } else {
+
+                                        <img id="file_idcard" src="@{routes.Assets.at("images/default_avatar.svg")}" width="70%" style="margin-top: 40px;" onerror="this.src='@{routes.Assets.at("images/default_avatar.png")}'">
+
+                                    }
+                                    <input type="file" title="Foto identiteitskaart" data-filename-placement="inside" class="form-control" id="id_card_pic" name="id_card_pic" style="height: 30px;" />
+                                </div>
+                            </div>
+
+                                </div>
+                        </div>
+
+                        </div>
+
+
+                    <div class="form-group">
+                        <h3 class="breadcrumb">Rijbewijs</h3>
+<div class="row">
+                        <div class="col-sm-3"><label class="control-label" for="license_number">Rijbewijsnr.</label></div>
+                        <div class="col-sm-9"><div class="input-group">
+                            <span class="input-group-addon">*</span>
+                            @if(UserModel.getCurrentUser().getLicense().getNumber() != null && !UserModel.getCurrentUser().getLicense().getNumber().equals("")){
+                                <input type="text" class="form-control" id="license_number" name="license_number" value="@{UserModel.getCurrentUser().getLicense().getNumber()}" data-parsley-type="number"  data-parsley-trigger="change" required>
+                            } else {
+                                <input type="text" class="form-control" id="license_number" name="license_number" placeholder="Rijbewijsnummer" data-parsley-type="number" data-parsley-trigger="change" required>
+                                }
+                        </div>
+                            <label class="error label label-danger" for="license_number"></label></div>
+
+    <div class="row">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9">
+                            <div style="width: 40%;">
+                                @if(UserModel.getCurrentUser().getLicense().getFile() != null){
+                                    <a class="thumbnail" href="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getLicense().getFile())}" target="_blank">
+                                        <img src="@{routes.FileRenderer.getFile(UserModel.getCurrentUser().getLicense().getFile())}" />
+                                    </a>
+                                } else {
+                                    <a class="thumbnail" href="@{routes.Assets.at("images/default_avatar.png")}" target="_blank">
+                                        <img src="@{routes.Assets.at("images/default_avatar.png")}"/>
+                                    </a>
+                                }
+                                <input type="file" title="Foto rijbewijs" data-filename-placement="inside" class="form-control" id="license_pic" name="license_pic" style="height: 30px;" />
+                            </div>
+                        </div>
+
+                    </div></div>
+
+
+                </div>
+                <div class="row"><div style="padding-bottom: 0px; text-align: center !important;">
+                    <button type="submit" class="btn btn-success" style="text-align: center;">
+                        <span class="glyphicon glyphicon-ok-circle"></span> Bevestig
+                    </button>
+                </div></div></div>
+
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> Statistieken</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <td><strong>Aantal nieuwe gebruikers: </strong></td>
+                                <td>@DashboardModel.getNumberOfNewUsers()</td>
+                            </tr>
+                            <tr>
+                                <td><strong> Aantal kilometer gereden met D&#233;gage: </strong></td>
+                                <td>
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>Deze week:</td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisWeek()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deze maand: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisMonth()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Totaal: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenOverall()</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        @* @for((stat) <- stats){
+                        <div id="stat@{stats.indexOf(stat)}">@{Html(stat)}</div>
+                        } *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    } else { @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("almost_owner")){
+        <div class="panel panel-default">
+            <div class="panel-heading">Registratie voltooien</div>
+            <div class="panel-body">
+                <strong>Bedankt om naar onze infosessie te komen! Je bent bijna een volwaardig lid in het systeem... <br />
+                Om volwaardig lid te worden moet je een contract ondertekenen, een waarborg betalen en de volgende gegevens invullen:</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> Statistieken</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <td><strong>Aantal nieuwe gebruikers: </strong></td>
+                                <td>@DashboardModel.getNumberOfNewUsers()</td>
+                            </tr>
+                            <tr>
+                                <td><strong> Aantal kilometer gereden met D&#233;gage: </strong></td>
+                                <td>
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>Deze week:</td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisWeek()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deze maand: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisMonth()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Totaal: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenOverall()</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        @* @for((stat) <- stats){
+                        <div id="stat@{stats.indexOf(stat)}">@{Html(stat)}</div>
+                        } *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    } else { @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("new_user")){
+        @{infosessions_main(formList)}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> Statistieken</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <td><strong>Aantal nieuwe gebruikers: </strong></td>
+                                <td>@DashboardModel.getNumberOfNewUsers()</td>
+                            </tr>
+                            <tr>
+                                <td><strong> Aantal kilometer gereden met D&#233;gage: </strong></td>
+                                <td>
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>Deze week:</td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisWeek()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deze maand: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisMonth()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Totaal: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenOverall()</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        @* @for((stat) <- stats){
+                        <div id="stat@{stats.indexOf(stat)}">@{Html(stat)}</div>
+                        } *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    }  else { @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("new_owner")){
+        @{infosessions_main(formList)}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> Statistieken</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <td><strong>Aantal nieuwe gebruikers: </strong></td>
+                                <td>@DashboardModel.getNumberOfNewUsers()</td>
+                            </tr>
+                            <tr>
+                                <td><strong> Aantal kilometer gereden met D&#233;gage: </strong></td>
+                                <td>
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>Deze week:</td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisWeek()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deze maand: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisMonth()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Totaal: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenOverall()</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        @* @for((stat) <- stats){
+                        <div id="stat@{stats.indexOf(stat)}">@{Html(stat)}</div>
+                        } *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    } else { @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("owner")){
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="@routes.Notifications.notifications()" class="fill-div">Ongelezen Notificaties</a></div>
+                    <div class="panel-body">
+                    @if(unreadNotifications == null || unreadNotifications.size == 0){
+                        <p>Je hebt geen ongelezen notificaties!</p>
+                    } else {
+                        <ul>
+                        @for((notification) <- unreadNotifications){
+                            <li>@notification.getSubject() om @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", notification.getTime())}</li>
+                        }
+                        </ul>
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="@routes.Reserve.index("trips")" class="fill-div">Openstaande ritgegevens</a></div>
+                    <div class="panel-body">
+                    @if( pendingRidesUser == null || pendingRidesUser.size == 0 ){
+                        <p>Al jouw ingevulde ritgegevens zijn goed- of afgekeurd!</p>
+                    } else{
+                        <ul>
+                        @for((ride) <- pendingRidesUser){
+                            <li>@{ride.getCar().getName()} van @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", ride.getBegin())} tot @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", ride.getEnd())}</li>
+                        }
+                        </ul>
+                    }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="@routes.Reserve.index("my-reservations")" class="fill-div">Openstaande Reservaties</a></div>
+                    <div class="panel-body">
+                    @if( pendingReservationsUser == null || pendingReservationsUser.size == 0 ){
+                        <p>Je hebt geen openstaande reservaties!</p>
+                    } else{
+                        <ul>
+                        @for((reservation) <- pendingReservationsUser){
+                            <li>@{reservation.getCar().getName()} van @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", reservation.getBegin())} tot @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", reservation.getEnd())}</li>
+                        }
+                        </ul>
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="@routes.CarManagement.carManagement("reservations")" class="fill-div">Nog te behandelen reservaties</a></div>
+                    <div class="panel-body">
+                        @if(pendingReservationsOwner == null || pendingReservationsOwner.size() == 0){
+                            <p>Je hebt reeds alle reservaties geaccepteerd of geweigerd!</p>
+                        } else {
+                            <ul>
+                                @for((reservation) <- pendingReservationsOwner){
+                                    <li>@{reservation.getUser().getName()} op @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", reservation.getBegin())} tot @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", reservation.getEnd())}</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="@routes.CarManagement.carManagement("trips")" class="fill-div">Nog te behandelen ritgegevens</a></div>
+                    <div class="panel-body">
+                        <ul>
+                            @if(pendingRidesOwner == null || pendingReservationsOwner.size() == 0){
+                                <p>Je hebt reeds alle ritgegevens goed- of afgekeurd!</p>
+                            } else {
+                                @for((ride) <- pendingRidesOwner){
+                                    <li>@{ride.getUser().getName()} op @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", ride.getBegin())} tot @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", ride.getEnd())}</li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Huidige Kosten</div>
+                    <div class="panel-body">
+                        Huidig kwartaal: <strong>€@{FacturisationModel.getCurrentTotal(UserModel.getCurrentUser())/100f}</strong>
+                        @if(FacturisationModel.getLatestInvoiceByUser(UserModel.getCurrentUser) != null){<br>Afgelopen kwartaal (tot @{utils.TimeUtils.getHumanReadableDate(FacturisationModel.getLatestInvoiceByUser(UserModel.getCurrentUser()).getTime())}): <strong>€@{FacturisationModel.getLatestInvoiceByUser(UserModel.getCurrentUser()).getTotalCost()/100f}</strong>}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Openstaande Schadedossiers</div>
+                    <div class="panel-body">
+                    @if(pendingDamages.size == 0 || pendingDamages == null ){
+                        <p>Je hebt geen openstaande schadedossiers!</p>
+                    } else{
+                        <ul>
+                        @for((damage) <- pendingDamages){
+                            <li>@{damage.getId()} (@{damage.getStatus()}), gebeurd op @{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", damage.getOccurred())}</li>
+                        }
+                        </ul>
+                    }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> Statistieken</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <td><strong>Aantal nieuwe gebruikers: </strong></td>
+                                <td>@DashboardModel.getNumberOfNewUsers()</td>
+                            </tr>
+                            <tr>
+                                <td><strong> Aantal kilometer gereden met D&#233;gage: </strong></td>
+                                <td>
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>Deze week:</td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisWeek()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deze maand: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisMonth()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Totaal: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenOverall()</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        @* @for((stat) <- stats){
+                        <div id="stat@{stats.indexOf(stat)}">@{Html(stat)}</div>
+                        } *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    } else { @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("admin")){
+        @* Homepagina: admin *@
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="@routes.Admin.admin("proof")" class="fill-div">Lopende bewijsmaterialen</a></div>
+                    <div class="panel-body">
+                        <p>Er zijn nog <strong>@DashboardModel.getNumberOfPendingProofs()</strong> bewijsmaterialen goed te keuren</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="@routes.Admin.admin("users")" class="fill-div">Lopende gebruikers</a></div>
+                    <div class="panel-body">
+                        <p>Er zijn nog <strong>@UserModel.getAlmostUsers().size()</strong> gebruikers goed te keuren</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><a href="@routes.Admin.admin("cars")" class="fill-div">Lopende auto's</a></div>
+                    <div class="panel-body">
+                        <p>Er zijn nog <strong>@DashboardModel.getNumberOfPendingCars()</strong> auto's goed te keuren</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><span class="glyphicon glyphicon-stats"></span> Statistieken</div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <tr>
+                                <td><strong>Aantal nieuwe gebruikers: </strong></td>
+                                <td>@DashboardModel.getNumberOfNewUsers()</td>
+                            </tr>
+                            <tr>
+                                <td><strong> Aantal kilometer gereden met D&#233;gage: </strong></td>
+                                <td>
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td>Deze week:</td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisWeek()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Deze maand: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenThisMonth()</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Totaal: </td>
+                                            <td>@DashboardModel.getNumberOfTotalKMDrivenOverall()</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    @* @for((stat) <- stats){
+                        <div id="stat@{stats.indexOf(stat)}">@{Html(stat)}</div>
+                    } *@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    } else {
+        @if(tab == "home"){
+            @* Homepagina: niet aangemeld *@
+            <h2>Autodelen in Gent / Dégage! vzw</h2>
+            <h4>Wie zijn we?</h4>
+            <p><b>Dégage!</b> vzw (<b>DE G</b>edeelde <b>A</b>utovloot <b>GE</b>nt) is een particulier autodelensysteem met 23 auto’s en meer dan 500 gebruikers in Gent. </p>
+            <h4>Wat doen we?</h4>
+            <p>Particulier autodelen betekent in dit geval dat enkele auto-eigenaars hun auto door andere mensen (meestal zonder auto) laten gebruiken tegen een kilometervergoeding.
+                Of, anders gezegd, een systeem waarbij mensen zonder auto tegen kostprijs een auto kunnen gebruiken zonder er zelf één te kopen. </p>
+            <h4>Waar doen we het?</h4>
+            <p>Voorlopig werken we enkel met auto eigenaars en gebruikers in Gent. Op <a href="@routes.Application.map()">dit kaartje</a> kan je zien waar onze auto's momenteel verspreid zijn. </p>
+            <p>Dankzij logistieke ondersteuning van de Universiteit Gent, en meerbepaald team Edran, kunnen we nu verder uitbreiden.</p>
+            <hr>
+            <h4>Gezocht:</h4>
+            <b>Eigenaars</b> die een auto willen delen, uit de buurt van Gent-Centrum, Rabot of Brugse Poort, kunnen hun kandidatuur <a href="@routes.Registration.index()">hier</a> melden.
+            <hr>
+            <p><small>Admin login: <strong>admin&#64;admin.admin</strong>, <strong>admin</strong> </small></p>
+            <p><small>Nieuwe gebruiker login: <strong>user&#64;user.user</strong>, <strong>user</strong>  óf registreer jezelf!</small></p>
+            <p><small>Nieuwe auto-eigenaar login: <strong>new_owner&#64;owner.owner</strong>, <strong>owner</strong> óf registreer jezelf!</small></p>
+            <p><small>Lener login: <strong>lener&#64;lener.lener</strong>, <strong>lener</strong> </small></p>
+            <p><small>Eigenaar login: <strong>owner&#64;owner.owner</strong>, <strong>owner</strong> </small></p>
+        }
+
+        @if(tab == "concept") {
+            <h2>Autodelen: een zegen voor iedereen.</h2>
+            <i>-Het systeem garandeert mentaliteitsverandering op lange termijn.</i>
+            <br>
+            Wat autodelen voorheeft op bewustmakingscampagnes, carpoolen en andere initiatieven die een beroep doen op de goodwill van de automobilist, is het feit dat het om een <b>systeem</b> gaat. Autodelers kunnen nu eenmaal een auto niet op een impulsieve manier gebruiken. Het reserveringssysteem maakt de drempel om een auto te gebruiken iets hoger dan wanneer iedereen zijn eigen auto heeft. Die drempel is de sleutel tot <b>bewuster autogebruik</b> en maakt van autodelers bewuste mobiliteitsgebruikers in het algemeen.
+            <br>
+            Wie geen auto voor de deur heeft staan, zal voor kleine verplaatsingen eerder de fiets of het openbaar vervoer gebruiken. Autodelers leren hun verplaatsingen ook beter <b>plannen</b>. Er zijn uiteraard situaties waarbij het openbaar vervoer niet beschikbaar is of niet geschikt is. Denk maar aan uitstappen naar het platteland, kettingverplaatsingen die met het openbaar vervoer teveel tijd kosten of het vervoeren van grote voorwerpen. Dan is de auto een welkome oplossing, maar op dat moment is de vanzelfsprekendheid ervan al doorprikt.
+            <br>
+            Het D&eacute;gage!vzw-systeem zit bovendien zo ineen dat het <b>rationeel gebruik</b> aangemoedigd wordt door de kilometerprijs voor lange verplaatsingen naar beneden te halen. Wie verschillende ritten in één keer combineert, betaalt gemiddeld minder per kilometer.
+            <br><br>
+
+            <i>-Veiliger, schoner, groener.</i>
+            <br>
+            Autodelen is zonder twijfel milieuvriendelijk en duurzaam en verhoogt de leefbaarheid van de omgeving.
+            <br>
+            Omdat autodelers hun korte verplaatsingen niet of minder met de auto doen, <b>daalt het totale autogebruik</b>. Bovendien zijn het net die korte verplaatsingen die heel vervuilend zijn. Minder autoverkeer betekent uiteraard ook minder files.
+            <br>
+            Ook het <b>totale <i>aantal</i> auto's daalt</b> en dat heeft positieve gevolgen voor de openbare ruimte. Als er minder parkeerplaatsen nodig zijn, kan de vrijgekomen ruimte voor iets anders gebruikt worden.
+            <br><br>
+
+            <i>-Niet alléén voor groene jongens.</i>
+            <br>
+            Tegelijk is autodelen ook een interessante oplossing voor wie zijn vervoerskosten wil temperen of voor wie zich geen eigen auto kan veroorloven. Autodelen is dan een manier om <b>basismobiliteit</b> te garanderen, ook voor mensen met een laag inkomen.
+            <br>
+            Autodelen is heel voordelig. De jaarlijkse kosten van een auto zijn aanzienlijk, ook wanneer hij niet rijdt. Een maandelijks bedrag van 250 € voor benzine en vaste kosten blijkt niet overdreven. Door een auto te delen, neemt de auto een veel kleinere hap uit het huishoudelijke budget.
+            <br>
+            Bij D&eacute;gage!vzw betaalt de gebruiker enkel wat hij verbruikt. Er is <b>geen abonnementsgeld</b>. Dat maakt het systeem ook interessant voor kleine gebruikers.
+            D&eacute;gage!vzw maakt <b>geen winst</b>. De prijs per kilometer geeft een <b>realistisch beeld</b> van wat het kost om met de auto te rijden. Dat maakt het voor de gebruikers ook gemakkelijker om te vergelijken met bijvoorbeeld het openbaar vervoer. Bovendien worden de administratie en een deel van het onderhoud van de auto's door vrijwilligers gedaan.
+            <br><br>
+
+            <i>-Een effici&euml;nt en economisch systeem.</i>
+            <br>
+            Hoewel veel D&eacute;gage!vzw-leden een uitgesproken visie hebben over mobiliteit, verkeer en milieu, wordt het systeem ook draaiende gehouden door een <b>interne economische logica</b>.
+            <br>
+            De twee betrokken partijen, eigenaars en gebruikers, hebben allebei verschillende maar even dwingende motieven. De eigenaars blijven in ons systeem eigenaar, met alle bijhorende taken. Elke eigenaar betaalt  voor zijn auto taksen, verzekeringen en onderhoud. Die kosten kan zij/hij recupereren door de auto zoveel mogelijk te laten gebruiken door iemand anders. Voor die leenbeurten krijgt de eigenaar immers een vergoeding in verhouding met die kosten. Dat geeft de eigenaar een goede reden om het de gebruikers zo gemakkelijk mogelijk te maken om de auto te gebruiken.
+            De autolozen onder de D&eacute;gage!vzw-leden hebben dan weer het voordeel dat zij volledig zorgeloos door het leven gaan wat betreft verzekeringen, onderhoud enzovoort. Ze gebruiken een auto, respecteren enkele praktische afspraken en betalen per kilometer.
+        }
+
+        @if(tab == "auto-eigenaars") {
+            <h2>De eigenaar</h2>
+
+            Waarom zou ik  mijn auto delen met iemand anders?
+            <br>
+            Er zijn <b>twee soorten redenen</b> waarom iemand dat doet, idealisme en geldgewin. Je kan ze natuurlijk ook combineren, dat heet dan onbaatzuchtig zelfzuchtig zijn en is uiterst modern. <br>
+            <br>
+            <br>
+            <u>Hoe werkt het?</u>
+            <br>
+            Lid worden van Dégage!vzw gaat als volgt:
+            <br>
+            Er is een gesprek met één van de medewerkers die je exact uitlegt hoe alles werkt. Dan heb je ook de kans om vragen te stellen, enz.
+            <br>
+            Iemand van de beheerraad doet een proefritje met je auto. We maken niet alleen graag kennis met de eigenaars, maar ook met de auto.
+            <br>
+            <b>De verzekering</b>
+            <br>
+            Veel eigenaars in spé stellen zich vragen bij de verzekering: wat als iemand een ongeval heeft met mijn auto.
+            <br>
+            Om te beginnen kan je via Dégage!vzw lid worden van de groepsverzekering. Onze makelaar is op de hoogte van het systeem. Deze groepsverzekering is zelfs goedkoper dan de meeste andere verzekeringen, net omdat we met meerdere auto's aangesloten zijn.
+            <br>
+            Bovendien werken we met een systeem van waarborgen en "solidariteit". Als iemand een ongeval veroorzaakt, dan betaalt die persoon een deel van de kosten, de rest wordt bijgepast met de waarborgen van iedereen. In geval van dronkenschap, overdreven snelheid, ... (lijst is niet limitatief) draait de veroorzaker op voor de volledige kosten. Ook de stijging van de bonus-malus wordt door ons opgevangen.
+            <br>
+            Als je uit de vzw stapt, dan levert onze makelaar zelfs een attest af dat je ongevalvrij hebt gereden.
+            <br>
+            <br>
+            Je kan natuurlijk bij je eigen verzekeraar blijven, maar dan willen we dat je een (schriftelijk) bewijs hebt van je verzekeraar dat die op de hoogte is van het "gewijzigd risico". In sommige gevallen weigert een verzekeraar dit, maar dan heb je het recht om je verzekeringspolis op te zeggen om te veranderen. Je auto kan pas gedeeld worden als we dit bewijsje in handen hebben. De ervaring leert dat dit een tijdrovende procedure is, niet alle verzekeraars zijn happig om dit toe te staan.
+            <br>
+            <br>
+            Tenslotte: dat autodelen niet alleen goed is voor de leden blijkt uit het verhaal van Donaldje. Deze deelauto heeft al meer dan 500.000 km op de teller (and counting).
+            <br>
+            <br>
+            Eénmaal je lid bent wordt je auto op de internet-kalender gezet. De leden kunnen daar zien welke auto's op welk moment vrij zijn. Ze reserveren en laten je dan via telefoon of email weten dat ze gereserveerd hebben. Dan kan je ook afspreken wanneer de sleutels overhandigd worden.
+            <br>
+            <br>
+            Om de drie maanden krijg je een document waarin je alle gebruikers en hun respectievelijk gereden kilometers in noteert. Dat stuur je terug en dan krijg je enkele weken later je afrekening.
+            <br>
+            <br>
+
+            <b>Wat verdien je er aan?</b>
+            <br>
+            <br>
+            Om kort te zijn: niets!
+            <br>
+            Maar laat ons even verduidelijken...
+            <br>
+            Er zijn veel auto's in ons land die niet maximaal gebruikt worden. Het is nu eenmaal moeilijk leven zonder auto, vandaar dat veel mensen er één kopen, ook als ze hem niet iedere dag gebruiken.
+            <br>
+            Maar een stilstaande auto kost ook geld. Die vaste kosten zijn aanzienlijk. Zonder overdrijven kunnen we stellen dat een auto al snel 2000 euro per jaar kost. En dan heb je nog geen kilometer gereden.
+            <br>
+            <br>
+            Als je je auto deelt, dan worden alle vaste kosten, onderhoudskosten, verbruikskosten, slijtage, ... gelijk verdeeld over alle personen die je auto gebruikt hebben. Zelf rij je op die manier aan kostprijs. Elk kwartaal krijg je een deel van de kosten terugbetaald. Dégage!vzw betaalt zelfs je autopechverzekering. Een cadeautje van ons.
+            <br>
+            Rijk zal je er niet van worden, maar je dure auto wordt toch al iets minder duur.
+        }
+
+        @if(tab == "auto-lozen") {
+            <h2>De autoloze</h2>
+
+            Het is simpel: je moet al een intensieve autogebruiker worden om de aanschaf van eigen auto te laten renderen.
+            <br>
+            <br>
+            Je betaalt wat je verbruikt bij D&eacute;gage!vzw en dat maakt autodelen héél concurrerend.
+            <br>
+            <br>
+            Bovendien zijn er verschillende types auto's beschikbaar en is de kans klein dat je geen auto kan krijgen wanneer je die nodig hebt.
+            <br>
+        }
+    }}}}}}}
+    <div class="row">
+    @footer()
+    </div>
+}
+
+

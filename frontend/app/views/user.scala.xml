@@ -1,0 +1,7 @@
+@(userObj: objects.User)
+<user id="@userObj.getId()">
+    <name>@userObj.getName()</name>
+    <surname>@userObj.getSurname()</surname>
+    <mail>@userObj.getMail()</mail>
+    <phone>@userObj.getPhone()</phone>
+</user>

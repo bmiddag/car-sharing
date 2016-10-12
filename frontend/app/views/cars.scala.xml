@@ -1,0 +1,12 @@
+@*****************************************
+ * XML representation of a list of cars. *
+ *                                       *
+ * @param cars The cars to list          *
+ *****************************************@
+@(carsObj: Collection[objects.Car])<?xml version="1.0" encoding="utf-8"?>
+
+<cars>
+    @for(carObj <- carsObj) {
+        @car(carObj)
+    }
+</cars>

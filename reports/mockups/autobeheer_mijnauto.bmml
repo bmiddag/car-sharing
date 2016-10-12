@@ -1,0 +1,91 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1318" measuredH="874" mockupW="1263" mockupH="847">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="55" y="27" w="1263" h="847" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//www.degage.be</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::HRule" x="55" y="176" w="1248" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::ButtonBar" x="541" y="196" w="-1" h="-1" measuredW="343" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>3</selectedIndex>
+        <text>Reservaties%2C%20kalender%2C%20ritgegevens%2C%20mijn%20auto</text>
+      </controlProperties>
+    </control>
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::Label" x="541" y="253" w="-1" h="-1" measuredW="136" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Huidige%20kilometerstand</text>
+      </controlProperties>
+    </control>
+    <control controlID="24" controlTypeID="com.balsamiq.mockups::Label" x="550" y="476" w="-1" h="-1" measuredW="93" measuredH="21" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bewijsmateriaal</text>
+      </controlProperties>
+    </control>
+    <control controlID="25" controlTypeID="com.balsamiq.mockups::Label" x="541" y="289" w="-1" h="-1" measuredW="118" measuredH="21" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Niet%20beschikbaar%20op</text>
+      </controlProperties>
+    </control>
+    <control controlID="27" controlTypeID="com.balsamiq.mockups::CheckBox" x="550" y="310" w="-1" h="-1" measuredW="76" measuredH="22" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Maandag</text>
+      </controlProperties>
+    </control>
+    <control controlID="28" controlTypeID="com.balsamiq.mockups::CheckBox" x="550" y="332" w="-1" h="-1" measuredW="69" measuredH="22" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Dinsdag</text>
+      </controlProperties>
+    </control>
+    <control controlID="29" controlTypeID="com.balsamiq.mockups::CheckBox" x="550" y="354" w="-1" h="-1" measuredW="83" measuredH="22" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Woensdag</text>
+      </controlProperties>
+    </control>
+    <control controlID="30" controlTypeID="com.balsamiq.mockups::CheckBox" x="550" y="376" w="-1" h="-1" measuredW="85" measuredH="22" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Donderdag</text>
+      </controlProperties>
+    </control>
+    <control controlID="31" controlTypeID="com.balsamiq.mockups::CheckBox" x="550" y="398" w="-1" h="-1" measuredW="63" measuredH="22" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Vrijdag</text>
+      </controlProperties>
+    </control>
+    <control controlID="32" controlTypeID="com.balsamiq.mockups::CheckBox" x="550" y="420" w="-1" h="-1" measuredW="75" measuredH="22" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Zaterdag</text>
+      </controlProperties>
+    </control>
+    <control controlID="33" controlTypeID="com.balsamiq.mockups::CheckBox" x="550" y="442" w="-1" h="-1" measuredW="66" measuredH="22" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Zondag</text>
+      </controlProperties>
+    </control>
+    <control controlID="34" controlTypeID="com.balsamiq.mockups::ComboBox" x="668" y="315" w="-1" h="-1" measuredW="82" measuredH="24" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Beginuur</text>
+      </controlProperties>
+    </control>
+    <control controlID="48" controlTypeID="com.balsamiq.mockups::ComboBox" x="765" y="315" w="-1" h="-1" measuredW="76" measuredH="24" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Einduur</text>
+      </controlProperties>
+    </control>
+    <control controlID="50" controlTypeID="com.balsamiq.mockups::DataGrid" x="541" y="512" w="287" h="141" measuredW="287" measuredH="21" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Soort%20bewijsmateriaal%2C%20datum%20rit%2C%20prijs%2C%20LINK</text>
+      </controlProperties>
+    </control>
+    <control controlID="51" controlTypeID="com.balsamiq.mockups::Button" x="849" y="529" w="-1" h="-1" measuredW="75" measuredH="27" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Voeg%20toe</text>
+      </controlProperties>
+    </control>
+    <control controlID="52" controlTypeID="com.balsamiq.mockups::Button" x="899" y="255" w="-1" h="-1" measuredW="134" measuredH="27" zOrder="17" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Rapport%20genereren</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

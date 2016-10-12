@@ -1,0 +1,66 @@
+AFGEWERKT:
+
+Steven : rapport + mockup dashboard
+
+Laurens : issues: icons voor openklikbare tabels
+
+Bart: registratieprocedure verbeteren (rollensysteem beter handhaven, eerst new_user daarna car owner)
+
+Robin: remindermails: systeemparameters voor 
+
+Stijn: issues: legende kalender, meteen refreshen van pagina na lezen van notificatie (aantal notificaties verminderen), javascript naar JQuery
+
+Waldo: getters in DB generisch, bugfixes, Date-formaat van MySQL (kutDate), filters 
+
+Gilles: diagrammen, vorige/volgende lener, dashboard
+
+Wouter: pagina's van vroeger terug laten werken, HTTPS, issues
+
+--------------------------------------------------------------------------------------------------------------------
+
+- DASHBOARD overlopen:
+
+- Issues toewijzen:
+
+- Nieuwe criteria van auto zullen in systeem gestoken worden: beheerder zal dit moeten invullen
+
+- tests moeten gefixed worden, iedereen fixed zijn eigen tests tegen einde van de week
+
+- iedereen heeft code gedocumenteerd tegen einde van de week
+
+- Robin schrijft handleiding
+
+--------------------------------------------------------------------------------------------------------------------
+
+DEMO:
+
+- tegen woensdag: bug fixes, flow verbeteren, ...
+
+- Steven en Laurens zullen demo voorbereiden
+
+FEEDBACK:
+
+	vragen aan karel:
+
+	- http://edran.ugent.be/prod/ 
+
+	- bij veranderen adres postcode en nr met een dropdown hoeft niet 
+	- logout gaf een foutmelding
+
+	- inschrijven voor een sessie gaf een foutmelding 
+
+	- kon net aangemelde user en auto niet zien 
+
+	- moeten we paginasysteem implementeren? 
+
+	- wat zie je op 1 scherm ? (schermopbouw is vaak niet logisch)
+
+	- 
+
+
+
+
+
+
+
+NIEUWE VERGADERING : 12/05 10:00

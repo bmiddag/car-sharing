@@ -1,0 +1,136 @@
+@stylesheets = {
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/parsley.css")" />
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/bootstrap-select.min.css")" />
+}
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/parsley.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/bootstrap-select.min.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker();
+        });
+    </script>
+}
+
+@main("Registreer", stylesheets, javascripts) {
+    <form role="form" class="form-horizontal" id="registrationform" name="registrationform" method="POST" data-parsley-validate>
+        <div class="modal-body">
+            <p>Vul in het onderstaande formulier je persoonlijke gegevens in. Na de registratie zal je de keuze hebben om
+            een infosessie bij te wonen over autolenen of - als je een auto hebt en je overweegt om deze te delen - een auto te
+            registreren en een infosessie bij te wonen over autodelen. Vanaf dan heb je meteen toegang tot meer dan 20 auto's
+            verspreid over Gent.</p>
+            <div class="form-group">
+                <h3 class="breadcrumb">Algemene gegevens <small>(Verplicht)</small></h3>
+                <div class="row">
+                    <div class="col-sm-3"><label class="control-label " for="title">Aanspreking</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">*</span>
+                        <select class="pull-left selectpicker" name="title" data-width="auto">
+                            <option>Mevr.</option>
+                            <option>Dhr.</option>
+                        </select>
+                    </div></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="username">Voornaam</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">*</span>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Voornaam" data-parsley-trigger="change" required>
+                    </div>
+                        <label class="error label label-danger" for="username"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="lastname">Achternaam</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">*</span>
+                        <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Achternaam" data-parsley-trigger="change" required>
+                    </div>
+                        <label class="error label label-danger" for="lastname"></label></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3"><label class="control-label" for="email">E-mailadres</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">*</span>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" data-required-message="Gelieve een geldig emailadres op te geven." data-parsley-trigger="change"  required />
+                    </div>
+                        <label class="error label label-danger" for="email"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="email2">Herhaal</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">*</span>
+                        <input type="email" class="form-control" id="email2" name="email2" placeholder="Bevestig je email" data-parsley-error-message="De 2 email-adressen moeten gelijk zijn." data-parsley-equalto="#email" data-parsley-trigger="change" required>
+                    </div>
+                        <label class="error label label-danger" for="email2"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="password">Wachtwoord</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">*</span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Wachtwoord" data-parsley-minlength="4" data-parsley-trigger="change" required>
+                    </div>
+                        <label class="error label label-danger" for="password"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="password2">Herhaal</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">*</span>
+                        <input type="password" class="form-control" id="password2" name="password2" placeholder="Bevestig je wachtwoord" data-parsley-equalto="#password" data-parsley-trigger="change" required />
+                    </div>
+                        <label class="error label label-danger" for="password2"></label></div>
+                </div>
+
+                <h3 class="breadcrumb">Persoonlijke gegevens <small>(Niet verplicht)</small></h3>
+                <div class="row">
+                    <div class="col-sm-3"><label class="control-label" for="telephone">Telefoonnummer</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">&nbsp;</span>
+                        <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="Telefoonnummer" data-parsley-type="number" data-parsley-trigger="change">
+                    </div>
+                        <label class="error label label-danger" for="telephone"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="streetname">Straat</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">&nbsp;</span>
+                        <input type="text" class="form-control" id="streetname" name="streetname" placeholder="Straat" data-parsley-minlength="2" data-parsley-trigger="change">
+                    </div>
+                        <label class="error label label-danger" for="streetname"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="huisnummer">Nummer</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">&nbsp;</span>
+                        <input type="text" class="form-control" id="huisnummer" name="huisnummer" placeholder="Huisnummer" data-parsley-trigger="change"  data-parsley-minlength="1" data-parsley-type="number" data-parsley-error-message="Geen geldig huisnummer">
+                    </div>
+                        <label class="error label label-danger" for="huisnummer"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="bus">Bus</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">&nbsp;</span>
+                        <input type="text" class="form-control" id="bus" name="bus" placeholder="Bus" data-parsley-trigger="change" data-parsley-maxlength="3" >
+                    </div>
+                        <label class="error label label-danger" for="bus"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="postalcode">Postcode</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">&nbsp;</span>
+                        <input type="text" class="form-control" id="postalcode" name="postalcode" placeholder="Postcode" data-parsley-minlength="4" data-parsley-type="number" data-parsley-trigger="change" data-parsley-error-message="Een postcode bestaat uit 4 cijfers.">
+                    </div>
+                        <label class="error label label-danger" for="postalcode"></label></div>
+
+                    <div class="col-sm-3"><label class="control-label" for="city">Stad</label></div>
+                    <div class="col-sm-9"><div class="input-group">
+                        <span class="input-group-addon">&nbsp;</span>
+                        <input type="text" class="form-control" id="city" name="city" placeholder="Stad" data-parsley-minlength="2" data-parsley-trigger="change">
+                    </div>
+                        <label class="error label label-danger" for="city"></label></div>
+                </div>
+            </div>
+            <div class="row"><div style="padding-bottom: 0px; text-align: center !important;">
+                <button id="registerUser" type="submit" class="btn btn-success btn-lg" style="text-align: center;">
+                    <span class="glyphicon glyphicon-ok-circle"></span> Registreer
+                </button>
+            </div></div>
+        </div>
+    </form>
+
+    <div class="row">
+    @footer()
+    </div>
+}

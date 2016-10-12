@@ -1,0 +1,143 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tkz-graph}
+\usepackage[light,math]{iwona}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+	\floatname{algorithm}{Algoritme}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+%\usepackage{gensymb} % throws errors: 'not defining \perthousand' and 'noet defining \micro'
+\usepackage{array}
+	\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+\lstset{
+language=JAVA,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+\title{Vergadering 7}
+\author{Team Edran}
+\date{1 april 2014}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Plaats \& tijd:}
+Campus Sterre, S2, Bibliotheek; 12u15-13u00\\
+\textbf{Aanwezig:} iedereen\par
+\textbf{Agendapunten:}
+\begin{itemize}
+\item \textbf{Overlopen vorige deadline:}\\
+Bij damage toevoegen werkt bewijsstukken aanpassen niet. Algoritme facturisatie moet nog geimplementeerd worden. Niet alleen kosten maar ook opbrengsten in rekening brengen.
+
+\item \textbf{Tests:\\}
+Iedereen zijn eigen tests en dus eigen verantwoordelijkheid over eigen views.
+
+\item \textbf{Timesheets:\\}
+Deadline telkens de maandag om 23u59.
+
+\item \textbf{Volgende episode:\\}
+\begin{itemize}
+\item Rapport maken: Steven en Gilles
+\item Autogebonden gegevens inbrengen: Robin
+\item Bewijsmateriaal uploaden finishen: Wouter P.
+\item Beheerder maakt/wijzigt schadedossier:   
+\item Bewijsmateriaal verifieren: Laurens
+\item Notificatiesysteem: Stijn
+\item Databank: Wouter T.
+\item Beheer notificaties: Gilles
+\item Tijdelijk blokkeren gebruiker: Steven
+\item Machtigingen toevoegen/afwijzen door superuser: Steven
+\item Auto toevoegen aan systeem door autobeheerder + als beheerder goedkeuren/afkeuren: Bart 
+\item Rapporten genereren:  
+\item Templates email en notificaties
+\iem Wachtwoord vergeten: Laurens
+\item Tests: iedereen voor zijn eigen views: volgende week vrijdag
+\end{itemize}
+
+\item \textbf{Rollen:\\}
+\begin{itemize}
+\item nieuwe autolener
+\item nieuwe autoeigenaar
+\item autolener
+\item augoeigenaar
+\item admin 
+\item superuser
+\end{itemize}
+
+\par\item \textbf{Volgende vergadering} \\
+In vakantie Skype.
+Nog te bepalen.
+
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,112 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+
+\title{Vergadering 10}
+\author{Team Edran}
+\date{5 mei 2014}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Plaats \& tijd:}
+S9 Vergaderlokaal; 10u00-11u00\par
+\textbf{Aanwezig:} iedereen \\
+\textbf{Agendapunten:}
+\begin{itemize}
+\item \textbf{Vooruitgang:}\\
+\begin{itemize}
+\item Steven: rapport + mockup dashboard
+\item Laurens: afwerken van meerdere issues
+\item Bart: registratieprocedure verbeteren
+\item Robin: remindermails
+\item Stijn: legende kalender, omzetten javascript naar jQuery, verminderen van ongelezen notificaties na lezen
+\item Waldo: getters in de DB generisch maken, bugfixes, Date-formaat van MySQL fixen, filters voor elke tabel
+\item Gilles: volgende/vorige autolener, pagina voor auto's goed/af te keuren, grafieken meegeven met statistieken
+\item Wouter: vroeger gemaakte pagina's terug laten werken, HTTPS, andere issues afwerken
+\end{itemize}
+
+\item \textbf{Dashboard overlopen}
+
+\item \textbf{Nieuwe criteria (rookvrij, huisdieren toegelaten?, ...) worden toegevoegd in het systeem}
+
+\item \textbf{Tegen einde van deze week (Zondag 11/05 00:00): iedereen fixed zijn eigen tests en documenteert zijn code}
+
+\item \textbf{Robin zal de handleiding updaten}
+
+\item \textbf{Demo}
+  \begin{itemize}
+   \item Wouter en Laurens zullen samenkomen om demo voor te bereiden
+   \item \textbf{\emph{ZEER BELANGRIJK!!: iedereen moet zorgen dat zijn code bugvrij is tegen woensdag!}}
+   \item Andere mensen mogen optioneel meegaan
+   \item De volgende dingen moeten gevraagd worden aan Karel:
+      \begin{itemize}
+      	\item  http://edran.ugent.be/prod/ 
+
+	\item  bij veranderen adres postcode en nr met een dropdown hoeft niet 
+	\item  logout gaf een foutmelding
+
+	\item  inschrijven voor een sessie gaf een foutmelding 
+
+	\item  kon net aangemelde user en auto niet zien 
+
+	\item  moeten we paginasysteem implementeren? 
+
+	\item  wat zie je op 1 scherm ? (schermopbouw is vaak niet logisch)
+      \end{itemize}
+  \end{itemize}
+  
+\item \textbf{Gilles maakt nieuwe issues aan op github}
+
+
+\par\item \textbf{Volgende vergadering} \\
+Maandag 12 mei om 10:00
+\end{itemize}
+
+\end{document}

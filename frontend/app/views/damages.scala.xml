@@ -1,0 +1,7 @@
+@(damagesObj: Collection[objects.Damage])<?xml version="1.0" encoding="utf-8"?>
+
+<damages>
+    @for(damageObj <- damagesObj) {
+        @damage(damageObj)
+    }
+</damages>

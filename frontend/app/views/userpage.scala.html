@@ -1,0 +1,156 @@
+@(user: objects.User)
+
+@stylesheets = {
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
+}
+
+@import be.objectify.deadbolt.java.views.html._
+
+@subjectNotPresent() {
+    @error(new Throwable("Je moet ingelogd zijn om deze pagina te bekijken"))
+}
+@subjectPresent(){
+    @if(user == null){
+        @error(new Throwable("De opgegeven gebruiker bestaat niet!"))
+    } else{
+        @main(user.getName(), stylesheets, null, null, NotificationModel.getNumberOfUnreadNotifications()){
+            <style>
+            table tr td {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left:10px;
+            }
+            </style>
+            <div class="row">
+                <div class="col-md-4" style="text-align: center;">
+                    <div class="row">
+                    @if(user.getPhoto() != null){
+                        <img src="@{routes.FileRenderer.getFile(user.getPhoto())}" width="70%" style="margin-top: 40px;">
+                    } else {
+                        <img src="@{routes.Assets.at("images/default_avatar.svg")}" width="70%" style="margin-top: 40px;" onerror="this.src='@{routes.Assets.at("images/default_avatar.png")}'">
+                        }
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th colspan="2"><h4><span class="glyphicon glyphicon-user"></span> Profiel</h4></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Naam:</strong></td>
+                                <td>@user.getName()</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Familienaam:</strong></td>
+                                <td> @user.getSurname()</td>
+                            </tr>
+                            <tr>
+                                <td><strong>E-mail:</strong></td>
+                                <td> @user.getMail()</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Telefoon:</strong></td>
+                                <td>@if(user.getPhone()!=null && !user.getPhone().isEmpty()){@user.getPhone()}else{Geen telefoonnummer}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Zone:</strong></td>
+                                <td>@if(user.getZone()!=null){@user.getZone().getName()}else{Geen zone}</td>
+                            </tr>
+                            @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("admin") || user.equals(UserModel.getCurrentUser)){
+                                <tr>
+                                    <td><strong>Ongevallenverleden:</strong></td>
+                                    <td>@if(user.getPast()!=null){@user.getPast()}else{Geen schadeverleden}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Rapport: </strong></td>
+                                    <td>
+                                        <form method="post" action='@routes.Report.getReportUser(user.getId())'>
+                                            <button type="submit"  class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-file"></span> </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @if(UserModel.getCurrentUser() != null && UserModel.getCurrentUser().getRole().getName().equals("admin") || user.equals(UserModel.getCurrentUser)){
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="4"><h4><span class="glyphicon glyphicon-euro"></span> Facturen</h4></th>
+                                </tr>
+                                <tr>
+                                    <th>Datum</th>
+                                    <th>Prijs</th>
+                                    <th>PDF</th>
+                                    <th>Excel</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for(invoice <- FacturisationModel.getInvoicesByUser(user)) {
+                                    <tr>
+                                        <td>@{utils.TimeUtils.getFormattedDate("dd/MM/yyyy",invoice.getTillDate)} - @{utils.TimeUtils.getFormattedDate("dd/MM/yyyy",invoice.getTime)}</td>
+                                        <td>&#8364;@{var cost = invoice.getTotalCost(); String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</td>
+                                        <td>@helper.form(action = routes.Admin.renderPDF(invoice.getId)) {
+                                                <button type="submit" class="btn btn-default btn-sm">
+                                                    <span style="color: #e53c39;" class="fa fa-file-pdf-o"></span>
+                                                </button>
+                                            }</td>
+                                        <td>@helper.form(action = routes.Admin.renderExcel(invoice.getId)) {
+                                            <button type="submit" class="btn btn-default btn-sm">
+                                                <span style="color: #1f6e42;" class="fa fa-file-excel-o"></span>
+                                            </button>
+                                        }</td>
+                                    </tr>
+                                }
+                                @if(FacturisationModel.getInvoicesByUser(user).isEmpty()) {
+                                    <tr>
+                                        <td colspan="4" style="text-align: center;">Er zijn geen facturen gevonden.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="2"><h4><span class="glyphicon glyphicon-stats"></span> Statistieken</h4></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Totaal aantal uren gereden: </strong></td>
+                                    <td>@DashboardModel.getTotalNumberOfHoursDriven(CarManagementModel.getRidesForUser(user))</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Totaal aantal kilometer gereden: </strong></td>
+                                    <td>@DashboardModel.getTotalNumberOfKMDriven(CarManagementModel.getRidesForUser(user))</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Favoriete auto: </strong></td>
+                                    <td>@DashboardModel.getFavoriteCar(CarManagementModel.getRidesForUser(user))</td>
+                                </tr>
+                                @if(UserModel.getCarOwnedByUser(UserModel.getCurrentUser().getId()) != null){
+                                    <tr>
+                                        <td><strong>Aantal keren gereden met uw auto: </strong></td>
+                                        <td>@DashboardModel.getTimesDrivenWithCar(CarManagementModel.getRidesForUser(user), UserModel.getCarOwnedByUser(UserModel.getCurrentUser().getId()))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            <div class="row">
+            @footer()
+            </div>
+        }
+    }
+}

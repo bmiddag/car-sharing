@@ -1,0 +1,75 @@
+@stylesheets = {
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/parsley.css")" />
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/bootstrap-select.min.css")" />
+
+
+
+
+
+
+}
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/parsley.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/bootstrap-select.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/fileinput.js")"></script>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+        $(document).ready(function(){
+            $('.selectpicker').selectpicker();
+        });
+    </script>
+}
+
+@main("Voeg een auto toe", stylesheets, javascripts, null, NotificationModel.getNumberOfUnreadNotifications()){
+
+<div class="modal-body">
+    <p>Als kandidaat-eigenaar word je uitgebreid geinformeerd over onze werkwijze. Voor- en nadelen worden tegen mekaar
+        afgewogen zodat je zelf kan beslissen of het een interessante formule is voor je eigen situatie.</p>
+    <p>Ideale auto-eigenaars stellen hun auto voldoende ter beschikking maar rijden zelf ook minstens 5000 kilometer per
+        jaar. Nieuwere wagens zijn vanzelfsprekend meer in trek dan oudere. Nieuwere deelauto's kosten ondanks een hogere
+        aanschafprijs vaak minder indien ze minder verbruiken en weinig stilstaan. Het is zeker geen goed idee te wachten
+        met een recente auto te delen tot hij wat ouder is. Je verdient dan immers veel minder terug van je geinvesteerde
+        geld. Maximale ouderdom van wagens die kunnen instappen is 7 jaar.</p>
+    <p>Vooraleer je je kan inschrijven voor een infosessie voor auto-eigenaars, vragen we enkele gegevens over je auto en
+        je autogebruik hieronder in te vullen. Dit maakt het voor ons makkelijker in te schatten of jouw auto een goede
+        aanvulling zou zijn binnen onze huidige autodeelvloot.</p>
+    <p></p>
+    <form role="form" class="form-horizontal" id="carform"  name="carform" method="POST" enctype="multipart/form-data" data-parsley-validate>
+        <h3 class="breadcrumb">Autogegevens</h3>
+        @car_form.render()
+
+
+
+
+        <div class="row"><div style="padding-bottom: 0px; text-align: center !important;">
+            <button type="submit" class="btn btn-success btn-lg" style="text-align: center;">
+                <span class="glyphicon glyphicon-ok-circle"></span> Voeg auto toe
+            </button>
+        </div></div>
+
+
+
+    </form>
+
+
+</div>
+
+
+
+    <div class="row">
+    @footer()
+    </div>
+
+
+
+
+
+}

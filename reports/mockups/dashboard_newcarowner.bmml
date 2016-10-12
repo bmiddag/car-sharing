@@ -1,0 +1,45 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1318" measuredH="596" mockupW="1263" mockupH="569">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::HRule" x="55" y="176" w="1248" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="55" y="27" w="1263" h="569" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//www.degage.be</text>
+      </controlProperties>
+    </control>
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::FieldSet" x="397" y="234" w="256" h="155" measuredW="200" measuredH="170" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Ingeschreven%20infossessies</text>
+      </controlProperties>
+    </control>
+    <control controlID="17" controlTypeID="com.balsamiq.mockups::FieldSet" x="681" y="234" w="287" h="155" measuredW="200" measuredH="170" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Laatste%20notificaties</text>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Button" x="486" y="347" w="-1" h="-1" measuredW="152" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bekijk%20alle%20infosessies</text>
+      </controlProperties>
+    </control>
+    <control controlID="19" controlTypeID="com.balsamiq.mockups::TextArea" x="412" y="249" w="226" h="83" measuredW="200" measuredH="140" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>05/04/2070%2C%2018u</text>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::TextArea" x="696" y="249" w="226" h="124" measuredW="200" measuredH="140" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>------%0A------</text>
+      </controlProperties>
+    </control>
+    <control controlID="22" controlTypeID="com.balsamiq.mockups::Button" x="397" y="186" w="589" h="27" measuredW="409" measuredH="27" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Klik%20hier%20om%20een%20auto%20toe%20te%20voegen%20en%20uw%20registratie%20te%20voltooien.</text>
+      </controlProperties>
+    </control>
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::StickyNote" x="1029" y="204" w="-1" h="-1" measuredW="109" measuredH="123" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Nieuwe%20autoeigenaar</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

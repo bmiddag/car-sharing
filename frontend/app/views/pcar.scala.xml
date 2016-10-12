@@ -1,0 +1,18 @@
+@(pCarObj: interfaces.CarDAO.PossibleReservation)
+<car id="@pCarObj.getCar().getId()">
+    <try-begin>@pCarObj.getBegin()</try-begin>
+    <try-end>@pCarObj.getEnd()</try-end>
+    <name>@pCarObj.getCar().getName()</name>
+    <owner>@user(pCarObj.getCar().getOwner())</owner>
+    <zone>@if(pCarObj.getCar().getZone != null){@pCarObj.getCar().getZone().getName()}</zone>
+    <address>@if(pCarObj.getCar().getAddress() != null){@pCarObj.getCar().getAddress().getFormattedAddress()}</address>
+    <model>@pCarObj.getCar().getModel()</model>
+    <type>@pCarObj.getCar().getType()</type>
+    <description>@pCarObj.getCar().getDescription()</description>
+    <fuel>@pCarObj.getCar().getFuel()</fuel>
+    <doors>@pCarObj.getCar().getDoors()</doors>
+    <capacity>@pCarObj.getCar().getCapacity()</capacity>
+    <tow>@pCarObj.getCar().getTow()</tow>
+    <gps>@pCarObj.getCar().getGps()</gps>
+    <year>@pCarObj.getCar().getYear()</year>
+</car>

@@ -1,0 +1,134 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tkz-graph}
+\usepackage[light,math]{iwona}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+	\floatname{algorithm}{Algoritme}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+%\usepackage{gensymb} % throws errors: 'not defining \perthousand' and 'noet defining \micro'
+\usepackage{array}
+	\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+\lstset{
+language=JAVA,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+\title{Vergadering 2}
+\author{Team Edran}
+\date{21 februari 2014}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Plaats \& tijd:}
+Campus Sterre, S2, Bibliotheek; 13u15-14u15\\
+\textbf{Aanwezig:} iedereen\par
+\textbf{Agendapunten:}
+\begin{itemize}
+\item \textbf{Overlopen van noodzakelijke dingen voor iedereen: }\\
+GUI beginnen implementeren zodat we snel aan het echte programmeerwerk kunnen beginnen.
+Rows en columns zijn belangrijk zodat de applicatie responsief is.
+Voor de database te vullen, een script uitvoeren.
+
+\par\item \textbf{Overlopen van Jenkins:}\\ \todo{??}
+\par\item \textbf{Bespreking rapport:}\\
+Mock-ups moeten in het rapport vermeld worden. Best niet allemaal, anders wordt het vrij onmogelijk alles af te krijgen. Best use-case eens nakijken iedereen, zodat vergeten use-cases kunnen aangevuld worden.
+
+
+\par\item \textbf{Belangrijke puntjes:}\\
+Bij de databank moet een filtersysteem bijkomen.
+'Ik ben aanwezig' zorgt voor onenigheid, moet nog eens herbekeken worden.
+Enums worden bewust vermeden, deze zouden voor grote aanpassingen zorgen later.
+Plugin bootstrap nog eens bekijken, of deze wel dan niet zal gebruikt worden.
+Periode moet opgegeven worden bij het reserveren van een auto, anders heb je randgevallen. 
+
+\par\item \textbf{Werkverdeling:} \\
+Met veel aan de GUI beginnen, zodat de flow duidelijk wordt. Eerst de Views, dan pas de Controllers.
+Wouter, Bart, Steven, Gilles zullen de GUI's doen.\par
+Reserveren van rit en een rit zoeken: Wouter (delen-reserveren) \\
+Delen van de ritgegevens: Gilles \\
+Infosessies: Bart \\
+Base template: Steven \\
+Steven en Gilles mockups nog verder afwerken.
+
+Stijn en Robin: kalender verder afwerken
+\par\item \textbf{Rapport:} \\
+Gilles zorgt voor het rapport. Opmerkingen daarna moeten vermeld worden.
+
+\par\item \textbf{Volgende vergadering} \\
+Volgende vergadering vindt plaats op woensdagnamiddag om 16:15.
+
+\end{itemize}
+
+\end{document}

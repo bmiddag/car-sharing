@@ -1,0 +1,942 @@
+@(formList: List[Form[views.formdata.MyCarFormData]])
+
+
+<style>
+    .table-responsive{
+        overflow-x: auto;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>Huidige kilometerstand: </h2>
+    </div>
+    <div class="col-md-4">
+        <h2>@{CarManagementModel.getMileage()}</h2>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="row">
+            <h2>Niet beschikbaar op:</h2>
+        </div>
+        <div class="row">
+            <table class="table table-striped">
+                <tr>
+                    <th></th>
+                    <th>Beginuur</th>
+                    <th>Einduur</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>Maandag</td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.postHour("Maandag")" method="post" style="text-align: right; horizontal-align: right">
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="startMaandag" name="startMaandag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="eindeMaandag" name="eindeMaandag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-5">
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div></td>
+                    <td> </td>
+
+                    </form>
+                </tr>
+                @for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.MONDAY)){
+                <tr>
+                    <td></td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.changeHour("Maandag" , reservationrange.getId.toString)" method="post" style="text-align: right; horizontal-align: right">
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="startMaandag@{reservationrange.getId.toString}" name="startMaandag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="eindeMaandag@{reservationrange.getId.toString}" name="eindeMaandag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></button>
+
+                        </div>
+                    </div>
+                    </td>
+                    </form>
+                    <td>
+                        <form role="form" class="form-horizontal" action="@routes.CarManagement.deleteHour(reservationrange.getId)" method="post" style="text-align: right; horizontal-align: right"><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></form>
+                    </td>
+
+                </tr>
+                }
+                <tr>
+                    <td> Dinsdag </td>
+                    <form id="dinsdag" role="form" class="form-horizontal" action="@routes.CarManagement.postHour("Dinsdag")" method="post" style="text-align: right; horizontal-align: right">
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text"  class="form-control" id="startDinsdag" name="startDinsdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="eindeDinsdag" name="eindeDinsdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-5">
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div></td>
+                    <td></td>
+                    </form>
+                </tr>
+                @for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.TUESDAY)){
+                <tr>
+                    <td></td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.changeHour("Dinsdag" , reservationrange.getId.toString)" method="post" style="text-align: right; horizontal-align: right">
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="startDinsdag@{reservationrange.getId.toString}" name="startDinsdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="eindeDinsdag@{reservationrange.getId.toString}" name="eindeDinsdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></button>
+
+                        </div>
+                    </div>
+                    </td>
+                    </form>
+                    <td>
+                        <form role="form" class="form-horizontal" action="@routes.CarManagement.deleteHour(reservationrange.getId)" method="post" style="text-align: right; horizontal-align: right"><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></form>
+                    </td>
+
+                </tr>
+                }
+                <tr>
+                    <td>Woensdag</td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.postHour("Woensdag")" method="post" style="text-align: right; horizontal-align: right">
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="startWoensdag" name="startWoensdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="eindeWoensdag" name="eindeWoensdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-5">
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div></td>
+                    <td></td>
+                    </form>
+                </tr>
+                @for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.WEDNESDAY)){
+                <tr>
+                    <td></td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.changeHour("Woensdag" , reservationrange.getId.toString)" method="post" style="text-align: right; horizontal-align: right">
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="startWoensdag@{reservationrange.getId.toString}" name="startWoensdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="eindeWoensdag@{reservationrange.getId.toString}" name="eindeWoensdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></button>
+
+                        </div>
+                    </div>
+                    </td>
+
+                    </form>
+                    <td>
+                        <form role="form" class="form-horizontal" action="@routes.CarManagement.deleteHour(reservationrange.getId)" method="post" style="text-align: right; horizontal-align: right"><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></form>
+                    </td>
+
+                </tr>
+                }
+                <tr>
+                    <td>Donderdag</td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.postHour("Donderdag")" method="post" style="text-align: right; horizontal-align: right">
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="startDonderdag" name="startDonderdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="eindeDonderdag" name="eindeDonderdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-5">
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div></td>
+                    <td></td>
+                    </form>
+                </tr>
+                @for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.THURSDAY)){
+                <tr>
+                    <td></td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.changeHour("Donderdag" , reservationrange.getId.toString)" method="post" style="text-align: right; horizontal-align: right">
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="startDonderdag@{reservationrange.getId.toString}" name="startDonderdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="eindeDonderdag@{reservationrange.getId.toString}" name="eindeDonderdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></button>
+
+                        </div>
+                    </div>
+                    </td>
+                    </form>
+                    <td>
+                        <form role="form" class="form-horizontal" action="@routes.CarManagement.deleteHour(reservationrange.getId)" method="post" style="text-align: right; horizontal-align: right"><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></form>
+                    </td>
+
+                </tr>
+                }
+                <tr>
+                    <td>Vrijdag</td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.postHour("Vrijdag")" method="post" style="text-align: right; horizontal-align: right">
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="startVrijdag" name="startVrijdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="eindeVrijdag" name="eindeVrijdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-5">
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div></td>
+                    <td></td>
+                    </form>
+                </tr>
+                @for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.FRIDAY)){
+                <tr>
+                    <td></td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.changeHour("Vrijdag" , reservationrange.getId.toString)" method="post" style="text-align: right; horizontal-align: right">
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="startVrijdag@{reservationrange.getId.toString}" name="startVrijdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="eindeVrijdag@{reservationrange.getId.toString}" name="eindeVrijdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></button>
+
+                        </div>
+                    </div>
+                    </td>
+                    </form>
+                    <td>
+                        <form role="form" class="form-horizontal" action="@routes.CarManagement.deleteHour(reservationrange.getId)" method="post" style="text-align: right; horizontal-align: right"><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></form>
+                    </td>
+
+                </tr>
+                }
+                <tr>
+                    <td>Zaterdag</td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.postHour("Zaterdag")" method="post" style="text-align: right; horizontal-align: right">
+                        <td><div class="form-group">
+
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="startZaterdag" name="startZaterdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="eindeZaterdag" name="eindeZaterdag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-5">
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div></td>
+                    <td></td>
+                    </form>
+                </tr>
+                @for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.SATURDAY)){
+                <tr>
+                    <td></td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.changeHour("Zaterdag" , reservationrange.getId.toString)" method="post" style="text-align: right; horizontal-align: right">
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="startZaterdag@{reservationrange.getId.toString}" name="startZaterdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="eindeZaterdag@{reservationrange.getId.toString}" name="eindeZaterdag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></button>
+
+                        </div>
+                    </div>
+                    </td>
+                    </form>
+                    <td>
+                        <form role="form" class="form-horizontal" action="@routes.CarManagement.deleteHour(reservationrange.getId)" method="post" style="text-align: right; horizontal-align: right"><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></form>
+                    </td>
+
+                </tr>
+                }
+
+                <tr>
+                    <td>Zondag</td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.postHour("Zondag")" method="post" style="text-align: right; horizontal-align: right">
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="startZondag" name="startZondag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="eindeZondag" name="eindeZondag" placeholder="uur">
+                            </div>
+                        </div></td>
+                        <td><div class="form-group">
+                            <div class="col-lg-5">
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div></td>
+                    <td></td>
+                    </form>
+                </tr>
+                @for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.SUNDAY)){
+                <tr>
+                    <td></td>
+                    <form role="form" class="form-horizontal" action="@routes.CarManagement.changeHour("Zondag" , reservationrange.getId.toString)" method="post" style="text-align: right; horizontal-align: right">
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="startZondag@{reservationrange.getId.toString}" name="startZondag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="eindeZondag@{reservationrange.getId.toString}" name="eindeZondag@{reservationrange.getId.toString}">
+                        </div>
+                    </div></td>
+                    <td><div class="form-group">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span></button>
+
+                        </div>
+                    </div>
+                    </td>
+                    </form>
+                    <td>
+                        <form role="form" class="form-horizontal" action="@routes.CarManagement.deleteHour(reservationrange.getId)" method="post" style="text-align: right; horizontal-align: right"><button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></form>
+                    </td>
+
+                </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="previousReservations">
+    <div class="col-md-8">
+        <h2> <a href="javascript:;" id="showPrevResTable" style="color: black;"><i id ="previousResIcon" class="glyphicon small glyphicon-plus-sign"></i> Vorige reservaties</a> </h2>
+    </div>
+</div>
+
+
+<div class="row" id="previousReservationTable" style="display:none;">
+    <div class="col-md-8">
+        <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <tr>
+                <th> Gebruiker </th>
+                <th> Datum </th>
+                <th> Beginuur </th>
+                <th> Einduur </th>
+                <th> </th>
+            </tr>
+
+            @defining(Calendar.getInstance()) { cal =>
+                @for((reservation) <- CarManagementModel.getReservations()){
+                    <tr>
+                        <td>@{reservation.getUser().getName()}</td>
+                        @{cal.setTimeInMillis(reservation.getTime());}
+                        <td> @{String.format("%02d/%02d/%04d %02d:%02d",
+                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                            cal.get(Calendar.YEAR): java.lang.Integer,
+                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                        @{cal.setTimeInMillis(reservation.getBegin());}
+                        <td> @{String.format("%02d/%02d/%04d %02d:%02d",
+                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                            cal.get(Calendar.YEAR): java.lang.Integer,
+                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                        @{cal.setTimeInMillis(reservation.getEnd());}
+                        <td> @{String.format("%02d/%02d/%04d %02d:%02d",
+                            cal.get(Calendar.DAY_OF_MONTH): java.lang.Integer,
+                            cal.get(Calendar.MONTH)+1: java.lang.Integer,
+                            cal.get(Calendar.YEAR): java.lang.Integer,
+                            cal.get(Calendar.HOUR_OF_DAY): java.lang.Integer,
+                            cal.get(Calendar.MINUTE): java.lang.Integer)} </td>
+                    </tr>
+                }}
+                <!-->  <!-->
+
+
+        </table>
+</div>
+    </div>
+</div>
+
+<div class="row">
+
+
+
+
+    <div class="col-md-8">
+        <h2> Bewijsmateriaal </h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th> Soort bewijsmateriaal</th>
+                    <th> Datum rit</th>
+                    <th> Prijs</th>
+                    <th> Link</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            @divide(a:Int,b:Double) = {
+            @((a) / (b))
+            }
+
+            @if(formList.size == 1){
+                <tr><td>Nog geen bewijsmateriaal toegevoegd.</td><td></td><td></td><td></td></tr>
+            }else{
+
+
+                @for(form <- formList) {
+
+                    @if(form("id").value.toString != "") {
+                        <tr name="sessionRow" onclick="$('#modal@{form("id").value.toString}').modal();">
+                            <td>@{form("type").value.toString}</td>
+                            <td>@{form("date").value.toString}</td>
+                            <td>@divide(form("price").value.toInt,100.00)</td>
+
+                            <td><img src="@{routes.FileRenderer.getFile(form("link").value.toInt)}" height="50" width="50"></td>
+                        </tr>
+                    }
+                }
+            }
+
+            </tbody>
+
+        </table>
+    </div>
+
+    <div class="col-md-4">
+        <button id="addCostButton" type="button" class="btn btn-success" onclick="$('#modal').modal();"><span
+        class="glyphicon glyphicon-plus"></span> Voeg toe
+        </button>
+
+    </div>
+
+</div>
+
+
+@for(form <- formList) {
+    <div id="modal@{form("id").value.toString}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal@{form("id").value.toString}label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            @helper.form(action = routes.CarManagement.postCost(form("id").value.toString), 'enctype -> "multipart/form-data", 'id -> "myform") {
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span> @if(form("id").value.toString != ""){Bestaand bewijsmateriaal wijzigen}else{Nieuw bewijsmateriaal toevoegen}</h4>
+
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">Soort bewijsmateriaal</span>
+                                <span class="input-group-addon">*</span>
+                                <input type="text" class="form-control" name="@{form("type").name}" placeholder="Soort" maxlength="20" data-parsley-trigger="change" value="@{form("type").value.toString}" required>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @if(form("id").value.toString != ""){
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">Prijs</span>
+                                <span class="input-group-addon">*</span>
+                                <input type="number" class="form-control" name="@{form("price").name}" step="0.01" placeholder="Prijs"  value=@divide(form("price").value.toInt,100.00) required>
+                            </div>
+                        </div>
+
+                    </div>
+                    }
+
+                    @if(form("id").value.toString == ""){
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">Prijs</span>
+                                <span class="input-group-addon">*</span>
+                                <input type="number" class="form-control" name="@{form("price").name}" step="0.01" placeholder="Prijs"  value=@{form("price").value.toString} required>
+                            </div>
+                        </div>
+
+                    </div>
+                    }
+
+                    @if(form("id").value.toString == ""){
+                        <div class="row">
+                            <div class="col-xs-12">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon">Link</span>
+                                    <span class="input-group-addon">*</span>
+                                    <input type="file" title="Afbeelding toevoegen" data-filename-placement="inside" class="form-control" id="proof" name="proof"  placeholder="Link" maxlength="10"  accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf" data-parsley-trigger="change" required>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                    @if(form("id").value.toString != ""){
+                        <div class="row">
+                            <div class="col-xs-12">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon">Link</span>
+                                    <span class="input-group-addon">*</span>
+                                    <input type="file" title="Afbeelding wijzigen" data-filename-placement="inside" class="form-control" id="proof" name="proof"  placeholder="Link" maxlength="10">
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                    <div class="row">
+
+                        <div class="col-xs-6 col-sm-6"><div class="input-group">
+                            <span class="input-group-addon">Dag</span>
+                            <span class="input-group-addon">*</span>
+                            <input type="number" class="form-control" name="@{form("dateDay").name}" placeholder="dd" maxlength="2" value="@{form("dateDay").value.toString}" min="1" max="31" required>
+
+                        </div></div>
+                        <div class="col-xs-6 col-sm-6"><div class="input-group">
+                            <span class="input-group-addon">Maand</span>
+                            <span class="input-group-addon">*</span>
+                            <input type="number" class="form-control" name="@{form("dateMonth").name}" placeholder="mm" maxlength="2" value="@{form("dateMonth").value.toString}" min="1" max="12" required>
+
+                        </div></div>
+                        <div class="col-xs-12 col-sm-6"><div class="input-group">
+                            <span class="input-group-addon">Jaar</span>
+                            <span class="input-group-addon">*</span>
+                            <input type="number" class="form-control" name="@{form("dateYear").name}" placeholder="jjjj" maxlength="4" value="@{form("dateYear").value.toString}" min="2000" min="2014" required>
+
+                        </div></div>
+                    </div>
+
+
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <span class="input-group-addon">Beschrijving</span>
+                                <input type="text" class="form-control" name="@{form("description").name}" placeholder="Beschrijving" maxlength="30" value="@{form("description").value.toString}">
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                @if(form("id").value.toString != "") {
+                    <div id="removeButton@{form("id").value.toString}"  class="row">
+                        <div style="padding-bottom: 0px; text-align: center !important;"><button type="button" class="btn btn-danger" onclick="$(function(){$('#removeAlert@{form("id").value.toString}').removeClass('hide'); $('#removeButton@{form("id").value.toString}').hide();});">
+                            <span class="glyphicon glyphicon-remove-circle"></span> Bewijsmateriaal verwijderen
+                            </button></div>
+                    </div>
+                    <div id="removeAlert@{form("id").value.toString}" class="hide row">
+                        <div class="col-xs-12 alert alert-danger alert-withicon">
+                            <div class="alerticon"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+                            <strong>Let op!</strong> Je staat op het punt dit bewijsmateriaal te verwijderen. Vink onderstaand vakje aan en klik op bevestigen om dit bewijsmateriaal te verwijderen.
+
+                            <input type="checkbox" value="removeCost" name="@{form("remove").name}" data-label="Verwijder dit bewijsmateriaal">
+
+                        </div>
+                    </div>
+                }
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                    <input type="submit" class="btn btn-success" name="submit" value="Bevestigen">
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+}
+
+
+
+
+
+@for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.MONDAY)){
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startMaandag@{reservationrange.getId()}').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '@{ReserveModel.convertLongtoHour(reservationrange.getBegin())}'
+        });
+    });
+
+    $('#eindeMaandag@{reservationrange.getId()}').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        value: '@{ReserveModel.convertLongtoHour(reservationrange.getEnd())}',
+        onShow: function(ct) {
+            this.setOptions({
+                minTime: $('#startMaandag@{reservationrange.getId()}').val() ? $('#startMaandag@{reservationrange.getId()}').val() : false
+            });
+        }
+    });
+
+</script>
+}
+
+@for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.TUESDAY)){
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startDinsdag@{reservationrange.getId()}').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '@{ReserveModel.convertLongtoHour(reservationrange.getBegin())}'
+        });
+    });
+
+    $('#eindeDinsdag@{reservationrange.getId()}').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        value: '@{ReserveModel.convertLongtoHour(reservationrange.getEnd())}',
+        onShow: function(ct) {
+            this.setOptions({
+                minTime: $('#startDinsdag@{reservationrange.getId()}').val() ? $('#startDinsdag@{reservationrange.getId()}').val() : false
+            });
+        }
+    });
+
+</script>
+}
+
+
+@for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.WEDNESDAY)){
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startWoensdag@{reservationrange.getId()}').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '@{ReserveModel.convertLongtoHour(reservationrange.getBegin())}'
+        });
+    });
+
+    $('#eindeWoensdag@{reservationrange.getId()}').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        value: '@{ReserveModel.convertLongtoHour(reservationrange.getEnd())}',
+        onShow: function(ct) {
+            this.setOptions({
+                minTime: $('#startWoensdag@{reservationrange.getId()}').val() ? $('#startWoensdag@{reservationrange.getId()}').val() : false
+            });
+        }
+    });
+
+</script>
+}
+
+@for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.THURSDAY)){
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startDonderdag@{reservationrange.getId()}').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '@{ReserveModel.convertLongtoHour(reservationrange.getBegin())}'
+        });
+    });
+
+    $('#eindeDonderdag@{reservationrange.getId()}').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        value: '@{ReserveModel.convertLongtoHour(reservationrange.getEnd())}',
+        onShow: function(ct) {
+            this.setOptions({
+                minTime: $('#startDonderdag@{reservationrange.getId()}').val() ? $('#startDonderdag@{reservationrange.getId()}').val() : false
+            });
+        }
+    });
+
+</script>
+}
+
+@for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.FRIDAY)){
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startVrijdag@{reservationrange.getId()}').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '@{ReserveModel.convertLongtoHour(reservationrange.getBegin())}'
+        });
+    });
+
+    $('#eindeDinsdag@{reservationrange.getId()}').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        value: '@{ReserveModel.convertLongtoHour(reservationrange.getEnd())}',
+        onShow: function(ct) {
+            this.setOptions({
+                minTime: $('#startVrijdag@{reservationrange.getId()}').val() ? $('#startVrijdag@{reservationrange.getId()}').val() : false
+            });
+        }
+    });
+
+</script>
+}
+
+@for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.SATURDAY)){
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startZaterdag@{reservationrange.getId()}').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '@{ReserveModel.convertLongtoHour(reservationrange.getBegin())}'
+        });
+    });
+
+    $('#eindeZaterdag@{reservationrange.getId()}').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        value: '@{ReserveModel.convertLongtoHour(reservationrange.getEnd())}',
+        onShow: function(ct) {
+            this.setOptions({
+                minTime: $('#startZaterdag@{reservationrange.getId()}').val() ? $('#startZaterdag@{reservationrange.getId()}').val() : false
+            });
+        }
+    });
+
+</script>
+}
+
+
+@for((reservationrange) <- ReserveModel.getReservationRangesPerDay(objects.ReservationRange.Day.SUNDAY)){
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startZondag@{reservationrange.getId()}').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '@{ReserveModel.convertLongtoHour(reservationrange.getBegin())}'
+        });
+    });
+
+    $('#eindeZondag@{reservationrange.getId()}').datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        value: '@{ReserveModel.convertLongtoHour(reservationrange.getEnd())}',
+        onShow: function(ct) {
+            this.setOptions({
+                minTime: $('#startZondag@{reservationrange.getId()}').val() ? $('#startZondag@{reservationrange.getId()}').val() : false
+            });
+        }
+    });
+
+</script>
+}
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#startMaandag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00'
+        });
+
+        $('#eindeMaandag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00',
+            onShow: function(ct) {
+                this.setOptions({
+                    minTime: $('#startMaandag').val() ? $('#startMaandag').val() : false
+                });
+            },
+        });
+
+        $('#startDinsdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00'
+        });
+
+        $('#eindeDinsdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00',
+            onShow: function(ct) {
+                this.setOptions({
+                    minTime: $('#startDinsdag').val() ? $('#startDinsdag').val() : false
+                });
+            },
+        });
+
+        $('#startWoensdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00'
+        });
+
+        $('#eindeWoensdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00',
+            onShow: function(ct) {
+                this.setOptions({
+                    minTime: $('#startWoensdag').val() ? $('#startWoensdag').val() : false
+                });
+            }
+        });
+
+        $('#startDonderdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00'
+        });
+
+        $('#eindeDonderdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00',
+            onShow: function(ct) {
+                this.setOptions({
+                    minTime: $('#startDonderdag').val() ? $('#startDonderdag').val() : false
+                });
+            }
+        });
+
+        $('#startVrijdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00'
+        });
+
+        $('#eindeVrijdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00',
+            onShow: function(ct) {
+                this.setOptions({
+                    minTime: $('#startVrijdag').val() ? $('#startVrijdag').val() : false
+                });
+            }
+        });
+
+        $('#startZaterdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00'
+        });
+
+        $('#eindeZaterdag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00',
+            onShow: function(ct) {
+                this.setOptions({
+                    minTime: $('#startZaterdag').val() ? $('#startZaterdag').val() : false
+                });
+            }
+        });
+
+        $('#startZondag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00'
+        });
+
+        $('#eindeZondag').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            value: '00:00',
+            onShow: function(ct) {
+                this.setOptions({
+                    minTime: $('#startZondag').val() ? $('#startZondag').val() : false
+                });
+            }
+        });
+    });
+</script>
+
+<script>$(document).ready(function(){$('input[type=file]').bootstrapFileInput();});</script>
+

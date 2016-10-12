@@ -1,0 +1,181 @@
+\documentclass[11pt,a4paper,oneside]{article}
+
+\usepackage[dutch]{babel}
+\usepackage{fullpage}
+\usepackage{tabularx}
+\usepackage{courier}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tkz-graph}
+\usepackage[light,math]{iwona}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+	\floatname{algorithm}{Algoritme}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{listings, multicol}
+\usepackage{color}
+	\definecolor{lichtgrijs}{rgb}{0.98, 0.98, 0.98}
+	\definecolor{dkgreen}{rgb}{0,0.4,0}
+	\definecolor{dkred}{rgb}{0.45,0,0}
+	\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{longtable}
+\usepackage{paralist}
+\usepackage[top=.7in, bottom=.9in, left=.8in, right=.8in]{geometry}
+\usepackage{import}
+\usepackage{fmtcount}
+%\usepackage{gensymb} % throws errors: 'not defining \perthousand' and 'noet defining \micro'
+\usepackage{array}
+	\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+	\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{parskip}
+\usepackage{multirow}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+	\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{import}
+\usepackage{blindtext}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{paralist}
+	\let\itemize\compactitem
+	\let\enditemize\endcompactitem
+	\let\enumerate\compactenum
+	\let\endenumerate\endcompactenum
+	\let\description\compactdesc
+	\let\enddescription\endcompactdesc
+	\pltopsep=\medskipamount
+	\plitemsep=2pt
+	\plparsep=2pt
+
+\newcommand{\todo}[1]{{\color{red} \textbf{#1}}}
+\renewenvironment{itemize}[1]{\begin{compactitem}#1}{\end{compactitem}}
+\renewenvironment{enumerate}[1]{\begin{compactenum}#1}{\end{compactenum}}
+\renewenvironment{description}[0]{\begin{compactdesc}}{\end{compactdesc}}
+
+\lstset{
+language=JAVA,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+\title{Vergadering 4}
+\author{Team Edran}
+\date{13 maart 2014}
+
+\begin{document}
+
+\maketitle
+
+\textbf{Plaats \& tijd:}
+Campus Sterre, S2, Bibliotheek, 12u15-13u20
+
+\textbf{Aanwezig:}
+Iedereen\\
+Voorzitter: Laurens\\
+Notulist: Steven
+
+\textbf{Agendapunten:}
+
+\begin{itemize}
+    \item \textbf{Episode 1 bespreking}
+        \begin{itemize}
+           \item Nog bugs in 
+	\item E-mail templates nog niet mogelijk aan te passen. 
+	\item Nog geen documentatie.
+	\item Excepties teveel opgevangen in DAO's
+	\item Te laat aan controllers beginnen
+        \end{itemize}
+
+    \item \textbf{Episode 2}
+        \begin{itemize}
+           \item Inloggen en registreren
+		\item Admin kan inloggen als andere gebruiker om assistentie te bieden
+		\item Roles en permissies, Deadbolt 2 plugin
+		\item Ritgegevens invoegen en goedkeuren
+		\item Autobeheerder brengt autogebonden gegevens in
+		\item Informatie van autoeigenaar moet beschikbaar zijn bij reservatie
+		\item Autoeigenaar moet kunnen kiezen of zijn info beschikbaar is
+		\item Facturisatie
+		\item Filtersysteem bij reserveren
+        \end{itemize}
+
+	 \item \textbf{Problemen met SQL DateTime}
+	
+		 \item \textbf{Documentatie is prioriteit}
+		\begin{itemize}
+           \item Javadoc 
+	\item Iedereen eigen code documenteren
+	\item In het Engels
+        \end{itemize}
+
+\item \textbf{Code review}
+		\begin{itemize}
+           \item DB connecties gesloten? Automatisch.
+		\item Soms hulpmethodes public
+		\item Geen commit in for-lus
+		\item Data access exceptions best niet gecatcht worden maar doorgeven naar oproepende methode
+        \end{itemize}
+
+\item \textbf{Proffen mailen om vergaderingen bij te wonen}
+	
+	\item \textbf{Code review}
+		\begin{itemize}
+           \item DB connecties gesloten? Automatisch.
+		\item Soms hulpmethodes public
+		\item Geen commit in for-lus
+		\item Data access exceptions best niet gecatcht worden maar doorgeven naar oproepende methode
+        \end{itemize}
+	
+	\item \textbf{Werkverdeling}
+		\begin{itemize}
+           \item Iedereen: eigen code documenteren tegen zondagavond in Javadoc/Scaladoc
+	\item Gilles en Steven: Rapport tegen zondagavond
+	\item Laurens en Wouter T.: Inlogsysteem en SQL statements
+	\item Gilles: Ritgegevens goedkeuren/afkeuren
+	\item Wouter P.: Ritgegevens doorgeven, informatie van autoeigenaar moet beschikbaar zijn bij reservatie
+	\item Stijn: DB refactoren, filters kalender
+	\item Steven: Rollensysteem en linken met views
+	\item Robin: autogebonden gegevens ingeven
+	\item Bart: Facturisatie model, e-mailtemplates afwerken
+        \end{itemize}
+		
+	\item \textbf{Bewijsmateriaal als binary uploaden}	
+	
+
+
+
+	
+
+	
+        
+
+
+
+\end{itemize}
+
+\end{document}

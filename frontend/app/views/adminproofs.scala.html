@@ -1,0 +1,167 @@
+@import java.util
+
+@import objects.Cost
+
+@import java.text.DecimalFormat;
+
+
+<div class="well">
+    <div class="row" id="proofTable">
+        <div class="col-md-8">
+            @if(!models.ProofsModel.getUnapprovedCosts.isEmpty){
+            <h2> <a id="showCostTable" style="color: black;"><i id ="costIcon" class="glyphicon small glyphicon-plus-sign"></i> Bewijsstukken in behandeling </a> </h2>
+            <div class="row" id="PendingCosts" style="display:none;">
+
+            <form name="costs" action="@routes.Admin.updateProof()" method="post">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <tr>
+                            <th>Soort</th>
+                            <th>Beschrijving</th>
+                            <th>Prijs</th>
+
+                        </tr>
+
+                    @for( proof <- models.ProofsModel.getUnapprovedCosts ){
+                        <tr id="cost@{proof.getId.toString}"  class="succ" onclick=" $('#modal@{proof.getId.toString}').modal();">
+                            <td>@proof.getType</td>
+                            <td>@proof.getDescription</td>
+                            <td>&euro; @(new DecimalFormat("#.##").format(proof.getPrice))</td>
+                            <input type="hidden" name="costField @{proof.getId.toString}" id="costField@{proof.getId.toString}" value=""/>
+                        </tr>
+                    }
+                    </table>
+                </div>
+                <button type="submit"  class="pull-right btn btn-default" > Sla veranderingen op</button>
+            </form>
+                </div>
+                } else{
+                <div class="row">
+                <h2> <i class="glyphicon text-success glyphicon-check"></i> Geen bewijsstukken in behandeling.</h2>
+                    </div>
+            }
+        </div>
+    </div>
+
+
+     </div>
+
+@for( proof <- models.ProofsModel.getUnapprovedCosts ){
+    <div id="modal@{proof.getId.toString}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal@{proof.getId.toString}label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span>Details kosten</h4>
+                </div>
+                <div class="modal-body">
+                    <div><p>Hier kan je deze kost goed of afkeuren:</p></div>
+                    <div class="row">
+                        <div class="col-xs-8">
+                        @if(proof.getProof != null){
+                            <img src="@{routes.FileRenderer.getFile(proof.getProof)}">
+                        } else {
+                            <p class="text-warning">Er is nog geen bewijs ge&uuml;pload!</p>
+                        }
+                        </div>
+                        <div class="col-xs-4">
+                            <h4>Type</h4>
+                            <p>@proof.getType</p>
+                            <h4>Beschrijving</h4>
+                            <p>@proof.getDescription</p>
+                            <h4>Prijs</h4>
+                            <p>&euro; @(new DecimalFormat("#.##").format(proof.getPrice).toString)</p>
+                            <h4>Datum</h4>
+                            <p>@if(proof.getMoment != null) {new Date(proof.getMoment).format("dd/MM/yy HH:mm")}</p>
+
+                            <div class="btn-group-vertical">
+                                <button value="accept"  onclick="$('#modal@{proof.getId.toString}').modal('hide'); $('#cost@{proof.getId.toString}').removeClass('danger succes').addClass('success'); $('#costField@{proof.getId.toString}').val('true');" class="btn btn-success">Goedkeuren</button>
+                                <button value="reject" onclick="$('#modal@{proof.getId.toString}').modal('hide');$('#cost@{proof.getId.toString}').removeClass('danger succes').addClass('danger'); ; $('#costField@{proof.getId.toString}').val('false');" class="btn btn-danger">Afkeuren</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Refuelings get their own well, they're costs, but special costs-->
+<div class="well">
+    <div class="row" id="proofTable">
+        <div class="col-md-8">
+        @if(! models.ProofsModel.getUnapprovedRefuelings.isEmpty){
+            <h2> <a id="showRefuelingTable" style="color: black;"><i id="fuelIcon" class="small glyphicon glyphicon-plus-sign"></i>Tankbeurten in behandeling </a> </h2>
+            <div class="row" id="PendingRefuelings" style="display:none;">
+                <form name="costs" action="@routes.Admin.updateRefueling()" method="post">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-responsive">
+                            <tr>
+                                <th>Type</th>
+                                <th>Liter</th>
+                                <th>Prijs</th>
+                                <th>Tijdstip</th>
+                            </tr>
+                            @for( proof <- models.ProofsModel.getUnapprovedRefuelings ){
+                                <tr id="proof@{proof.getId.toString}"  onclick=" $('#modalref@{proof.getId.toString}').modal();">
+                                    <td>@proof.getType</td>
+                                    <td>@if(proof.getLitre != null) {@{new DecimalFormat("#.##").format(proof.getLitre)}}</td>
+                                    <td>&euro; @{new DecimalFormat("#.##").format(proof.getPrice)}</td>
+                                    <td>@proof.getTime</td>
+                                </tr>
+                                <input type="hidden" name="refuelingField @{proof.getId.toString}" id="refuelingField@{proof.getId.toString}" value=""/>
+                            }
+                        </table>
+                    </div>
+                    <button type="submit" class="pull-right btn btn-default" > Sla veranderingen op</button>
+                </form>
+            </div>
+        } else{
+            <div class="row">
+                <h2> <i class="glyphicon text-success glyphicon-check"></i> Geen tankbeurten in behandeling.</h2>
+            </div>
+        }
+        </div>
+    </div>
+</div>
+
+
+@for( proof <- models.ProofsModel.getUnapprovedRefuelings ){
+    <div id="modalref@{proof.getId.toString}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal@{proof.getId.toString}label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span>Details kosten</h4>
+                </div>
+                <div class="modal-body">
+                    <div><p>Hier kan je deze tankbeurt goed of afkeuren:</p></div>
+                    <div class="row">
+                        <div class="col-xs-8">
+                        @if(proof.getProof != null){
+                            <img src="@{routes.FileRenderer.getFile(proof.getProof)}">
+                        } else {
+                            <p class="text-warning">Er is nog geen bewijs ge&uuml;pload!</p>
+                        }
+                        </div>
+                        <div class="col-xs-4">
+                            <h4>Type</h4>
+                            <p>@proof.getType</p>
+                            <h4>Liter</h4>
+                            <p>@if(proof.getLitre != null) {@(new DecimalFormat("#.##").format(proof.getLitre).toString)}</p>
+                            <h4>Prijs</h4>
+                            <p>&euro; @(new DecimalFormat("#.##").format(proof.getPrice).toString)</p>
+                            <h4>Datum</h4>
+                            <p>@{new Date(proof.getTime).format("dd/MM/yy HH:mm")}</p>
+
+                            <div class="btn-group-vertical">
+                                <button value="accept" onclick="$('#modalref@{proof.getId.toString}').modal('hide');$('#proof@{proof.getId.toString}').removeClass('danger succes').addClass('success'); $('#refuelingField@{proof.getId.toString}').val('true');" class="btn btn-success">Goedkeuren</button>
+                                <button value="reject" onclick="$('#modalref@{proof.getId.toString}').modal('hide');$('#proof@{proof.getId.toString}').removeClass('danger succes').addClass('danger'); $('#refuelingField@{proof.getId.toString}').val('false');"  class="btn btn-danger">Afkeuren</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

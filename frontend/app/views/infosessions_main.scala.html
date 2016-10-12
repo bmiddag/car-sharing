@@ -1,0 +1,103 @@
+@(formList: List[Form[views.formdata.InfoSessionFormData]])
+
+<div class="row">
+<div class="col-md-12">
+<div class="panel panel-default" id="mainInfoSessionsPanel">
+<div class="panel-heading">Infosessies</div>
+<div class="panel-body">
+@if(formList == null || formList.size < 1){<p>Je bent momenteel niet ingeschreven voor een infosessie.</p>}else{
+    <p>Je bent momenteel ingeschreven voor de volgende infosessie@if(formList.size > 1){s}. Klik op de gewenste infosessie om jouw inschrijving aan te passen:</p>
+    <div class="table-responsive"><table class="table table-striped table-hover">
+        <style>
+        td { padding: 7px; }
+        </style>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Datum</th>
+                <th>Tijdstip</th>
+                <th>Adres</th>
+                <th>Plaats</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(form <- formList) {
+            @if(form("id").value.toString != "") {
+                <tr id="session@{form("id").value.toString}" name="sessionRow" @if(form("inscriptionsDisabled").value.equals("true")){style="color: #999;"}
+                onclick="document.getElementById('session@{form("id").value.toString}').setAttribute('class', 'warning'); $('#modal@{form("id").value.toString}').modal();">
+                    <td>@{form("id").value.toString}</td>
+                    <td>@{form("date").value.toString}</td>
+                    <td>@{form("time").value.toString}</td>
+                    <td>@{form("addressStreet").value.toString} @{form("addressNumber").value.toString} @{form("addressBus").value.toString}</td>
+                    <td>@{form("addressZip").value.toString} @{form("addressPlace").value.toString}</td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table></div>
+}
+</div>
+</div>
+
+@if(formList != null) {
+    @for(form <- formList) {
+        @if(form("id").value.toString != "") {
+            <div id="modal@{form("id").value.toString}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal@{form("id").value.toString}label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    @helper.form(action = routes.InfoSessions.postIndex(form("id").value.toString)) {
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span> Details infosessie #@{form("id").value.toString}</h4>
+                        </div>
+                        <div class="modal-body">
+                            @if(form("inscriptionsDisabled").value.equals("true")){
+                                <div class="col-xs-12 alert alert-info alert-withicon">
+                                    <div class="alerticon"><span class="glyphicon glyphicon-info-sign"></span></div>
+                                    De inschrijvingen voor deze infosessie zijn afgelopen.
+                                </div>
+                            }
+                            <div><p>Dit zijn de details van deze infosessie:</p></div>
+                            <div class="row" style="padding-bottom: 0px;">
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-xs-4"><strong>Datum</strong>:</div>
+                                        <div class="col-xs-8">@{form("date").value.toString}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-4"><strong>Adres</strong>:</div>
+                                        <div class="col-xs-8">@{form("addressStreet").value.toString} @{form("addressNumber").value.toString} @{form("addressBus").value.toString}<br>
+                                            @{form("addressZip").value.toString} @{form("addressPlace").value.toString}</div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-xs-4"><strong>Tijdstip</strong>:</div>
+                                        <div class="col-xs-8">@{form("time").value.toString}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-4"><strong>Status</strong>:</div>
+                                        <div class="col-xs-8">Ingeschreven</div>
+                                    </div>
+                                </div>
+                                <input type="hidden" class="form-control" name="@{form("inscriptionOnly").name}" value="inscriptionOnly">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="pull-left checkbox" style="margin-top: 5px; margin-bottom: 5px; vertical-align: middle;">
+                                <label @if(form("inscriptionsDisabled").value.equals("true")){style="color: #999;"}>
+                                    <input type="checkbox" @if(form("inscriptionsDisabled").value.equals("true")){disabled }value="editInscription" name="@{form("inscribed").name}" id="inscriptionCheckbox@{form("id").value.toString}" onchange="document.getElementById('confirmButton@{form("id").value.toString}').disabled = !document.getElementById('confirmButton@{form("id").value.toString}').disabled;">
+                                    Ik wil me <b style="color: red;">uitschrijven</b> voor deze infosessie</label>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                            <button id="confirmButton@{form("id").value.toString}" type="submit" class="btn btn-success" disabled="true"><span class="glyphicon glyphicon-ok-circle"></span> Bevestigen</button>
+                        </div>
+                    }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+</div>
+</div>

@@ -1,0 +1,70 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1318" measuredH="596" mockupW="1263" mockupH="569">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::HRule" x="55" y="176" w="1248" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="-1"/>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="55" y="27" w="1263" h="569" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//www.degage.be</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="547" y="201" w="-1" h="-1" measuredW="35" measuredH="21" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Naam</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="547" y="232" w="-1" h="-1" measuredW="59" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Voornaam</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Label" x="547" y="260" w="-1" h="-1" measuredW="98" measuredH="21" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Telefoonnummer</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="547" y="288" w="-1" h="-1" measuredW="35" measuredH="21" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Adres</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Label" x="547" y="317" w="-1" h="-1" measuredW="36" measuredH="21" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Auto%27s</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Label" x="721" y="201" w="-1" h="-1" measuredW="70" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Uit%20Den%20Bos</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::Label" x="721" y="232" w="-1" h="-1" measuredW="21" measuredH="21" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Jos</text>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::Label" x="721" y="260" w="-1" h="-1" measuredW="80" measuredH="21" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>0499469270</text>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::Label" x="721" y="288" w="-1" h="-1" measuredW="158" measuredH="21" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bosstraat%208%2C%20Gent%2C%20Belgium</text>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::Label" x="721" y="317" w="-1" h="-1" measuredW="93" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>The%20Bossmobiel</text>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::DataGrid" x="548" y="351" w="333" h="182" measuredW="333" measuredH="51" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Datum%2C%20Starttijdstip%2C%20Eindtijdstip%2C%20Ritgegevens%0A05/04/1500%2C%207%3A00%2C%2018%3A00</text>
+      </controlProperties>
+    </control>
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::Button" x="807" y="372" w="-1" h="-1" measuredW="58" measuredH="27" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bekijk</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

@@ -1,0 +1,195 @@
+\documentclass[11pt,a4paper,oneside]{article}
+\usepackage[dutch]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{fancyhdr}
+\usepackage{dsfont}
+\usepackage{parskip}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{color}
+\definecolor{lichtgrijs}{gray}{0.95}
+\usepackage{cite}
+\usepackage[nottoc]{tocbibind}
+\usepackage[T1]{fontenc}
+\usepackage[light,math]{iwona}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{subfig}
+\usepackage{textcomp}
+\usetikzlibrary{arrows,automata}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{titling,enumitem}
+\usepackage{a4wide}
+\usepackage{amssymb}
+\usepackage{rotating}
+\usepackage{listings}
+\usepackage[top=1.1in, bottom=1.2in, left=1.1in, right=1.1in]{geometry}
+\usepackage{array}
+\usepackage{titling}
+\usepackage{blindtext}
+\usepackage{hyperref}
+\usepackage{chngpage}
+\usepackage{calc}
+\definecolor{lightgray}{gray}{0.8}
+\newcolumntype{L}{>{\raggedleft}p{0.50\textwidth}}
+\newcolumntype{R}{p{0.8\textwidth}}
+\newcommand\VRule{\color{lightgray}\vrule width 0.5pt}
+\usepackage{color, colortbl}
+\definecolor{Gray}{gray}{0.9}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{ugentblue}{rgb}{0.05,0.18,0.37}
+\usepackage{import}
+\usepackage[T1]{fontenc}
+\lstset{
+language=BASH,
+basicstyle=\scriptsize\ttfamily,
+numbers=none,
+numberstyle=\tiny\color{black},
+firstnumber=1,
+stepnumber=1,
+numbersep=9pt,
+backgroundcolor=\color{white},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=single,
+tabsize=1,
+captionpos=t,
+title=\lstname,
+breaklines=true,
+breakatwhitespace=true,
+keywordstyle=\color{blue},
+commentstyle=\color{dkred}\textit,
+stringstyle=\color{dkgreen},
+escapeinside={\%*}{*)},
+}
+
+
+\begin{document}
+
+\newgeometry{top=0.8cm, right=1.70cm, left=1.7cm}
+\begin{titlepage}
+
+\thispagestyle{fancy}
+\fancyhf{}
+\fancyfoot[L]{}
+\begin{figure}[!ht]
+  \begin{adjustwidth}{-\oddsidemargin-1in}{-\rightmargin}
+    \centering
+    \includegraphics[width=\paperwidth]{img/banner}
+  \end{adjustwidth}
+\end{figure}
+\vspace{-0.2em}
+\begin{center}
+\vspace{5cm}
+\Huge \textbf{Vakoverschrijdend Project: team Edran\\ Installatiehandleiding}\\
+\vspace{6.0cm}
+\large
+\begin{tabular}{L! {} R}
+& {\LARGE\bf Team Edran} \\
+& \\
+& {\bf Steven De Blieck} \\
+& {\bf Laurens De Graeve} \\
+& {\bf Bart Middag} \\
+& {\bf Wouter Pinnoo} \\
+& {\bf Robin Praet} \\
+& {\bf Stijn Seghers} \\
+& {\bf Wouter Termont} \\
+& {\bf Gilles Vandewiele} \\
+\end{tabular}
+\end{center}
+\end{titlepage}
+\restoregeometry
+\newpage
+
+\fancyheadoffset[RO,LE]{0in}
+\fancypagestyle{plain}{
+\fancyhead[L]{Installatiehandleiding}
+\fancyhead[R]{Team Edran}
+\fancyfoot[L]{}
+\fancyfoot[R]{\thepage}}
+
+\fancyhead[L]{Installatiehandleiding}
+\fancyhead[R]{Team Edran}
+\fancyfoot[L]{}
+\fancyfoot[C]{\thepage}
+\pagestyle{fancy}
+
+\section{Inleiding}
+Deze handleiding beschrijft welke stappen moeten ondernomen worden om alles op de server in gereedheid te brengen voor de web-applicatie, en om de web-applicatie zelf te installeren.
+
+\section{Databank}
+Als databankserver gebruiken we MySQL. We voorzien scripts voor de installatie van de databank.
+
+\textbf{Stap 1:} Installeer MySQL. Zie hiervoor de offici\"ele documentatie beschikbaar op \url{http://dev.mysql.com/doc/refman/5.1/en/installing.html}.\par
+\textbf{Stap 2:} Stel een wachtwoord in voor de \verb|root|-user als je dit nog niet gedaan hebt tijdens de installatie van MySQL:
+\vspace{-1.7em}\begin{lstlisting}
+mysqladmin -u root password JOUWNIEUWWACHTWOORD
+\end{lstlisting}\par
+\textbf{Stap 3:} Maak een clone van onze GitHub server-repo:
+\vspace{-1.7em}\begin{lstlisting}
+git clone git@github.ugent.be:edran/server.git
+\end{lstlisting}\par
+\textbf{Stap 4:} In de repository is er een bestand \verb|database.conf| in de map \verb|configurations/|. Zet daar het wachtwoord van de \verb|root|-user in; in volgend formaat:
+\vspace{-1.7em}\begin{lstlisting}
+DBusr=root
+DBpass=mynewpassword
+DBsft=mysql
+\end{lstlisting}\par
+\textbf{Stap 5:} Ga naar de map \verb|DBscripts/| in de repository en voer daar het script \verb|setup.sh| uit met als parameter \verb|prod| (om de productie-databank te initialiseren):
+\vspace{-1.7em}\begin{lstlisting}
+cd server/DBscripts
+./resetDB.sh prod
+\end{lstlisting}\par
+Proficiat! De databank is nu ge\"initialiseerd en klaar voor gebruik in de web-applicatie.
+
+\section{Modules}
+Onze modules (databank- en authenticatiemodule) worden onafhankelijk gemaakt van de webapplicatie, en moeten bijgevolg afzonderlijk gecompileerd worden.
+
+\textbf{Stap 1:} Maak een clone van onze GitHub repository die de source code van de web-applicatie bevat:
+\vspace{-1.7em}\begin{lstlisting}
+git clone git@github.ugent.be:edran/autodelen.git
+\end{lstlisting}\par
+\textbf{Stap 2:} Voer het script \verb|compile_modules.sh| uit. Nu zitten in de map \verb|autodelen/lib/| de nieuwste versies (in \verb|jar|-formaat) van de modules.\par
+De web-applicatie kan nu gebruik maken van de modules. Indien je het Play-framework ge\"installeerd hebt, kan je ook het commando \verb|play modules| gebruiken om de modules te compileren.
+
+\section{Apache server}\label{sec:apache}
+We installeren de play-webapplicatie op de locatie \verb|/prod| op de server. Als font-end webserver gebruiken we Apache2, en zal dienen voor de (reverse) proxy.\par
+\textbf{Stap 1:} Maak een clone van onze GitHub repo die de configuraties van de server bevat:
+\vspace{-1.7em}\begin{lstlisting}
+git clone git@github.ugent.be:edran/server.git
+\end{lstlisting}\par
+\textbf{Stap 2:} Ga naar de \verb|configurations| map:
+\vspace{-1.7em}\begin{lstlisting}
+cd server/configurations
+\end{lstlisting}\par
+\textbf{Stap 3:} Pas in het bestand \verb|apache_configuration.sh| de \verb$SERVER_PATH$ variabele aan naar de map waar je de repository gecloned hebt. Bijvoorbeeld:
+\vspace{-1.7em}\begin{lstlisting}
+SERVER_PATH="/home/wouter/server"
+\end{lstlisting}\par
+\textbf{Stap 4:} Voer het shellscript \verb$apache_configuration.sh$ uit. \textbf{Let op:} hiervoor heb je sudo-rechten nodig.
+\vspace{-1.7em}\begin{lstlisting}
+sudo ./apache_configuration.sh
+\end{lstlisting}\par
+\textbf{Stap 5:} Proficiat! Je Apache2 web-server is nu ingesteld!
+
+\section{Play applicatie}
+\textbf{Stap 1:} Ga naar de server-repository die je in Sectie \ref{sec:apache} gecloned hebt. In de map \verb|play| vind je bestanden \verb|start.sh| en \verb|stop.sh|. Pas in die bestanden de variabelen \verb|PLAY_PATH| en \verb|SERVER_PATH| aan die het pad bevatten waar je de repositories 'autodelen', respectivelijk 'server' gecloned hebt. Bijvoorbeeld:
+\vspace{-1.7em}\begin{lstlisting}
+PLAY_PATH="/home/wouter/autodelen"
+SERVER_PATH="/home/wouter/server"
+\end{lstlisting}\par
+\textbf{Stap 2:} Terug in de map waar je de server-repository gecloned hebt, vind je een shellscript \verb|play_deploy.sh|. Voer dit script uit om de 'autodelen' web-applicatie te compileren en op te zetten in productie modus. \textbf{Let op:} dit script gaat ervan uit dat de huidige gebruiker sudo-rechten heeft, met \verb|NOPASSWD|. Meer info hierover op \url{https://help.ubuntu.com/community/Sudoers#User_Specifications}.
+\vspace{-1.7em}\begin{lstlisting}
+./play_deploy.sh
+\end{lstlisting}
+Nu zal de play-web-applicatie gestart worden op de poort ($9000$) en prefix (\verb|/prod|) die ingesteld zijn in \verb|$SERVER_PATH/play/start.sh|.
+\par
+
+
+\end{document}

@@ -1,0 +1,64 @@
+# Extracted from https://github.com/ulrich/macaron-factory/blob/master/.gitignore
+# Ignore all dotfiles...
+.*
+# except for .gitignore
+!.gitignore
+
+# Ignore Play! working directory #
+db
+bin
+eclipse
+log
+logs
+# modules
+precompiled
+project/project
+project/target
+target
+tmp
+test-result
+server.pid
+*.iml
+*.eml
+logs
+project/project
+project/target
+target
+tmp
+.history
+dist
+/.idea
+/*.iml
+/out
+/.idea_modules
+/.classpath
+/.project
+/RUNNING_PID
+/.settings
+conf/database.conf
+conf/smtp.conf
+
+*.class
+*.sublime-project
+*.sublime-workspace
+
+/modules/nbproject/private/
+/modules/build/
+
+/modules/DBModule/build/
+/modules/DBModule/build.xml
+/modules/DBModule/manifest.mf
+/modules/DBModule/nbproject
+
+/modules/AuthModule/nbproject
+/modules/AuthModule/build/
+/modules/AuthModule/build.xml
+/modules/AuthModule/manifest.mf
+/nbproject/private/
+
+conf/db.properties
+lib/selenium-server-standalone-2.40.0.jar
+
+/public/images/charts/
+lib/*.jar
+backups/

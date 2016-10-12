@@ -1,0 +1,243 @@
+<div class="form-group">
+    @*(String carName, String plate,
+    Integer inscription, String make, String type, String model,
+    Integer byear, String fuel, String description, Integer doors,
+    Integer capacity, Boolean tow, Boolean gps, Float consumption, String chassis,
+    Float value, Float km, Double kmpy)*@
+    <div class="col-sm-3"><label class="control-label" for="carName">Autonaam</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="carName" name="carName" placeholder="Autonaam" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="carName"></label></div>
+
+
+
+
+
+
+
+    <div class="col-sm-3"><label class="control-label" for="description">Beschrijving</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <textarea class="form-control" id="description" name="description" placeholder="Beschrijving" data-parsley-trigger="change" required></textarea>
+    </div><label class="error label label-danger" for="description"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="plate">Nummerplaat</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="plate" name="plate" placeholder="Nummerplaat" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="plate"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="inscription">Inschrijvingsbewijs</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="file" title="Inschrijvingsbewijs toevoegen" data-filename-placement="inside" class="form-control" id="inscription" name="inscription" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf" placeholder="Inschrijvingsbewijs" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="inscription"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="make">Automerk</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="make" name="make" placeholder="Automerk" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="make"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="type">Type</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="type" name="type" placeholder="Type" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="type"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="model">Model</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="model" class="form-control" id="model" name="model" placeholder="Model" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="model"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="byear">Bouwjaar</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="byear" name="byear" placeholder="Bouwjaar" data-parsley-min="1900" data-parsley-max="@java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)" data-parsley-type="number" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="byear"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="type">Brandstof</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="fuel" name="fuel" placeholder="Brandstof" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="fuel"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="kmpy">Jaarlijkse km's</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="kmpy" name="kmpy" placeholder="Jaarlijks aantal kilometers" data-parsley-min="0" data-parsley-type="number" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="kmpy"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="km">Huidige kilometerstand</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="km" name="km" placeholder="Huidige kilometerstand" data-parsley-min="0" data-parsley-type="number" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="km"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="value">Geschatte waarde</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="value" name="value" placeholder="Geschatte waarde" data-parsley-error-message="Gelieve een bedrag op te geven." data-parsley-min="0" data-parsley-type="number" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="value"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="doors">Aantal deuren</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="doors" name="doors" placeholder="Aantal deuren" data-parsley-min="0" data-parsley-type="number" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="doors"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="capacity">Zitplaatsen</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="capacity" name="capacity" placeholder="Zitplaatsen" data-parsley-min="0" data-parsley-type="number" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="capacity"></label></div>
+
+    <input type="checkbox" value="tow" name="tow" id="tow" data-label="Trekhaak">
+    <input type="checkbox" value="gps" name="gps" id="gps" data-label="GPS">
+
+    <div class="col-sm-3"><label class="control-label" for="consumption">Gem. verbruik per km</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="consumption" name="consumption" placeholder="Gem. verbruik per km" data-parsley-min="0" data-parsley-type="number" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="consumption"></label></div>
+
+    <div class="col-sm-3"><label class="control-label" for="chassis">Chassisnummer</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon">*</span>
+        <input type="text" class="form-control" id="chassis" name="chassis" placeholder="Chassisnummer" data-parsley-trigger="change" required>
+    </div><label class="error label label-danger" for="chassis"></label></div>
+
+
+    <div class="col-sm-3"><label class="control-label" for="foto">Foto auto (tot 7 mogelijk)</label></div>
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon"></span>
+<input type="file" title="Voeg toe" data-filename-placement="inside" id="foto1" name="foto1" onchange="javascript:photo1filled()" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf">
+    </div><label class="error label label-danger" for="foto"></label></div>
+
+    <div id="foto2div" style="visibility:hidden">
+    <div class="col-sm-3"><label class="control-label" for="foto2"></label></div>
+
+    <div class="col-sm-9"><div class="input-group">
+        <span class="input-group-addon"></span>
+        <input  title="Voeg nog een toe" data-filename-placement="inside" id="foto2" type="file" name="foto2" onchange="javascript:photo2filled()" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf">
+    </div><label class="error label label-danger" for="foto2"></label></div></div>
+
+    <div id="foto3div" style="visibility:hidden">
+        <div class="col-sm-3"><label class="control-label" for="foto3"></label></div>
+
+        <div class="col-sm-9"><div class="input-group">
+            <span class="input-group-addon"></span>
+            <input  title="Voeg nog een toe" data-filename-placement="inside" id="foto3" type="file" name="foto3" onchange="javascript:photo3filled()" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf">
+        </div><label class="error label label-danger" for="foto3"></label></div></div>
+
+    <div id="foto4div" style="visibility:hidden">
+        <div class="col-sm-3"><label class="control-label" for="foto4"></label></div>
+
+        <div class="col-sm-9"><div class="input-group">
+            <span class="input-group-addon"></span>
+            <input title="Voeg nog een toe" data-filename-placement="inside" id="foto4" type="file" name="foto4" onchange="javascript:photo4filled()" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf">
+        </div><label class="error label label-danger" for="foto4"></label></div></div>
+
+    <div id="foto5div" style="visibility:hidden">
+        <div class="col-sm-3"><label class="control-label" for="foto5"></label></div>
+
+        <div class="col-sm-9"><div class="input-group">
+            <span class="input-group-addon"></span>
+            <input  title="Voeg nog een toe" data-filename-placement="inside" id="foto5" type="file" name="foto5" onchange="javascript:photo5filled()" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf">
+        </div><label class="error label label-danger" for="foto5"></label></div></div>
+
+    <div id="foto6div" style="visibility:hidden">
+        <div class="col-sm-3"><label class="control-label" for="foto6"></label></div>
+
+        <div class="col-sm-9"><div class="input-group">
+            <span class="input-group-addon"></span>
+            <input title="Voeg nog een toe"  data-filename-placement="inside" id="foto6" type="file" name="foto6" onchange="javascript:photo6filled()" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf">
+        </div><label class="error label label-danger" for="foto6"></label></div></div>
+
+    <div id="foto7div" style="visibility:hidden">
+        <div class="col-sm-3"><label class="control-label" for="foto3"></label></div>
+
+        <div class="col-sm-9"><div class="input-group">
+            <span class="input-group-addon"></span>
+            <input  title="Voeg nog een toe" data-filename-placement="inside" id="foto7" name="foto7" type="file" accept="image/png, image/jpeg, image/gif, images/jpg, images/bmp, application/pdf">
+        </div><label class="error label label-danger" for="foto7"></label></div></div>
+
+
+    <script>$(document).ready(function(){$('input[type=file]').bootstrapFileInput();});</script>
+    <script>$(document).ready(function(){document.getElementById("foto2div").style.visibility='hidden';});</script>
+    <script>$(document).ready(function(){document.getElementById("foto3div").style.visibility='hidden';});</script>
+    <script>$(document).ready(function(){document.getElementById("foto4div").style.visibility='hidden';});</script>
+    <script>$(document).ready(function(){document.getElementById("foto5div").style.visibility='hidden';});</script>
+    <script>$(document).ready(function(){document.getElementById("foto6div").style.visibility='hidden';});</script>
+    <script>$(document).ready(function(){document.getElementById("foto7div").style.visibility='hidden';});</script>
+
+
+
+
+
+    <script type="text/javascript">
+
+        function photo1filled() {
+            if (document.getElementById("foto1").value != "" || document.getElementById("foto1").value.length > 0) {
+                document.getElementById('foto2div').style.visibility = 'visible';
+            }
+            else document.getElementById('foto2div').style.visibility = 'hidden';
+
+        }
+
+        function photo2filled() {
+            if (document.getElementById("foto2").value != "" || document.getElementById("foto2").value.length > 0) {
+                document.getElementById('foto3div').style.visibility = 'visible';
+            }
+            else document.getElementById('foto3div').style.visibility = 'hidden';
+
+        }
+
+        function photo3filled() {
+            if (document.getElementById("foto3").value != "" || document.getElementById("foto3").value.length > 0) {
+                document.getElementById('foto4div').style.visibility = 'visible';
+            }
+            else document.getElementById('foto4div').style.visibility = 'hidden';
+
+        }
+
+        function photo4filled() {
+            if (document.getElementById("foto4").value != "" || document.getElementById("foto4").value.length > 0) {
+                document.getElementById('foto5div').style.visibility = 'visible';
+            }
+            else document.getElementById('foto5div').style.visibility = 'hidden';
+
+        }
+
+        function photo5filled() {
+            if (document.getElementById("foto5").value != "" || document.getElementById("foto5").value.length > 0) {
+                document.getElementById('foto6div').style.visibility = 'visible';
+            }
+            else document.getElementById('foto6div').style.visibility = 'hidden';
+
+        }
+
+        function photo6filled() {
+            if (document.getElementById("foto6").value != "" || document.getElementById("foto6").value.length > 0) {
+                document.getElementById('foto7div').style.visibility = 'visible';
+            }
+            else document.getElementById('foto7div').style.visibility = 'hidden';
+
+        }
+
+    </script>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+

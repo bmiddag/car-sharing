@@ -1,0 +1,90 @@
+@(damage: objects.Damage, user: objects.User, car: objects.Car, comments: Collection[objects.Comment])
+
+@import utils.TimeUtils
+    @stylesheets = {
+    }
+
+    @javascripts = {
+        <script type="text/javascript" src="@routes.Application.javascriptRoutes()"></script>
+    }
+
+    @tabs = {
+        <ul class="nav nav-tabs">
+            <li><a href="@routes.Reserve.index("reserve")">Reserveren</a></li>
+            <li class="active"><a href="@routes.Reserve.index("trips")" name="rideDetails">Ritgegevens</a></li>
+            <li><a href="@routes.Reserve.index("my-reservations")">Mijn reservaties</a></li>
+        </ul>
+    }
+
+@main("Reserveer uw auto", stylesheets, javascripts, tabs, NotificationModel.getNumberOfUnreadNotifications()) {
+    <div class="row panel panel-default">
+        <div class="panel-heading">Gegevens van het schadegeval</div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>Status</td>
+                    <td>@damage.getStatus</td>
+                </tr>
+                @if(damage.getOccurred != null){
+                    <tr>
+                        <td>Datum</td>
+                        <td>@{TimeUtils.getFormattedDate("dd/MM/yyyy HH:mm", damage.getOccurred)}</td>
+                    </tr>
+                }
+                <tr>
+                    <td>Auto</td>
+                    <td>@car.getName</td>
+                </tr>
+                <tr>
+                    <td>Gebruiker</td>
+                    <td>@user.getName @user.getSurname</td>
+                </tr>
+                <tr>
+                    <td>Beschrijving</td>
+                    <td>@damage.getDescription</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row panel panel-default">
+        <div class="panel-heading">Commentaar</div>
+        <div class="panel-body">
+            <div class="row form-group">
+                <form role="form" action="@routes.Reserve.newComment()" method="post">
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" name="content" placeholder="Typ hier een nieuw commentaar op het schadegeval...">
+                        <input type="hidden" name="damage" value="@damage.getId">
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-plus-sign"></span> Voeg commentaar toe</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="col-md-2">Datum</th>
+                            <th class="col-md-2">Persoon</th>
+                            <th class="col-md-6">Bericht</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @comments.map { comment =>
+                        <tr>
+                            <td>@{TimeUtils.getFormattedDate("dd/MM/yyy HH:mm", comment.getTime)}</td>
+                            <td>@{UserModel.getUserById(comment.getUser).getSurname} @{UserModel.getUserById(comment.getUser).getName}</td>
+                            <td>@comment.getContent</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+    @footer()
+    </div>
+}

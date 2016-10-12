@@ -1,0 +1,61 @@
+@(priceranges :List[objects.PriceRange])
+
+<div class="row">
+    <div class="col-md-12">
+        <h3 class="breadcrumb">Prijsintervallen</h3>
+            <div class="table-responsive">
+            <table id="priceRangeTable" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Ondergrens</th>
+                        <th>Bovengrens</th>
+                        <th>Prijs</th>
+                        <th></th>
+                        <th> @if(!FacturisationModel.checkPriceRanges()){
+                            <i class="glyphicon glyphicon-exclamation-sign" name="priceRangeError" id="errorPriceRange" style="font-size: 2em; color: red;"
+                            title="Zorg ervoor dat de intervallen lopen van 0 tot 65535 en dat geen intervallen overlappen!" />
+                        }else{
+                            <i class="glyphicon glyphicon-ok-sign" name="priceRangeOK" id="errorPriceRange" style="font-size: 2em; color: green;" />
+                        }
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody id="priceRangeTableBody" style="text-align: left;">
+                @for((pricerange) <- priceranges){
+                    <form role="form" action="@routes.Admin.removePriceRange()" method="post">
+                        <tr id="pricerange@pricerange.getId()" name="priceRangeRow">
+                            <td><a href="#" class="minimum" id="priceRangeMinimum" data-name="minimum" data-pk="@pricerange.getId()" > @{pricerange.getMin()}</a></td>
+                            <td><a href="#" class="maximum" data-name="maximum" data-pk="@pricerange.getId()" > @{pricerange.getMax()}</a></td>
+                            <td><a href="#" class="price" data-name="price" data-pk="@pricerange.getId()" >@{pricerange.getPrice()/100f}</a></td>
+                            @*<td><a href="#" class="price" data-name="price" data-pk="@pricerange.getId()" >@{var cost = pricerange.getPrice(); String.format("%d.%02d",cost/100: Integer,cost%100: Integer);}</a></td>*@
+                            <td><input type="hidden" name="selectedID" value="@pricerange.getId">
+                                <button type="submit" class="btn btn-primary" name="submit" id="deletePriceRange"><i class="glyphicon glyphicon-minus-sign"/></button></td>
+                            <td></td>
+                        </tr>
+                    </form>
+                }
+                </tbody>
+                <tfoot id="addNewDamage">
+                    <tr>
+                        <form role="form" action="@routes.Admin.newPriceRange()" method="post">
+                            <th><input type="text" class="form-control input-block-level" id="pricerange-begin" name="pricerange-begin" placeholder="ondergrens"></th>
+                            <th><input type="text" class="form-control input-block-level" id="pricerange-end" name="pricerange-end" placeholder="bovengrens"></th>
+                            <th><input type="text" class="form-control input-block-level" id="pricerange-price" name="pricerange-price" placeholder="prijs"></th>
+                            <th><button type="submit" class="btn btn-primary" name="submit" id="pricerange-submit"><i class="glyphicon glyphicon-plus-sign"/></button></th>
+                        </form>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+$('#getInvoice').click( function() {
+window.location = $(this ).attr('href') + '/' + $('#appendUrl').val();
+return false;
+});
+});
+</script>

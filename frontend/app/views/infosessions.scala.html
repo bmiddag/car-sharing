@@ -1,0 +1,306 @@
+@**
+* InfoSessions page - This page shows muliple forms for creating, editing and removing InfoSessions when the user is
+* an administrator, but only allows normal users to modify their inscription. Modals are used to show the forms.
+*
+* @author               Bart Middag
+* @param    formList    a list of InfoSessionFormData objects. Use InfoSessionsModel.getInfoSessionFormDataList(User).
+* @param    isAdmin     true if the user viewing this page is an administrator
+*@
+
+
+@(formList: List[Form[views.formdata.InfoSessionFormData]], isAdmin: Boolean)
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
+@import be.objectify.deadbolt.core.PatternType
+@stylesheets = {
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("vendor/datetimepicker/css/jquery.datetimepicker.css")" />
+}
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Assets.at("vendor/datetimepicker/js/jquery.datetimepicker.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            @for(form <- formList) {
+                @if(form("id").value.toString != "") {
+                    $('#modal@{form("id").value.toString}').on('hidden.bs.modal', function() {
+                        @if(form("inscribed").value.toString.equals("true")) {
+                            var successful = true;
+                        } else {
+                            var successful = false;
+                        }
+                        $('#session@{form("id").value.toString}').attr('class', successful ? 'success' : '');
+                    });
+                }
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.timepicker').datetimepicker({
+                datepicker:false,
+                format:'H:i'
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.datepicker').datetimepicker({
+                timepicker:false,
+                format:'d/m/Y'
+            });
+        });
+    </script>
+}
+
+@main(if(isAdmin){"Infosessies - Beheer"}else{"Infosessies"}, stylesheets, javascripts, null, NotificationModel.getNumberOfUnreadNotifications()) {
+    <div class="row">
+        <p>@if(formList == null || formList.size < 2){
+            Er zijn momenteel geen infosessies gepland.
+        }else{
+            @if(isAdmin){
+                Klik op een infosessie om meer details te bekijken of deze details te bewerken. Als beheerder kan je je ook inschrijven om meldingen over de gekozen infosessie te ontvangen.
+            }else{
+                Klik op een infosessie om meer details te bekijken of je inschrijving aan te passen.
+            }
+            Dit zijn de beschikbare infosessies:
+        }</p>
+        @pattern("infosessions.add",PatternType.REGEX){<button id="addInfoSessionButton" type="button" class="pull-right btn btn-success"  onclick="$('#modal').modal();"><span class="glyphicon glyphicon-plus"></span> Infosessie toevoegen</button>}
+    </div>
+    @if(!(formList == null || formList.size < 2)){
+        <div class="table-responsive" style="max-height:500px; overflow-y: scroll;"><table class="table table-striped table-hover">
+            <style>
+                td { padding: 7px; }
+            </style>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Datum</th>
+                    <th>Tijdstip</th>
+                    <th>Adres</th>
+                    <th>Plaats</th>
+                    @if(isAdmin){<th>Voor</th>}
+                    @if(isAdmin){<th>Ingeschreven</th>}
+                    @if(isAdmin){<th>PDF</th>}
+                </tr>
+            </thead>
+            <tbody>
+                @for(form <- formList) {
+                    @if(form("id").value.toString != "") {
+                        <tr id="session@{form("id").value.toString}" name="sessionRow" @if(form("inscribed").value.toString.equals("true")){class="success"}
+                        @if(form("inscriptionsDisabled").value.equals("true")){style="color: #999;"}
+                        onclick="document.getElementById('session@{form("id").value.toString}').setAttribute('class', 'warning'); $('#modal@{form("id").value.toString}').modal();">
+                            <td style="vertical-align: middle;">@{form("id").value.toString}</td>
+                            <td style="vertical-align: middle;">@{form("date").value.toString}</td>
+                            <td style="vertical-align: middle;">@{form("time").value.toString}</td>
+                            <td style="vertical-align: middle;">@{form("addressStreet").value.toString} @{form("addressNumber").value.toString} @{form("addressBus").value.toString}</td>
+                            <td style="vertical-align: middle;">@{form("addressZip").value.toString} @{form("addressPlace").value.toString}</td>
+                            @if(isAdmin){<td style="vertical-align: middle;">@if(form("owners").value.toString == "true"){Eigenaars} else {Leners}</td>}
+                            @if(isAdmin){<td style="vertical-align: middle; text-align: center;">@if(form("inscribed").value.toString == "true") {<span style="color: green;" class="glyphicon glyphicon-ok"></span>}else{<span style="color: #e1a1a2;" class="glyphicon glyphicon-remove"></span>}</td>}
+                            @if(isAdmin){
+                                <td>
+                                    @helper.form(action = routes.Report.getReportInfosession(Integer.parseInt(form("id").value.toString))) {
+                                        <button type="submit" class="btn btn-default btn-sm" onclick="event.stopPropagation();">
+                                            <span class="glyphicon glyphicon-file"></span>
+                                        </button>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table></div>
+    }
+    @for(form <- formList) {
+        @if((form("id").value.toString != "")||(isAdmin)) {
+            <div id="modal@{form("id").value.toString}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal@{form("id").value.toString}label" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        @helper.form(action = routes.InfoSessions.postIndex(form("id").value.toString)) {
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title"><span class="glyphicon glyphicon-info-sign"></span> @if(form("id").value.toString != ""){Details infosessie #@{form("id").value.toString}}else{Nieuwe infosessie}</h4>
+                            </div>
+                            <div class="modal-body">
+                                @if(form("inscriptionsDisabled").value.equals("true")){
+                                    <div class="col-xs-12 alert alert-info alert-withicon">
+                                        <div class="alerticon"><span class="glyphicon glyphicon-info-sign"></span></div>
+                                        De inschrijvingen voor deze infosessie zijn afgelopen.
+                                    </div>
+                                }
+                                @patternOr("infosessions.edit",PatternType.REGEX){
+                                    <div><p>Hier kan je de details van deze infosessie bewerken:</p></div>
+                                    <!-- Date picker   -->
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-2"><strong>Tijdstip</strong>:</div>
+                                        <div class='col-xs-6 col-sm-5'>
+                                            <div class="form-group">
+                                                <div class='input-group date' data-date-format="DD/MM/YYYY" >
+                                                    <input type="text" class="form-control datepicker" name="@{form("date").name}" placeholder="dd/MM/yyyy" value="@{form("date").value.toString}" />
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='col-xs-6 col-sm-5'>
+                                            <div class="form-group">
+                                                <div class='input-group date' >
+                                                    <input type="text" class="form-control timepicker" name="@{form("time").name}" placeholder="HH:mm" value="@{form("time").value.toString}"/>
+                                                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <!-- End Date picker -->
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-2"><strong>Adres</strong>:</div>
+                                        <div class="col-xs-5 col-sm-4"><div class="input-group">
+                                            <input type="text" class="form-control" name="@{form("addressStreet").name}" placeholder="Straatnaam" value="@{form("addressStreet").value.toString}">
+                                            <span class="input-group-addon">straat</span>
+                                        </div></div>
+                                        <div class="col-xs-4 col-sm-3"><div class="input-group">
+                                            <input type="text" class="form-control" name="@{form("addressNumber").name}" placeholder="Huisnummer" value="@{form("addressNumber").value.toString}">
+                                            <span class="input-group-addon">nr.</span>
+                                        </div></div>
+                                        <div class="col-xs-3 col-sm-3"><div class="input-group">
+                                            <input type="text" class="form-control" name="@{form("addressBus").name}" placeholder="Bus" maxlength="3" value="@{form("addressBus").value.toString}">
+                                            <span class="input-group-addon">bus</span>
+                                        </div></div>
+                                        <div class="col-xs-0 col-sm-2"></div>
+                                        <div class="col-xs-6 col-sm-4"><div class="input-group">
+                                            <input type="text" class="form-control" name="@{form("addressZip").name}" placeholder="pppp" maxlength="4" value="@{form("addressZip").value.toString}">
+                                            <span class="input-group-addon">postcode</span>
+                                        </div></div>
+                                        <div class="col-xs-6 col-sm-6"><div class="input-group">
+                                            <input type="text" class="form-control" name="@{form("addressPlace").name}" placeholder="Plaatsnaam" value="@{form("addressPlace").value.toString}">
+                                            <span class="input-group-addon">plaats</span>
+                                        </div></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-2"><strong>Plaatsen</strong>:</div>
+                                        <div class="col-xs-12 col-sm-10"><div class="input-group">
+                                            <input type="text" class="form-control" name="@{form("places").name}" placeholder="Totaal aantal plaatsen" value="@{form("places").value.toString}">
+                                            <span class="input-group-addon"># plaatsen</span>
+                                        </div></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-2"><strong>Voor</strong>:</div>
+                                        <div class="col-xs-6 col-sm-5">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="@{form("owners").name}" value="false" @if(form("owners").value.toString.equals("false")){checked}>
+                                                Autoleners
+                                            </label>
+                                        </div><div class="col-xs-6 col-sm-5">
+                                            <label class="radio-inline">
+                                                <input type="radio" name="@{form("owners").name}" value="true" @if(form("owners").value.toString.equals("true")){checked}>
+                                                Auto-eigenaars
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-2"><strong>Status</strong>:</div>
+                                        <div class="col-md-6">@if(form("inscribed").value.toString == "true") { <span style="color: green;" class="glyphicon glyphicon-ok"></span> Ingeschreven } else {
+                                            @if((form("places").value.toString.equals("")) || (!form("places").value.toString.forall(_.isDigit))) { Nog niet aangemaakt } else {
+                                                @if((Integer.parseInt(form("places").value.toString) - form("inscriptions").indexes.size)==0) { <span style="color: #D43F3A;" class="glyphicon glyphicon-remove"></span> Volzet } else { Nog @{Integer.parseInt(form("places").value.toString) - form("inscriptions").indexes.size} plaatsen beschikbaar }}}</div>
+                                    </div>
+                                    <div class="row" style="padding-bottom: 0px;">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" href="#collapseInscriptions@{form("id").value.toString}">Inschrijvingen (aantal: @{form("inscriptions").indexes.size})</a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseInscriptions@{form("id").value.toString}" class="panel-collapse collapse in">
+                                                @if(form("inscriptions").indexes.size > 0) {
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped table-hover">
+                                                            <style>
+                                                            td { padding: 7px;}
+                                                            </style>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="col-xs-9">Naam</th>
+                                                                    <th class="col-xs-3" style="text-align: center;">Aanwezig</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            @{var i = 0;}
+                                                            @for(i <- 0 until form("inscriptions").indexes.size) {
+                                                                <tr id="session@{form("id").value.toString}user@{form("inscriptionIds["+i+"]").value.toString}">
+                                                                    <td>@{form("inscriptionNames["+i+"]").value.toString}</td>
+                                                                    <td style="text-align: center;"><input type="checkbox" value="@{form("inscriptionIds["+i+"]").value.toString}" @if(form("inscriptions["+i+"]").value.toString == "true"){checked} name="@{form("inscriptions["+i+"]").name}" id="checkbox_session@{form("id").value.toString}user@{form("inscriptionIds["+i+"]").value.toString}" onchange="document.getElementById('session@{form("id").value.toString}user@{form("inscriptionIds["+i+"]").value.toString}').setAttribute('class', 'warning');"></td>
+                                                                </tr>
+                                                            }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @if(form("id").value.toString != "") {
+                                        @pattern("infosessions.remove",PatternType.REGEX){
+                                        <div id="removeButton@{form("id").value.toString}"  class="row">
+                                            <div style="padding-bottom: 0px; text-align: center !important;"><button type="button" class="btn btn-danger" onclick="$(function(){$('#removeAlert@{form("id").value.toString}').removeClass('hide'); $('#removeButton@{form("id").value.toString}').hide();});">
+                                                <span class="glyphicon glyphicon-remove-circle"></span> Infosessie verwijderen
+                                            </button></div>
+                                        </div>
+                                        <div id="removeAlert@{form("id").value.toString}" class="hide row">
+                                            <div class="col-xs-12 alert alert-danger alert-withicon">
+                                                <div class="alerticon"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+                                                <strong>Let op!</strong> Je staat op het punt van deze infosessie definitief te verwijderen. Vink onderstaand vakje aan en klik op bevestigen om deze infosessie te verwijderen.
+
+                                                    <input id="removeCheckbox@{form("id").value.toString}" type="checkbox" value="removeSession" name="@{form("remove").name}" data-label="Verwijder deze infosessie">
+
+                                            </div>
+                                        </div>
+                                        }
+                                    }
+                                }{
+                                    <div><p>Dit zijn de details van deze infosessie:</p></div>
+                                    <div class="row" style="padding-bottom: 0px;">
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-xs-4"><strong>Datum</strong>:</div>
+                                                <div class="col-xs-8">@{form("date").value.toString}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4"><strong>Adres</strong>:</div>
+                                                <div class="col-xs-8">@{form("addressStreet").value.toString} @{form("addressNumber").value.toString} @{form("addressBus").value.toString}<br>
+                                                    @{form("addressZip").value.toString} @{form("addressPlace").value.toString}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="row">
+                                                <div class="col-xs-4"><strong>Tijdstip</strong>:</div>
+                                                <div class="col-xs-8">@{form("time").value.toString}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-4"><strong>Status</strong>:</div>
+                                                <div class="col-xs-8">@if(form("inscribed").value.toString == "true") { Ingeschreven } else { @if((Integer.parseInt(form("places").value.toString) - form("inscriptions").indexes.size)==0) { Volzet } else { Nog @{Integer.parseInt(form("places").value.toString) - form("inscriptions").indexes.size} plaatsen beschikbaar } }</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="modal-footer">
+                                <div class="pull-left checkbox" style="margin-top: 5px; margin-bottom: 5px;">
+                                    <label @if(form("inscriptionsDisabled").value.equals("true") || ((form("inscribed").value.toString != "true") && (!form("places").value.toString.equals("")) && ((Integer.parseInt(form("places").value.toString) - form("inscriptions").indexes.size)==0))){style="color: #999;"}>
+                                        <input type="checkbox" value="editInscription" @if(form("inscriptionsDisabled").value.equals("true") || ((form("inscribed").value.toString != "true") && (!form("places").value.toString.equals("")) && ((Integer.parseInt(form("places").value.toString) - form("inscriptions").indexes.size)==0))) {disabled} name="@{form("inscribed").name}" id="inscriptionCheckbox@{form("id").value.toString}" @if(!isAdmin){onchange="document.getElementById('confirmButton@{form("id").value.toString}').disabled = !document.getElementById('confirmButton@{form("id").value.toString}').disabled;"}>
+                                        Ik wil me @if(form("inscribed").value.toString == "true"){<b style="color: red;">uitschrijven</b>}else{<b style="color: green;">inschrijven</b>} voor deze infosessie</label>
+                                </div>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                                <button id="confirmButton@{form("id").value.toString}" type="submit" class="btn btn-success" @if(!isAdmin){disabled="true"}><span class="glyphicon glyphicon-ok-circle"></span> Bevestigen</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    <div class="row">
+    @footer()
+    </div>
+}

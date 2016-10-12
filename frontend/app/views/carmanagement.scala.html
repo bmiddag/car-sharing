@@ -1,0 +1,85 @@
+@(tab: String, reservations: List[objects.Reservation], rides: List[objects.Ride],formList: List[Form[views.formdata.MyCarFormData]])
+
+@import utils.TimeUtils
+@import java.util.Date;
+@import utils.TimeUtils
+@import play.api.libs.json.Json
+
+
+@stylesheets = {
+    <link rel="stylesheet" type="text/css" href="@routes.Assets.at("vendor/datetimepicker/css/jquery.datetimepicker.css")" />
+    <link href="//rawgithub.com/ashleydw/lightbox/master/dist/ekko-lightbox.css" rel="stylesheet">
+}
+
+@javascripts = {
+    <script type="text/javascript" src="@routes.Assets.at("vendor/datetimepicker/js/jquery.datetimepicker.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/fileinput.js")"></script>
+    <script src="//rawgithub.com/ashleydw/lightbox/master/dist/ekko-lightbox.js"></script>
+    <script>
+        searchDamageUrl = "@routes.Damage.search()";
+    </script>
+    <script type="text/javascript" src="@routes.Application.javascriptRoutes()"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/fileinput.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/carmanagement.js")"></script>
+}
+
+@tabs = {
+    <ul class="nav nav-tabs">
+        <li name="tabReservations" class="@if(tab == "reservations") {
+            active
+        }"><a href="@routes.CarManagement.carManagement("reservations")" name="reservations">Reservaties</a></li>
+        <li name="tabTrips" class="@if(tab == "trips") {
+            active
+        }"><a href="@routes.CarManagement.carManagement("trips")" name="trips">Ritgegevens</a></li>
+        <li name="tabMyCar" class="@if(tab == "mycar") {
+            active
+        }"><a href="@routes.CarManagement.carManagement("mycar")" name="mycar">Mijn auto</a></li>
+        <li name="tabDamages" class="@if(tab == "damages") {
+            active
+        }"><a href="@routes.CarManagement.carManagement("damages")" name="mycar">Schadegevallen</a></li>
+    </ul>
+}
+
+@main("Beheer uw auto", stylesheets, javascripts, tabs, NotificationModel.getNumberOfUnreadNotifications()) {
+
+    @if(tab == "reservations") {
+        @carmanagementresv.render(reservations)
+    }
+
+    @if(tab == "trips"){
+        @carmanagementtrips.render(rides)
+    }
+
+    @if(tab == "mycar"){
+        @carmanagementmycar.render(formList)
+    }
+
+
+    @if(tab == "damages") {
+        <div class="row form-group">
+            <label for="search" class="col-sm-2 control-label">Zoek een schadegeval</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="search" autocomplete="off" placeholder="Zoek...">
+                <div class="table-responsive">
+                    <table id="damageSearchTable" class="table table-hover" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th style="display: none">ID</th>
+                                <th>Status</th>
+                                <th>Auto</th>
+                                <th>Gebruiker</th>
+                                <th>Datum</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="damageSearchTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+    @footer()
+    </div>
+}
